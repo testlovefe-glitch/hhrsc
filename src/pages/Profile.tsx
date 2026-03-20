@@ -44,16 +44,16 @@ export default function Profile() {
 
       {/* 合伙人专属卡片 */}
       <div className="px-4 mb-2 -mt-6 relative z-10">
-        <Link to="/partner" className="block bg-gradient-to-r from-slate-900 to-slate-800 dark:from-black dark:to-slate-900 rounded-xl p-4 shadow-lg border border-slate-700/50 relative overflow-hidden group">
+        <Link to="/privileges" className="block bg-gradient-to-r from-slate-900 to-slate-800 dark:from-black dark:to-slate-900 rounded-xl p-4 shadow-lg border border-slate-700/50 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-yellow-500/20 to-transparent rounded-full blur-2xl -mr-10 -mt-10"></div>
           <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center gap-3">
               <div className="size-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center text-white shadow-inner">
-                <span className="material-symbols-outlined">wine_bar</span>
+                <span className="material-symbols-outlined">workspace_premium</span>
               </div>
               <div>
-                <h3 className="text-yellow-500 font-bold text-base">酒业合伙人</h3>
-                <p className="text-slate-400 text-xs mt-0.5">查看团队收益与专属酒款权益</p>
+                <h3 className="text-yellow-500 font-bold text-base">专属权益</h3>
+                <p className="text-slate-400 text-xs mt-0.5">查看合伙人等级与专属权益</p>
               </div>
             </div>
             <div className="bg-white/10 rounded-full p-1.5 text-yellow-500 backdrop-blur-md group-hover:bg-white/20 transition-colors flex items-center justify-center">

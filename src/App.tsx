@@ -42,6 +42,7 @@ import FaqInvite from './pages/FaqInvite';
 import NewPartnersToday from './pages/NewPartnersToday';
 import Leaderboard from './pages/Leaderboard';
 import MyCellar from './pages/MyCellar';
+import Privileges from './pages/Privileges';
 
 export default function App() {
   return (
@@ -61,6 +62,7 @@ export default function App() {
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="my-cellar" element={<MyCellar />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="privileges" element={<Privileges />} />
           <Route path="team" element={<Team />} />
           <Route path="orders" element={<Orders />} />
           <Route path="products" element={<Products />} />
