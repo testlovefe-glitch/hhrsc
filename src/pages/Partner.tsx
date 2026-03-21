@@ -122,52 +122,7 @@ export default function Partner() {
         </div>
       </div>
 
-      <div className="px-4 mb-6">
-        <div className="flex items-center mb-4">
-          <h2 className="text-slate-900 dark:text-slate-100 text-xl font-bold">团队统计</h2>
-        </div>
-        <div className="grid grid-cols-1 gap-4">
-          <Link to="/team" className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4 hover:border-primary/50 transition-colors cursor-pointer">
-            <div className="size-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400">
-              <span className="material-symbols-outlined">groups</span>
-            </div>
-            <div className="flex-1">
-              <p className="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">团队成员数</p>
-              <p className="text-xl font-bold">324</p>
-            </div>
-            <div className="text-right">
-              <p className="text-green-500 text-sm font-bold">+12</p>
-              <p className="text-slate-400 text-[10px]">总成员数</p>
-            </div>
-          </Link>
-          <Link to="/partner/new-today" className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4 hover:border-primary/50 transition-colors cursor-pointer">
-            <div className="size-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400">
-              <span className="material-symbols-outlined">person_add</span>
-            </div>
-            <div className="flex-1">
-              <p className="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">新增合伙人</p>
-              <p className="text-xl font-bold">8</p>
-            </div>
-            <div className="text-right">
-              <p className="text-primary text-sm font-bold">今日</p>
-              <p className="text-slate-400 text-[10px]">待激活: 2</p>
-            </div>
-          </Link>
-          <Link to="/team-sales" className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4 hover:border-primary/50 transition-colors cursor-pointer">
-            <div className="size-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400">
-              <span className="material-symbols-outlined">monitoring</span>
-            </div>
-            <div className="flex-1">
-              <p className="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">团队销售额</p>
-              <p className="text-xl font-bold">¥84,320</p>
-            </div>
-            <div className="text-right">
-              <p className="text-green-500 text-sm font-bold">↑ 24%</p>
-              <p className="text-slate-400 text-[10px]">月增长率</p>
-            </div>
-          </Link>
-        </div>
-      </div>
+
 
       {/* 常见问题 */}
       <div className="px-4 mb-8">

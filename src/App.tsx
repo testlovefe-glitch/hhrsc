@@ -43,6 +43,7 @@ import NewPartnersToday from './pages/NewPartnersToday';
 import Leaderboard from './pages/Leaderboard';
 import MyCellar from './pages/MyCellar';
 import Privileges from './pages/Privileges';
+import FlashSale from './pages/FlashSale';
 
 export default function App() {
   return (
@@ -63,6 +64,7 @@ export default function App() {
           <Route path="my-cellar" element={<MyCellar />} />
           <Route path="profile" element={<Profile />} />
           <Route path="privileges" element={<Privileges />} />
+          <Route path="flash-sale" element={<FlashSale />} />
           <Route path="team" element={<Team />} />
           <Route path="orders" element={<Orders />} />
           <Route path="products" element={<Products />} />

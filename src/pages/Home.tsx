@@ -136,7 +136,7 @@ export default function Home() {
               <span className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-1.5 py-0.5 rounded">{formatTime(timeLeft.seconds)}</span>
             </div>
           </div>
-          <Link to="/category-list/flash-sale" className="text-slate-500 text-xs flex items-center">
+          <Link to="/flash-sale" className="text-slate-500 text-xs flex items-center">
             更多 <span className="material-symbols-outlined text-[14px]">chevron_right</span>
           </Link>
         </div>

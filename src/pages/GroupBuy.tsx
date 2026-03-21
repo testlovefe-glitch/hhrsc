@@ -80,7 +80,7 @@ export default function GroupBuy() {
             
             <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/20 relative z-10">
               <p className="text-sm font-medium leading-relaxed">
-                1人参与返 <span className="text-yellow-300 font-bold text-base">20%</span><br/>
+                推荐第1人参与返 <span className="text-yellow-300 font-bold text-base">20%</span><br/>
                 推荐第2人返 <span className="text-yellow-300 font-bold text-base">20%</span><br/>
                 推荐第3人返 <span className="text-yellow-300 font-bold text-base">60%</span> 且 <span className="bg-yellow-300 text-red-600 px-1 rounded font-bold">订单免单</span>
               </p>
