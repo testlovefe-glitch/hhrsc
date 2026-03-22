@@ -64,6 +64,9 @@ import AdminEditPartnerLevel from './pages/admin/AdminEditPartnerLevel';
 import AdminPartnerAudit from './pages/admin/AdminPartnerAudit';
 import AdminTeamMemberDetails from './pages/admin/AdminTeamMemberDetails';
 import AdminFinance from './pages/admin/AdminFinance';
+import AdminMarketing from './pages/admin/AdminMarketing';
+import AdminCreateCampaign from './pages/admin/AdminCreateCampaign';
+import AdminSettings from './pages/admin/AdminSettings';
 
 export default function App() {
   return (
@@ -88,9 +91,9 @@ export default function App() {
           <Route path="partners/:id" element={<AdminPartnerDetails />} />
           <Route path="partners/level/:id" element={<AdminEditPartnerLevel />} />
           <Route path="finance" element={<AdminFinance />} />
-          {/* Placeholder routes for other admin pages */}
-          <Route path="marketing" element={<div className="p-6">营销活动 (开发中)</div>} />
-          <Route path="settings" element={<div className="p-6">系统设置 (开发中)</div>} />
+          <Route path="marketing" element={<AdminMarketing />} />
+          <Route path="marketing/create" element={<AdminCreateCampaign />} />
+          <Route path="settings" element={<AdminSettings />} />
         </Route>
 
         {/* Client Routes */}
