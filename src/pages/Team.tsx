@@ -7,7 +7,7 @@ export default function Team() {
         <Link to="/profile" className="flex items-center justify-center text-slate-900 dark:text-white">
           <span className="material-symbols-outlined">arrow_back_ios</span>
         </Link>
-        <h1 className="flex-1 text-center text-lg font-bold leading-tight tracking-tight pr-6">我的团队</h1>
+        <h1 className="flex-1 text-center text-lg font-bold leading-tight tracking-tight pr-6">我的推荐</h1>
       </header>
 
       <div className="p-4">
@@ -15,14 +15,14 @@ export default function Team() {
           <Link to="/team-sales" className="flex flex-col gap-2 rounded-xl p-5 bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800 active:scale-[0.98] transition-transform">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-primary text-xl">monitoring</span>
-              <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">团队销售额</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">推荐人员销售额</p>
             </div>
             <p className="text-primary tracking-tight text-2xl font-bold">¥84,320</p>
           </Link>
           <div className="flex flex-col gap-2 rounded-xl p-5 bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-primary text-xl">group</span>
-              <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">团队成员数</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">推荐人数</p>
             </div>
             <p className="text-primary tracking-tight text-3xl font-bold">128</p>
           </div>
@@ -32,7 +32,7 @@ export default function Team() {
       <div className="px-4 pb-2 pt-2">
         <h3 className="text-slate-900 dark:text-white text-base font-bold flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">list_alt</span>
-          团队成员
+          推荐成员
         </h3>
       </div>
 

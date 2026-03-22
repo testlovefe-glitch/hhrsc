@@ -99,7 +99,7 @@ export default function TeamSales() {
       <nav className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="material-symbols-outlined cursor-pointer text-slate-600 dark:text-slate-300">arrow_back</button>
-          <h1 className="text-lg font-bold">团队销售额</h1>
+          <h1 className="text-lg font-bold">推荐人员销售额</h1>
         </div>
         <div className="w-10"></div> {/* 占位符 */}
       </nav>

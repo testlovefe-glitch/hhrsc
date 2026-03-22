@@ -104,7 +104,7 @@ export default function Profile() {
               <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
                 <span className="material-symbols-outlined text-blue-500 text-xl">group</span>
               </div>
-              <span className="text-slate-800 dark:text-slate-200 font-medium">我的团队</span>
+              <span className="text-slate-800 dark:text-slate-200 font-medium">我的推荐</span>
             </div>
             <span className="material-symbols-outlined text-slate-300">chevron_right</span>
           </Link>
