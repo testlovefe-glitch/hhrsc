@@ -33,22 +33,6 @@ export default function Register() {
             </div>
           </div>
 
-          {/* Verification Code */}
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">验证码</label>
-            <div className="flex gap-3">
-              <div className="relative flex-1">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
-                  <span className="material-symbols-outlined text-xl">verified_user</span>
-                </span>
-                <input className="w-full pl-11 pr-4 h-14 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400" placeholder="6位验证码" type="text" />
-              </div>
-              <button className="px-4 h-14 bg-primary/10 text-primary font-semibold rounded-lg hover:bg-primary/20 transition-colors whitespace-nowrap text-sm" type="button">
-                获取验证码
-              </button>
-            </div>
-          </div>
-
           {/* Password */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">设置密码</label>

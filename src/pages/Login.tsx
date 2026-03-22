@@ -60,14 +60,16 @@ export default function Login() {
           </div>
         </label>
 
-        {/* Verification Code Input */}
+        {/* Password Input */}
         <label className="flex flex-col w-full">
           <div className="flex justify-between items-center pb-2">
-            <p className="text-slate-900 dark:text-slate-100 text-base font-medium leading-normal">验证码</p>
-            <button className="text-primary text-sm font-bold hover:underline">获取验证码</button>
+            <p className="text-slate-900 dark:text-slate-100 text-base font-medium leading-normal">密码</p>
           </div>
-          <div className="flex w-full items-stretch rounded-lg group">
-            <input className="form-input flex w-full min-w-0 flex-1 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 h-14 placeholder:text-slate-400 p-[15px] text-base font-normal" placeholder="请输入验证码" type="text" />
+          <div className="relative flex w-full items-stretch rounded-lg group">
+            <input className="form-input flex w-full min-w-0 flex-1 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 h-14 placeholder:text-slate-400 p-[15px] pr-12 text-base font-normal" placeholder="请输入密码" type="password" />
+            <button className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400" type="button">
+              <span className="material-symbols-outlined">visibility</span>
+            </button>
           </div>
         </label>
 

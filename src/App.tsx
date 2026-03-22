@@ -5,6 +5,7 @@
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import AdminLayout from './components/AdminLayout';
 import Home from './pages/Home';
 import Category from './pages/Category';
 import Cart from './pages/Cart';
@@ -45,10 +46,54 @@ import MyCellar from './pages/MyCellar';
 import Privileges from './pages/Privileges';
 import FlashSale from './pages/FlashSale';
 
+// Admin Pages
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminProducts from './pages/admin/AdminProducts';
+import AdminAddProduct from './pages/admin/AdminAddProduct';
+import AdminEditProduct from './pages/admin/AdminEditProduct';
+import AdminOrders from './pages/admin/AdminOrders';
+import AdminOrderDetails from './pages/admin/AdminOrderDetails';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminAddUser from './pages/admin/AdminAddUser';
+import AdminUserDetails from './pages/admin/AdminUserDetails';
+import AdminEditUser from './pages/admin/AdminEditUser';
+import AdminPartners from './pages/admin/AdminPartners';
+import AdminAddPartner from './pages/admin/AdminAddPartner';
+import AdminPartnerDetails from './pages/admin/AdminPartnerDetails';
+import AdminEditPartnerLevel from './pages/admin/AdminEditPartnerLevel';
+import AdminPartnerAudit from './pages/admin/AdminPartnerAudit';
+import AdminTeamMemberDetails from './pages/admin/AdminTeamMemberDetails';
+import AdminFinance from './pages/admin/AdminFinance';
+
 export default function App() {
   return (
     <Router>
       <Routes>
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="products/add" element={<AdminAddProduct />} />
+          <Route path="products/edit/:id" element={<AdminEditProduct />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="orders/:id" element={<AdminOrderDetails />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="users/add" element={<AdminAddUser />} />
+          <Route path="users/:id" element={<AdminUserDetails />} />
+          <Route path="users/edit/:id" element={<AdminEditUser />} />
+          <Route path="partners" element={<AdminPartners />} />
+          <Route path="partners/add" element={<AdminAddPartner />} />
+          <Route path="partners/audit" element={<AdminPartnerAudit />} />
+          <Route path="partners/team-member/:id" element={<AdminTeamMemberDetails />} />
+          <Route path="partners/:id" element={<AdminPartnerDetails />} />
+          <Route path="partners/level/:id" element={<AdminEditPartnerLevel />} />
+          <Route path="finance" element={<AdminFinance />} />
+          {/* Placeholder routes for other admin pages */}
+          <Route path="marketing" element={<div className="p-6">营销活动 (开发中)</div>} />
+          <Route path="settings" element={<div className="p-6">系统设置 (开发中)</div>} />
+        </Route>
+
+        {/* Client Routes */}
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="category" element={<Category />} />
