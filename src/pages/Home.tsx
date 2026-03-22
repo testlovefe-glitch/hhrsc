@@ -156,8 +156,8 @@ export default function Home() {
                 <div className="flex items-baseline gap-1">
                   <span className="text-primary font-bold text-sm">¥{product.price}</span>
                   <span className="text-[10px] text-slate-400 line-through">¥{product.original}</span>
+                  <span className="text-[9px] text-primary bg-primary/10 px-1 py-0.5 rounded-sm border border-primary/20">直降¥{product.original - product.price}</span>
                 </div>
-                <span className="text-[9px] text-primary bg-primary/10 px-1.5 py-0.5 rounded-sm border border-primary/20">直降¥{product.original - product.price}</span>
               </div>
             </Link>
           ))}

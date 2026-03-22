@@ -80,9 +80,10 @@ export default function GroupBuy() {
             
             <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/20 relative z-10">
               <p className="text-sm font-medium leading-relaxed">
-                推荐第1人参与返 <span className="text-yellow-300 font-bold text-base">20%</span><br/>
-                推荐第2人返 <span className="text-yellow-300 font-bold text-base">20%</span><br/>
-                推荐第3人返 <span className="text-yellow-300 font-bold text-base">60%</span> 且 <span className="bg-yellow-300 text-red-600 px-1 rounded font-bold">订单免单</span>
+                推荐第一人参与团购返订单金额的 <span className="text-yellow-300 font-bold text-base">20%</span><br/>
+                推荐第二人参与团购再返订单金额的 <span className="text-yellow-300 font-bold text-base">20%</span><br/>
+                推荐第三人参与团购再返订单金额的 <span className="text-yellow-300 font-bold text-base">60%</span><br/>
+                推荐3人 <span className="bg-yellow-300 text-red-600 px-1 rounded font-bold">订单全返</span>
               </p>
             </div>
           </div>
@@ -122,7 +123,7 @@ export default function GroupBuy() {
                 <Link to={`/product/${p.id}`} className="relative aspect-square bg-slate-100 dark:bg-slate-800 block">
                   <img src={p.img} alt={p.title} className="w-full h-full object-cover" />
                   <div className="absolute top-0 left-0 bg-gradient-to-r from-red-500 to-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded-br-lg z-10">
-                    {p.targetSize}人团免单
+                    推荐{p.targetSize}人免单
                   </div>
                   {/* Progress bar overlay */}
                   <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-sm px-2 py-1.5 flex items-center gap-1.5">

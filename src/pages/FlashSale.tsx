@@ -94,6 +94,7 @@ export default function FlashSale() {
                     <div className="flex items-baseline gap-1">
                       <span className="text-red-500 font-bold text-lg">¥{product.price}</span>
                       <span className="text-xs text-slate-400 line-through">¥{product.original}</span>
+                      <span className="text-[10px] text-red-500 bg-red-50 dark:bg-red-900/20 px-1.5 py-0.5 rounded border border-red-100 dark:border-red-900/30 ml-1">直降¥{product.original - product.price}</span>
                     </div>
                   </div>
                   
