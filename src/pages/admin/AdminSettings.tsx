@@ -25,11 +25,11 @@ export default function AdminSettings() {
               基础设置
             </button>
             <button 
-              onClick={() => setActiveTab('partner')}
-              className={`px-4 py-3 text-left text-sm font-medium transition-colors flex items-center gap-3 ${activeTab === 'partner' ? 'bg-primary/5 text-primary border-r-2 border-primary' : 'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700/50 border-r-2 border-transparent'}`}
+              onClick={() => setActiveTab('admin')}
+              className={`px-4 py-3 text-left text-sm font-medium transition-colors flex items-center gap-3 ${activeTab === 'admin' ? 'bg-primary/5 text-primary border-r-2 border-primary' : 'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700/50 border-r-2 border-transparent'}`}
             >
-              <span className="material-symbols-outlined text-[20px]">handshake</span>
-              合伙人规则
+              <span className="material-symbols-outlined text-[20px]">admin_panel_settings</span>
+              管理员账号
             </button>
             <button 
               onClick={() => setActiveTab('payment')}
@@ -43,7 +43,14 @@ export default function AdminSettings() {
               className={`px-4 py-3 text-left text-sm font-medium transition-colors flex items-center gap-3 ${activeTab === 'notification' ? 'bg-primary/5 text-primary border-r-2 border-primary' : 'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700/50 border-r-2 border-transparent'}`}
             >
               <span className="material-symbols-outlined text-[20px]">notifications</span>
-              通知设置
+              消息模板配置
+            </button>
+            <button 
+              onClick={() => setActiveTab('anticheat')}
+              className={`px-4 py-3 text-left text-sm font-medium transition-colors flex items-center gap-3 ${activeTab === 'anticheat' ? 'bg-primary/5 text-primary border-r-2 border-primary' : 'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700/50 border-r-2 border-transparent'}`}
+            >
+              <span className="material-symbols-outlined text-[20px]">security</span>
+              反作弊设置
             </button>
           </div>
         </div>
@@ -84,46 +91,138 @@ export default function AdminSettings() {
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">商城简介</label>
                   <textarea rows={4} defaultValue="专注于高端白酒、红酒及养生酒的社交电商平台。" className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary dark:focus:border-primary transition-colors resize-none"></textarea>
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">版权信息</label>
+                  <input type="text" defaultValue="© 2026 名酒佳酿 版权所有" className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary dark:focus:border-primary transition-colors" />
+                </div>
+
+                <div className="pt-6 border-t border-slate-200 dark:border-slate-700">
+                  <h3 className="text-md font-medium text-slate-900 dark:text-white mb-4">小程序配置</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">AppID</label>
+                      <input type="text" defaultValue="wx1234567890abcdef" className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary dark:focus:border-primary transition-colors" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">AppSecret</label>
+                      <input type="password" defaultValue="************************" className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary dark:focus:border-primary transition-colors" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
-          {/* Partner Rules */}
-          {activeTab === 'partner' && (
+          {/* Admin Account Management */}
+          {activeTab === 'admin' && (
             <div className="space-y-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-4">合伙人规则配置</h2>
+              <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-4">
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">管理员账号管理</h2>
+                <button className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[18px]">add</span>
+                  添加管理员
+                </button>
+              </div>
               
-              <div className="grid grid-cols-1 gap-8 max-w-2xl">
-                {/* Rule Section */}
-                <div className="space-y-4">
-                  <h3 className="text-md font-medium text-slate-900 dark:text-white">分销佣金比例</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm text-slate-600 dark:text-slate-400 mb-2">直推佣金比例 (%)</label>
-                      <input type="number" defaultValue="10" className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary dark:focus:border-primary transition-colors" />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-slate-600 dark:text-slate-400 mb-2">间推佣金比例 (%)</label>
-                      <input type="number" defaultValue="5" className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary dark:focus:border-primary transition-colors" />
-                    </div>
+              <div className="space-y-8">
+                {/* Admin List */}
+                <div>
+                  <h3 className="text-md font-medium text-slate-900 dark:text-white mb-4">管理员列表</h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">
+                          <th className="p-4 font-medium">账号</th>
+                          <th className="p-4 font-medium">姓名</th>
+                          <th className="p-4 font-medium">角色权限</th>
+                          <th className="p-4 font-medium">最后登录</th>
+                          <th className="p-4 font-medium">状态</th>
+                          <th className="p-4 font-medium text-right">操作</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                        <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                          <td className="p-4 text-sm text-slate-900 dark:text-white">admin</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">超级管理员</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                            <span className="bg-primary/10 text-primary px-2 py-1 rounded text-xs">全部权限</span>
+                          </td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">2026-03-23 10:00:00</td>
+                          <td className="p-4">
+                            <span className="bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 px-2 py-1 rounded text-xs">正常</span>
+                          </td>
+                          <td className="p-4 text-right">
+                            <button className="text-slate-400 hover:text-primary transition-colors" title="编辑"><span className="material-symbols-outlined text-[18px]">edit</span></button>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                          <td className="p-4 text-sm text-slate-900 dark:text-white">finance_01</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">财务专员</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                            <span className="bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400 px-2 py-1 rounded text-xs">财务管理</span>
+                          </td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">2026-03-22 15:30:00</td>
+                          <td className="p-4">
+                            <span className="bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 px-2 py-1 rounded text-xs">正常</span>
+                          </td>
+                          <td className="p-4 text-right flex justify-end gap-2">
+                            <button className="text-slate-400 hover:text-primary transition-colors" title="编辑"><span className="material-symbols-outlined text-[18px]">edit</span></button>
+                            <button className="text-slate-400 hover:text-red-500 transition-colors" title="禁用"><span className="material-symbols-outlined text-[18px]">block</span></button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <h3 className="text-md font-medium text-slate-900 dark:text-white">提现设置</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm text-slate-600 dark:text-slate-400 mb-2">最低提现金额 (元)</label>
-                      <input type="number" defaultValue="100" className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary dark:focus:border-primary transition-colors" />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-slate-600 dark:text-slate-400 mb-2">提现手续费 (%)</label>
-                      <input type="number" defaultValue="1" className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary dark:focus:border-primary transition-colors" />
+                {/* Operation Logs */}
+                <div>
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-md font-medium text-slate-900 dark:text-white">操作日志</h3>
+                    <div className="flex gap-2">
+                      <input type="date" className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary" />
+                      <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary">
+                        <option value="">全部操作人</option>
+                        <option value="admin">admin</option>
+                        <option value="finance_01">finance_01</option>
+                      </select>
+                      <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary">
+                        <option value="">全部操作类型</option>
+                        <option value="withdraw">审核提现</option>
+                        <option value="level">修改等级</option>
+                        <option value="pool">调整分红池</option>
+                      </select>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <input type="checkbox" id="autoApprove" className="rounded text-primary focus:ring-primary" />
-                    <label htmlFor="autoApprove" className="text-sm text-slate-600 dark:text-slate-400">开启小额自动打款 (低于500元)</label>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">
+                          <th className="p-4 font-medium">时间</th>
+                          <th className="p-4 font-medium">操作人</th>
+                          <th className="p-4 font-medium">操作类型</th>
+                          <th className="p-4 font-medium">操作详情</th>
+                          <th className="p-4 font-medium">IP地址</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                        <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">2026-03-23 14:20:05</td>
+                          <td className="p-4 text-sm text-slate-900 dark:text-white">finance_01</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">审核提现</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">通过了用户(ID:1001)的提现申请，金额: 500.00元</td>
+                          <td className="p-4 text-sm text-slate-500">192.168.1.100</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">2026-03-23 10:15:22</td>
+                          <td className="p-4 text-sm text-slate-900 dark:text-white">admin</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">修改等级</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">将用户(ID:2055)的合伙人等级从一星调整为二星</td>
+                          <td className="p-4 text-sm text-slate-500">10.0.0.5</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
@@ -165,6 +264,13 @@ export default function AdminSettings() {
                       <label className="block text-xs text-slate-500 mb-1">API 密钥</label>
                       <input type="password" defaultValue="************************" className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none" />
                     </div>
+                    <div>
+                      <label className="block text-xs text-slate-500 mb-1">API 证书 (apiclient_cert.p12)</label>
+                      <div className="flex items-center gap-2">
+                        <input type="text" readOnly value="已上传" className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none text-emerald-600" />
+                        <button className="px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors whitespace-nowrap">重新上传</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -192,9 +298,166 @@ export default function AdminSettings() {
 
           {/* Notification Settings */}
           {activeTab === 'notification' && (
-            <div className="p-8 text-center text-slate-500">
-              <span className="material-symbols-outlined text-4xl mb-2 opacity-50">notifications_active</span>
-              <p>通知与短信模板配置开发中...</p>
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-4">消息模板配置</h2>
+              
+              <div className="grid grid-cols-1 gap-6 max-w-2xl">
+                <div className="p-5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900/50">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-md font-medium text-slate-900 dark:text-white">收益到账通知</h3>
+                      <p className="text-xs text-slate-500 mt-1">当合伙人获得分销佣金或分红时触发</p>
+                    </div>
+                    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                      <input type="checkbox" name="toggle" id="income-toggle" defaultChecked className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer" style={{ right: 0, borderColor: '#10b981' }}/>
+                      <label htmlFor="income-toggle" className="toggle-label block overflow-hidden h-5 rounded-full bg-emerald-500 cursor-pointer"></label>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-slate-500 mb-1">微信小程序模板 ID</label>
+                    <input type="text" defaultValue="MSG_INCOME_ARRIVAL_12345" className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none" />
+                  </div>
+                </div>
+
+                <div className="p-5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900/50">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-md font-medium text-slate-900 dark:text-white">等级升级通知</h3>
+                      <p className="text-xs text-slate-500 mt-1">当合伙人星级或销售级别提升时触发</p>
+                    </div>
+                    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                      <input type="checkbox" name="toggle" id="upgrade-toggle" defaultChecked className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer" style={{ right: 0, borderColor: '#10b981' }}/>
+                      <label htmlFor="upgrade-toggle" className="toggle-label block overflow-hidden h-5 rounded-full bg-emerald-500 cursor-pointer"></label>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-slate-500 mb-1">微信小程序模板 ID</label>
+                    <input type="text" defaultValue="MSG_LEVEL_UPGRADE_67890" className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none" />
+                  </div>
+                </div>
+                
+                <div className="p-5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900/50">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-md font-medium text-slate-900 dark:text-white">提现审核通知</h3>
+                      <p className="text-xs text-slate-500 mt-1">当提现申请通过或被拒绝时触发</p>
+                    </div>
+                    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                      <input type="checkbox" name="toggle" id="withdraw-toggle" defaultChecked className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer" style={{ right: 0, borderColor: '#10b981' }}/>
+                      <label htmlFor="withdraw-toggle" className="toggle-label block overflow-hidden h-5 rounded-full bg-emerald-500 cursor-pointer"></label>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-slate-500 mb-1">微信小程序模板 ID</label>
+                    <input type="text" defaultValue="MSG_WITHDRAW_AUDIT_54321" className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Anti-Cheat Settings */}
+          {activeTab === 'anticheat' && (
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-4">反作弊设置</h2>
+              
+              <div className="space-y-8">
+                {/* Risk Control Rules */}
+                <div className="max-w-2xl space-y-4">
+                  <h3 className="text-md font-medium text-slate-900 dark:text-white">风控规则配置</h3>
+                  
+                  <div className="p-4 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900/50 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="text-sm font-medium text-slate-900 dark:text-white">同一IP下单频率限制</h4>
+                        <p className="text-xs text-slate-500 mt-1">限制短时间内同一IP的异常下单行为</p>
+                      </div>
+                      <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                        <input type="checkbox" name="toggle" id="ip-limit-toggle" defaultChecked className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer" style={{ right: 0, borderColor: '#10b981' }}/>
+                        <label htmlFor="ip-limit-toggle" className="toggle-label block overflow-hidden h-5 rounded-full bg-emerald-500 cursor-pointer"></label>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-slate-600 dark:text-slate-400">限制</span>
+                      <input type="number" defaultValue="1" className="w-16 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 text-sm outline-none text-center" />
+                      <span className="text-sm text-slate-600 dark:text-slate-400">分钟内，最多允许下单</span>
+                      <input type="number" defaultValue="5" className="w-16 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 text-sm outline-none text-center" />
+                      <span className="text-sm text-slate-600 dark:text-slate-400">次</span>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-900/50 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="text-sm font-medium text-slate-900 dark:text-white">同一设备关联多个账号预警</h4>
+                        <p className="text-xs text-slate-500 mt-1">检测并预警可能存在的刷单或作弊行为</p>
+                      </div>
+                      <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                        <input type="checkbox" name="toggle" id="device-limit-toggle" defaultChecked className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer" style={{ right: 0, borderColor: '#10b981' }}/>
+                        <label htmlFor="device-limit-toggle" className="toggle-label block overflow-hidden h-5 rounded-full bg-emerald-500 cursor-pointer"></label>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-slate-600 dark:text-slate-400">同一设备登录超过</span>
+                      <input type="number" defaultValue="3" className="w-16 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 text-sm outline-none text-center" />
+                      <span className="text-sm text-slate-600 dark:text-slate-400">个不同账号时，触发预警</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Blacklist Management */}
+                <div>
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-md font-medium text-slate-900 dark:text-white">黑名单管理</h3>
+                    <button className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[18px]">add</span>
+                      添加封禁
+                    </button>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">
+                          <th className="p-4 font-medium">用户ID/手机号</th>
+                          <th className="p-4 font-medium">封禁原因</th>
+                          <th className="p-4 font-medium">封禁时间</th>
+                          <th className="p-4 font-medium">限制范围</th>
+                          <th className="p-4 font-medium text-right">操作</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                        <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                          <td className="p-4 text-sm text-slate-900 dark:text-white">138****1234</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">恶意刷单，异常高频下单</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">2026-03-20 11:30:00</td>
+                          <td className="p-4">
+                            <div className="flex gap-1">
+                              <span className="bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-400 px-2 py-0.5 rounded text-xs">禁止登录</span>
+                              <span className="bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-400 px-2 py-0.5 rounded text-xs">禁止下单</span>
+                            </div>
+                          </td>
+                          <td className="p-4 text-right">
+                            <button className="text-slate-400 hover:text-primary transition-colors text-sm">解除封禁</button>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                          <td className="p-4 text-sm text-slate-900 dark:text-white">ID: 8842</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">涉嫌违规提现操作</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">2026-03-15 09:15:00</td>
+                          <td className="p-4">
+                            <div className="flex gap-1">
+                              <span className="bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-400 px-2 py-0.5 rounded text-xs">禁止提现</span>
+                            </div>
+                          </td>
+                          <td className="p-4 text-right">
+                            <button className="text-slate-400 hover:text-primary transition-colors text-sm">解除封禁</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 

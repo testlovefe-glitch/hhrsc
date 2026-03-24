@@ -10,7 +10,10 @@ export default function AdminLayout() {
     { path: '/admin/users', icon: 'group', label: '用户管理' },
     { path: '/admin/partners', icon: 'handshake', label: '合伙人管理' },
     { path: '/admin/finance', icon: 'account_balance_wallet', label: '财务管理' },
+    { path: '/admin/distribution', icon: 'account_tree', label: '分销管理' },
+    { path: '/admin/withdrawal', icon: 'payments', label: '提现管理' },
     { path: '/admin/marketing', icon: 'campaign', label: '营销活动' },
+    { path: '/admin/content', icon: 'article', label: '内容管理' },
     { path: '/admin/settings', icon: 'settings', label: '系统设置' },
   ];
 

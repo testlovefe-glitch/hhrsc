@@ -60,12 +60,21 @@ import AdminEditUser from './pages/admin/AdminEditUser';
 import AdminPartners from './pages/admin/AdminPartners';
 import AdminAddPartner from './pages/admin/AdminAddPartner';
 import AdminPartnerDetails from './pages/admin/AdminPartnerDetails';
-import AdminEditPartnerLevel from './pages/admin/AdminEditPartnerLevel';
+import AdminEditPartner from './pages/admin/AdminEditPartner';
 import AdminPartnerAudit from './pages/admin/AdminPartnerAudit';
 import AdminTeamMemberDetails from './pages/admin/AdminTeamMemberDetails';
 import AdminFinance from './pages/admin/AdminFinance';
 import AdminMarketing from './pages/admin/AdminMarketing';
 import AdminCreateCampaign from './pages/admin/AdminCreateCampaign';
+import AdminCreateFlashSale from './pages/admin/AdminCreateFlashSale';
+import AdminCreateGroupBuy from './pages/admin/AdminCreateGroupBuy';
+import AdminGroupBuyDetails from './pages/admin/AdminGroupBuyDetails';
+import AdminCoupons from './pages/admin/AdminCoupons';
+import AdminCreateCoupon from './pages/admin/AdminCreateCoupon';
+import AdminCouponRecords from './pages/admin/AdminCouponRecords';
+import AdminDistribution from './pages/admin/AdminDistribution';
+import AdminWithdrawal from './pages/admin/AdminWithdrawal';
+import AdminContent from './pages/admin/AdminContent';
 import AdminSettings from './pages/admin/AdminSettings';
 
 export default function App() {
@@ -89,10 +98,19 @@ export default function App() {
           <Route path="partners/audit" element={<AdminPartnerAudit />} />
           <Route path="partners/team-member/:id" element={<AdminTeamMemberDetails />} />
           <Route path="partners/:id" element={<AdminPartnerDetails />} />
-          <Route path="partners/level/:id" element={<AdminEditPartnerLevel />} />
+          <Route path="partners/edit/:id" element={<AdminEditPartner />} />
           <Route path="finance" element={<AdminFinance />} />
           <Route path="marketing" element={<AdminMarketing />} />
           <Route path="marketing/create" element={<AdminCreateCampaign />} />
+          <Route path="marketing/flash-sale/create" element={<AdminCreateFlashSale />} />
+          <Route path="marketing/group-buy/create" element={<AdminCreateGroupBuy />} />
+          <Route path="marketing/group-buy/details/:id" element={<AdminGroupBuyDetails />} />
+          <Route path="marketing/coupons" element={<AdminCoupons />} />
+          <Route path="marketing/coupons/create" element={<AdminCreateCoupon />} />
+          <Route path="marketing/coupons/records/:id" element={<AdminCouponRecords />} />
+          <Route path="distribution" element={<AdminDistribution />} />
+          <Route path="withdrawal" element={<AdminWithdrawal />} />
+          <Route path="content" element={<AdminContent />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
 

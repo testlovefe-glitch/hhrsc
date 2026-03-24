@@ -7,6 +7,90 @@ export default function AdminPartnerDetails() {
 
   const [partner, setPartner] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('basic');
+  const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({ 'root': true });
+
+  const toggleNode = (id: string) => {
+    setExpandedNodes(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const networkTree = {
+    id: 'root',
+    name: '张三',
+    level: '高级合伙人',
+    avatar: 'https://ui-avatars.com/api/?name=张三&background=random',
+    children: [
+      {
+        id: 'child1',
+        name: '李四',
+        level: '初级合伙人',
+        avatar: 'https://ui-avatars.com/api/?name=李四&background=random',
+        children: [
+          {
+            id: 'child1-1',
+            name: '王五',
+            level: '普通用户',
+            avatar: 'https://ui-avatars.com/api/?name=王五&background=random',
+            children: []
+          },
+          {
+            id: 'child1-2',
+            name: '钱七',
+            level: '初级合伙人',
+            avatar: 'https://ui-avatars.com/api/?name=钱七&background=random',
+            children: []
+          }
+        ]
+      },
+      {
+        id: 'child2',
+        name: '赵六',
+        level: '普通用户',
+        avatar: 'https://ui-avatars.com/api/?name=赵六&background=random',
+        children: []
+      }
+    ]
+  };
+
+  const renderTreeNode = (node: any, isRoot = false) => {
+    const isExpanded = expandedNodes[node.id];
+    const hasChildren = node.children && node.children.length > 0;
+
+    return (
+      <div key={node.id} className={`flex flex-col ${!isRoot ? 'ml-8 mt-4 relative before:content-[""] before:absolute before:left-[-16px] before:top-[-16px] before:bottom-0 before:w-px before:bg-slate-200 dark:before:bg-slate-700' : ''}`}>
+        {!isRoot && (
+          <div className="absolute left-[-16px] top-[24px] w-4 h-px bg-slate-200 dark:bg-slate-700"></div>
+        )}
+        <div className="flex items-center gap-3 bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm w-fit relative z-10">
+          {hasChildren && (
+            <button 
+              onClick={() => toggleNode(node.id)}
+              className="w-5 h-5 flex items-center justify-center bg-slate-100 dark:bg-slate-700 rounded text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+            >
+              <span className="material-symbols-outlined text-[14px]">
+                {isExpanded ? 'remove' : 'add'}
+              </span>
+            </button>
+          )}
+          {!hasChildren && <div className="w-5"></div>}
+          <img src={node.avatar} alt={node.name} className="w-10 h-10 rounded-full" />
+          <div>
+            <p className="text-sm font-medium text-slate-900 dark:text-white">{node.name}</p>
+            <span className={`inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-medium ${
+              node.level.includes('合伙人') ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+              'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+            }`}>
+              {node.level}
+            </span>
+          </div>
+        </div>
+        {hasChildren && isExpanded && (
+          <div className="flex flex-col">
+            {node.children.map((child: any) => renderTreeNode(child))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const teamMembers = [
     { id: 'U99201', name: '王五', phone: '137****1122', level: '普通用户', joinDate: '2023-10-26', type: '直推', contribution: 150.00 },
@@ -64,10 +148,10 @@ export default function AdminPartnerDetails() {
         </div>
         <div className="flex gap-3">
           <button 
-            onClick={() => navigate(`/admin/partners/level/${partner.id}`)}
+            onClick={() => navigate(`/admin/partners/edit/${partner.id}`)}
             className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm"
           >
-            调整等级
+            编辑合伙人
           </button>
           <button 
             onClick={() => navigate(`/admin/users/${partner.id}`)}
@@ -118,22 +202,28 @@ export default function AdminPartnerDetails() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-700 mb-6">
+      <div className="flex border-b border-slate-200 dark:border-slate-700 mb-6 overflow-x-auto">
         <button 
           onClick={() => setActiveTab('basic')}
-          className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'basic' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
+          className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'basic' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
         >
           合伙人信息
         </button>
         <button 
+          onClick={() => setActiveTab('network')}
+          className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'network' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
+        >
+          关系图谱
+        </button>
+        <button 
           onClick={() => setActiveTab('team')}
-          className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'team' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
+          className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'team' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
         >
           团队成员 ({partner.teamSize})
         </button>
         <button 
           onClick={() => setActiveTab('commission')}
-          className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'commission' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
+          className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'commission' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
         >
           佣金明细
         </button>
@@ -197,6 +287,15 @@ export default function AdminPartnerDetails() {
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">已提现金额</p>
               <p className="text-sm font-medium text-slate-900 dark:text-white">¥{partner.withdrawnAmount.toFixed(2)}</p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab Content: Network Graph */}
+      {activeTab === 'network' && (
+        <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-8 overflow-x-auto">
+          <div className="min-w-max">
+            {renderTreeNode(networkTree, true)}
           </div>
         </div>
       )}
