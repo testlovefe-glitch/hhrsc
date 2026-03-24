@@ -6,6 +6,24 @@ export default function AdminCreateGroupBuy() {
   const [showProductModal, setShowProductModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [freeRule, setFreeRule] = useState('random'); // random, leader
+  const [rebateRules, setRebateRules] = useState([
+    { id: 1, personIndex: 1, percentage: 20 },
+    { id: 2, personIndex: 2, percentage: 20 },
+    { id: 3, personIndex: 3, percentage: 60 },
+  ]);
+
+  const addRebateRule = () => {
+    const nextIndex = rebateRules.length > 0 ? Math.max(...rebateRules.map(r => r.personIndex)) + 1 : 1;
+    setRebateRules([...rebateRules, { id: Date.now(), personIndex: nextIndex, percentage: 0 }]);
+  };
+
+  const removeRebateRule = (id: number) => {
+    setRebateRules(rebateRules.filter(r => r.id !== id));
+  };
+
+  const updateRebateRule = (id: number, field: string, value: number) => {
+    setRebateRules(rebateRules.map(r => r.id === id ? { ...r, [field]: value } : r));
+  };
 
   return (
     <div className="max-w-4xl mx-auto pb-12">
@@ -152,6 +170,60 @@ export default function AdminCreateGroupBuy() {
                   />
                   <span className="text-sm text-slate-700 dark:text-slate-300">团长免单</span>
                 </label>
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-slate-200 dark:border-slate-700">
+              <div className="flex justify-between items-center mb-4">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                  团购免单返利设置 <span className="text-red-500">*</span>
+                </label>
+                <button 
+                  onClick={addRebateRule}
+                  className="px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-sm font-medium hover:bg-primary hover:text-white transition-colors flex items-center gap-1"
+                >
+                  <span className="material-symbols-outlined text-[16px]">add</span>
+                  添加返利规则
+                </button>
+              </div>
+              <p className="text-xs text-slate-500 mb-4">配置推荐第N人参与团购时的返利比例。例如：推荐第1人返利20%，推荐第2人返利20%，推荐第3人返利60%。</p>
+              
+              <div className="space-y-3">
+                {rebateRules.map((rule, index) => (
+                  <div key={rule.id} className="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-slate-600 dark:text-slate-400">推荐第</span>
+                      <input 
+                        type="number" 
+                        value={rule.personIndex}
+                        onChange={(e) => updateRebateRule(rule.id, 'personIndex', parseInt(e.target.value) || 0)}
+                        className="w-16 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 text-sm outline-none text-center focus:border-primary"
+                      />
+                      <span className="text-sm text-slate-600 dark:text-slate-400">人参与团购，返利</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input 
+                        type="number" 
+                        value={rule.percentage}
+                        onChange={(e) => updateRebateRule(rule.id, 'percentage', parseInt(e.target.value) || 0)}
+                        className="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 text-sm outline-none text-center focus:border-primary"
+                      />
+                      <span className="text-sm text-slate-600 dark:text-slate-400">%</span>
+                    </div>
+                    <button 
+                      onClick={() => removeRebateRule(rule.id)}
+                      className="ml-auto p-1 text-slate-400 hover:text-red-500 transition-colors"
+                      title="删除规则"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">delete</span>
+                    </button>
+                  </div>
+                ))}
+                {rebateRules.length === 0 && (
+                  <div className="text-center py-6 text-sm text-slate-500 border border-dashed border-slate-300 dark:border-slate-700 rounded-lg">
+                    暂无返利规则，请点击右上角添加
+                  </div>
+                )}
               </div>
             </div>
           </div>

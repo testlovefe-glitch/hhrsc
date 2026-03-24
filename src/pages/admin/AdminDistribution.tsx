@@ -72,46 +72,66 @@ export default function AdminDistribution() {
             <div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">stars</span>
-                星级合伙人晋升规则
+                星级合伙人晋升规则 (满足任一条件即可晋升)
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50">
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">一星合伙人</label>
+                <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 space-y-3">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">一星合伙人</label>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-500">直推合伙人满</span>
+                    <span className="text-sm text-slate-500">条件1：直推合伙人满</span>
                     <input type="number" defaultValue={3} className="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary" />
                     <span className="text-sm text-slate-500">人</span>
                   </div>
                 </div>
-                <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50">
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">二星合伙人</label>
+                <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 space-y-3">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">二星合伙人</label>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-500">直推一星满</span>
+                    <span className="text-sm text-slate-500">条件1：直推一星满</span>
                     <input type="number" defaultValue={3} className="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary" />
                     <span className="text-sm text-slate-500">人</span>
                   </div>
-                </div>
-                <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50">
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">三星合伙人</label>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-500">直推二星满</span>
-                    <input type="number" defaultValue={3} className="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary" />
+                    <span className="text-sm text-slate-500">条件2：直推合伙人满</span>
+                    <input type="number" defaultValue={6} className="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary" />
                     <span className="text-sm text-slate-500">人</span>
                   </div>
                 </div>
-                <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50">
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">四星合伙人</label>
+                <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 space-y-3">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">三星合伙人</label>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-500">直推三星满</span>
+                    <span className="text-sm text-slate-500">条件1：直推二星满</span>
                     <input type="number" defaultValue={3} className="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary" />
                     <span className="text-sm text-slate-500">人</span>
                   </div>
-                </div>
-                <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50">
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">五星合伙人</label>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-500">直推四星满</span>
+                    <span className="text-sm text-slate-500">条件2：直推合伙人满</span>
+                    <input type="number" defaultValue={9} className="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary" />
+                    <span className="text-sm text-slate-500">人</span>
+                  </div>
+                </div>
+                <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 space-y-3">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">四星合伙人</label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-slate-500">条件1：直推三星满</span>
                     <input type="number" defaultValue={3} className="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary" />
+                    <span className="text-sm text-slate-500">人</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-slate-500">条件2：直推合伙人满</span>
+                    <input type="number" defaultValue={12} className="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary" />
+                    <span className="text-sm text-slate-500">人</span>
+                  </div>
+                </div>
+                <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50 space-y-3">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">五星合伙人</label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-slate-500">条件1：直推四星满</span>
+                    <input type="number" defaultValue={3} className="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary" />
+                    <span className="text-sm text-slate-500">人</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-slate-500">条件2：直推合伙人满</span>
+                    <input type="number" defaultValue={15} className="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary" />
                     <span className="text-sm text-slate-500">人</span>
                   </div>
                 </div>
@@ -126,7 +146,7 @@ export default function AdminDistribution() {
                 <span className="material-symbols-outlined text-primary">military_tech</span>
                 销售级别门槛 (月销售额)
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <div className="bg-orange-50 dark:bg-orange-900/10 p-4 rounded-xl border border-orange-100 dark:border-orange-900/20">
                   <label className="block text-sm font-medium text-orange-800 dark:text-orange-300 mb-2">铜牌门槛</label>
                   <div className="flex items-center gap-2">
@@ -146,6 +166,20 @@ export default function AdminDistribution() {
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-yellow-600 dark:text-yellow-400">¥</span>
                     <input type="number" defaultValue={50000} className="w-full bg-white dark:bg-slate-800 border border-yellow-300 dark:border-yellow-800/30 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-yellow-500" />
+                  </div>
+                </div>
+                <div className="bg-indigo-50 dark:bg-indigo-900/10 p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/20">
+                  <label className="block text-sm font-medium text-indigo-800 dark:text-indigo-300 mb-2">铂金门槛</label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-indigo-600 dark:text-indigo-400">¥</span>
+                    <input type="number" defaultValue={100000} className="w-full bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-800/30 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-indigo-500" />
+                  </div>
+                </div>
+                <div className="bg-violet-50 dark:bg-violet-900/10 p-4 rounded-xl border border-violet-100 dark:border-violet-900/20">
+                  <label className="block text-sm font-medium text-violet-800 dark:text-violet-300 mb-2">钻石门槛</label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-violet-600 dark:text-violet-400">¥</span>
+                    <input type="number" defaultValue={200000} className="w-full bg-white dark:bg-slate-800 border border-violet-200 dark:border-violet-800/30 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-violet-500" />
                   </div>
                 </div>
               </div>
@@ -242,7 +276,15 @@ export default function AdminDistribution() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">分配权重配置</label>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-violet-600 dark:text-violet-500 font-medium">钻石系数</span>
+                      <input type="number" defaultValue={5} className="w-16 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-primary text-center" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-indigo-600 dark:text-indigo-500 font-medium">铂金系数</span>
+                      <input type="number" defaultValue={4} className="w-16 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-primary text-center" />
+                    </div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-yellow-600 dark:text-yellow-500 font-medium">金牌系数</span>
                       <input type="number" defaultValue={3} className="w-16 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-primary text-center" />
