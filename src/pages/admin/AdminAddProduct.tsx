@@ -7,6 +7,19 @@ export default function AdminAddProduct() {
   const [specs, setSpecs] = useState([
     { id: 1, name: '', price: '', originalPrice: '', stock: '' }
   ]);
+  const [images, setImages] = useState<string[]>([]);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const newImages = Array.from(files).map(file => URL.createObjectURL(file));
+      setImages(prev => [...prev, ...newImages].slice(0, 5)); // Max 5 images
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+  };
 
   const addSpec = () => {
     setSpecs([...specs, { id: Date.now(), name: '', price: '', originalPrice: '', stock: '' }]);
@@ -252,14 +265,37 @@ export default function AdminAddProduct() {
           </div>
           <div className="p-6">
             <div className="flex flex-wrap gap-4">
-              {/* Upload Button Placeholder */}
-              <button 
-                type="button"
-                className="w-24 h-24 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg flex flex-col items-center justify-center text-slate-500 hover:text-primary hover:border-primary hover:bg-primary/5 transition-colors"
-              >
-                <span className="material-symbols-outlined text-2xl mb-1">add_photo_alternate</span>
-                <span className="text-xs">上传图片</span>
-              </button>
+              {images.map((img, index) => (
+                <div key={index} className="relative w-24 h-24 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden group">
+                  <img src={img} alt={`Preview ${index}`} className="w-full h-full object-cover" />
+                  <button 
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                  >
+                    <span className="material-symbols-outlined text-[14px]">close</span>
+                  </button>
+                  {index === 0 && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-primary/80 text-white text-[10px] text-center py-0.5">
+                      主图
+                    </div>
+                  )}
+                </div>
+              ))}
+              
+              {images.length < 5 && (
+                <label className="w-24 h-24 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg flex flex-col items-center justify-center text-slate-500 hover:text-primary hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    multiple 
+                    className="hidden" 
+                    onChange={handleImageUpload}
+                  />
+                  <span className="material-symbols-outlined text-2xl mb-1">add_photo_alternate</span>
+                  <span className="text-xs">上传图片</span>
+                </label>
+              )}
             </div>
           </div>
         </div>

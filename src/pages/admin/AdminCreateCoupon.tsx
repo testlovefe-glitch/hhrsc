@@ -7,8 +7,75 @@ export default function AdminCreateCoupon() {
   const [discountType, setDiscountType] = useState('amount'); // amount, discount
   const [validityType, setValidityType] = useState('fixed'); // fixed, days
 
+  const [name, setName] = useState('');
+  const [minSpend, setMinSpend] = useState('');
+  const [discountValue, setDiscountValue] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [validDays, setValidDays] = useState('');
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
+  const handleSave = () => {
+    if (!name.trim()) {
+      showToast('请输入优惠券名称');
+      return;
+    }
+
+    const min = parseFloat(minSpend) || 0;
+    const val = parseFloat(discountValue) || 0;
+
+    if (val <= 0) {
+      showToast('优惠额度/折扣必须大于0');
+      return;
+    }
+
+    if (discountType === 'amount' && min > 0 && val >= min) {
+      showToast('减免金额必须小于使用门槛');
+      return;
+    }
+
+    if (discountType === 'discount' && (val <= 0 || val >= 10)) {
+      showToast('折扣必须在0到10之间');
+      return;
+    }
+
+    if (validityType === 'fixed') {
+      if (!startTime || !endTime) {
+        showToast('请选择完整的有效时间段');
+        return;
+      }
+      if (new Date(endTime) <= new Date(startTime)) {
+        showToast('结束时间必须晚于开始时间');
+        return;
+      }
+    } else {
+      if (!validDays || parseInt(validDays) <= 0) {
+        showToast('请输入有效的有效天数');
+        return;
+      }
+    }
+
+    showToast('优惠券创建成功');
+    setTimeout(() => {
+      navigate('/admin/marketing/coupons');
+    }, 1000);
+  };
+
   return (
     <div className="max-w-4xl mx-auto pb-12">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] bg-slate-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in">
+          <span className="material-symbols-outlined text-amber-400">info</span>
+          <span className="text-sm font-medium">{toastMessage}</span>
+        </div>
+      )}
+
       <div className="flex items-center gap-4 mb-6">
         <button 
           onClick={() => navigate('/admin/marketing/coupons')}
@@ -31,6 +98,8 @@ export default function AdminCreateCoupon() {
             </label>
             <input 
               type="text" 
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               placeholder="例如：双十一满减券" 
               className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary transition-colors"
             />
@@ -124,20 +193,38 @@ export default function AdminCreateCoupon() {
             <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700/50">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-slate-600 dark:text-slate-400">满</span>
-                <input type="number" placeholder="0" className="w-24 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary transition-colors" />
+                <input 
+                  type="number" 
+                  value={minSpend}
+                  onChange={(e) => setMinSpend(e.target.value)}
+                  placeholder="0" 
+                  className="w-24 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary transition-colors" 
+                />
                 <span className="text-sm text-slate-600 dark:text-slate-400">元可用，</span>
               </div>
               
               {discountType === 'amount' ? (
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-slate-600 dark:text-slate-400">减</span>
-                  <input type="number" placeholder="0" className="w-24 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary transition-colors" />
+                  <input 
+                    type="number" 
+                    value={discountValue}
+                    onChange={(e) => setDiscountValue(e.target.value)}
+                    placeholder="0" 
+                    className="w-24 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary transition-colors" 
+                  />
                   <span className="text-sm text-slate-600 dark:text-slate-400">元</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-slate-600 dark:text-slate-400">打</span>
-                  <input type="number" placeholder="9.5" className="w-24 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary transition-colors" />
+                  <input 
+                    type="number" 
+                    value={discountValue}
+                    onChange={(e) => setDiscountValue(e.target.value)}
+                    placeholder="9.5" 
+                    className="w-24 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary transition-colors" 
+                  />
                   <span className="text-sm text-slate-600 dark:text-slate-400">折</span>
                 </div>
               )}
@@ -222,14 +309,30 @@ export default function AdminCreateCoupon() {
               
               {validityType === 'fixed' ? (
                 <div className="flex items-center gap-2">
-                  <input type="datetime-local" className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors text-slate-500" />
+                  <input 
+                    type="datetime-local" 
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors text-slate-500" 
+                  />
                   <span className="text-slate-400">-</span>
-                  <input type="datetime-local" className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors text-slate-500" />
+                  <input 
+                    type="datetime-local" 
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors text-slate-500" 
+                  />
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-slate-600 dark:text-slate-400">领取后</span>
-                  <input type="number" placeholder="7" className="w-24 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors" />
+                  <input 
+                    type="number" 
+                    value={validDays}
+                    onChange={(e) => setValidDays(e.target.value)}
+                    placeholder="7" 
+                    className="w-24 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors" 
+                  />
                   <span className="text-sm text-slate-600 dark:text-slate-400">天内有效</span>
                 </div>
               )}
@@ -246,7 +349,7 @@ export default function AdminCreateCoupon() {
             取消
           </button>
           <button 
-            onClick={() => navigate('/admin/marketing/coupons')}
+            onClick={handleSave}
             className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm"
           >
             保存并发布

@@ -6,6 +6,19 @@ export default function AdminProducts() {
   const [activeTab, setActiveTab] = useState('list');
   const [showTagModal, setShowTagModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [tagFilter, setTagFilter] = useState('');
+
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
 
   const [products, setProducts] = useState([
     { 
@@ -77,6 +90,9 @@ export default function AdminProducts() {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [categoryForm, setCategoryForm] = useState({ id: '', name: '', sort: 1, parentId: null as string | null });
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{ id: string, type: 'product' | 'category', parentId?: string | null } | null>(null);
+
   const openTagModal = (product: any) => {
     setSelectedProduct(product);
     setTempTags([...product.tags]);
@@ -96,33 +112,48 @@ export default function AdminProducts() {
       p.id === selectedProduct.id ? { ...p, tags: tempTags } : p
     ));
     setShowTagModal(false);
+    showToast('商品标签已更新');
   };
 
   const toggleStatus = (id: string) => {
     setProducts(products.map(p => {
       if (p.id === id) {
-        return { ...p, status: p.status === '上架' ? '下架' : '上架' };
+        const newStatus = p.status === '上架' ? '下架' : '上架';
+        showToast(`商品已${newStatus}`);
+        return { ...p, status: newStatus };
       }
       return p;
     }));
   };
 
   const deleteProduct = (id: string) => {
-    if (window.confirm('确定要删除该商品吗？')) {
-      setProducts(products.filter(p => p.id !== id));
-    }
+    setItemToDelete({ id, type: 'product' });
+    setShowDeleteModal(true);
   };
 
   const deleteCategory = (id: string, parentId: string | null = null) => {
-    if (window.confirm('确定要删除该分类吗？')) {
-      if (parentId) {
+    setItemToDelete({ id, type: 'category', parentId });
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (!itemToDelete) return;
+
+    if (itemToDelete.type === 'product') {
+      setProducts(products.filter(p => p.id !== itemToDelete.id));
+      showToast('商品已删除');
+    } else if (itemToDelete.type === 'category') {
+      if (itemToDelete.parentId) {
         setCategories(categories.map(c => 
-          c.id === parentId ? { ...c, children: c.children.filter(child => child.id !== id) } : c
+          c.id === itemToDelete.parentId ? { ...c, children: c.children.filter(child => child.id !== itemToDelete.id) } : c
         ));
       } else {
-        setCategories(categories.filter(c => c.id !== id));
+        setCategories(categories.filter(c => c.id !== itemToDelete.id));
       }
+      showToast('分类已删除');
     }
+    setShowDeleteModal(false);
+    setItemToDelete(null);
   };
 
   const openCategoryModal = (category: any = null, parentId: string | null = null) => {
@@ -164,6 +195,7 @@ export default function AdminProducts() {
       }
     }
     setShowCategoryModal(false);
+    showToast(categoryForm.id ? '分类已更新' : '分类已添加');
   };
 
   const updateCategorySort = (id: string, sort: number, parentId: string | null = null) => {
@@ -178,7 +210,16 @@ export default function AdminProducts() {
         c.id === id ? { ...c, sort } : c
       ));
     }
+    showToast('排序已更新');
   };
+
+  const filteredProducts = products.filter(p => {
+    const matchesSearch = p.name.includes(searchQuery) || p.id.includes(searchQuery);
+    const matchesCategory = categoryFilter ? p.category === categoryFilter : true;
+    const matchesStatus = statusFilter ? (statusFilter === 'active' ? p.status === '上架' : p.status === '下架') : true;
+    const matchesTag = tagFilter ? p.tags.includes(tagFilter) : true;
+    return matchesSearch && matchesCategory && matchesStatus && matchesTag;
+  });
 
   return (
     <div className="max-w-7xl mx-auto pb-12">
@@ -231,25 +272,40 @@ export default function AdminProducts() {
                   <input 
                     type="text" 
                     placeholder="搜索商品名称/ID..." 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 w-64"
                   />
                 </div>
-                <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+                <select 
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+                >
                   <option value="">所有分类</option>
-                  <option value="baijiu">白酒</option>
-                  <option value="redwine">红酒</option>
-                  <option value="yangjiu">洋酒</option>
+                  <option value="白酒">白酒</option>
+                  <option value="红酒">红酒</option>
+                  <option value="洋酒">洋酒</option>
+                  <option value="养生酒">养生酒</option>
                 </select>
-                <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+                <select 
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+                >
                   <option value="">所有状态</option>
                   <option value="active">上架中</option>
                   <option value="inactive">已下架</option>
                 </select>
-                <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+                <select 
+                  value={tagFilter}
+                  onChange={(e) => setTagFilter(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+                >
                   <option value="">所有营销标签</option>
-                  <option value="flash">秒杀</option>
-                  <option value="group">团购</option>
-                  <option value="hot">热卖</option>
+                  <option value="秒杀">秒杀</option>
+                  <option value="团购">团购</option>
+                  <option value="热卖">热卖</option>
                 </select>
               </div>
             </div>
@@ -270,7 +326,7 @@ export default function AdminProducts() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                  {products.map((product) => (
+                  {filteredProducts.map((product) => (
                     <tr key={product.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                       <td className="p-4">
                         <div className="flex items-center gap-3">
@@ -524,6 +580,44 @@ export default function AdminProducts() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-sm overflow-hidden">
+            <div className="p-6">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">确认删除</h3>
+              <p className="text-slate-600 dark:text-slate-400 text-sm">
+                {itemToDelete?.type === 'product' ? '确定要删除该商品吗？此操作不可恢复。' : '确定要删除该分类吗？此操作不可恢复。'}
+              </p>
+            </div>
+            <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex justify-end gap-3">
+              <button 
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setItemToDelete(null);
+                }}
+                className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+              >
+                取消
+              </button>
+              <button 
+                onClick={confirmDelete}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
+              >
+                确认删除
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in">
+          <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+          <p>{toastMessage}</p>
         </div>
       )}
     </div>

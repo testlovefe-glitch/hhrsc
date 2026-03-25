@@ -5,6 +5,21 @@ export default function AdminFinance() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('withdrawals');
 
+  // Filter states
+  const [withdrawalStatus, setWithdrawalStatus] = useState('all');
+  const [withdrawalSearch, setWithdrawalSearch] = useState('');
+  
+  const [transactionType, setTransactionType] = useState('all');
+  const [transactionDate, setTransactionDate] = useState('');
+  const [transactionSearch, setTransactionSearch] = useState('');
+
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
   // Mock Stats
   const stats = {
     totalRevenue: 1258000.00,
@@ -31,11 +46,26 @@ export default function AdminFinance() {
 
   const handleApprove = (id: string) => {
     setWithdrawals(prev => prev.map(w => w.id === id ? { ...w, status: 'approved' } : w));
+    showToast('提现申请已通过');
   };
 
   const handleReject = (id: string) => {
     setWithdrawals(prev => prev.map(w => w.id === id ? { ...w, status: 'rejected', reason: '管理员拒绝' } : w));
+    showToast('提现申请已拒绝');
   };
+
+  const filteredWithdrawals = withdrawals.filter(w => {
+    const matchesStatus = withdrawalStatus === 'all' ? true : w.status === withdrawalStatus;
+    const matchesSearch = w.name.includes(withdrawalSearch) || w.id.includes(withdrawalSearch);
+    return matchesStatus && matchesSearch;
+  });
+
+  const filteredTransactions = transactions.filter(t => {
+    const matchesType = transactionType === 'all' ? true : (transactionType === 'income' ? t.amount > 0 : t.amount < 0);
+    const matchesDate = transactionDate ? t.date.startsWith(transactionDate) : true;
+    const matchesSearch = t.id.includes(transactionSearch) || t.orderId.includes(transactionSearch);
+    return matchesType && matchesDate && matchesSearch;
+  });
 
   return (
     <div className="max-w-7xl mx-auto pb-12">
@@ -116,7 +146,11 @@ export default function AdminFinance() {
         {activeTab === 'withdrawals' && (
           <div className="overflow-x-auto">
             <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex gap-4 bg-slate-50 dark:bg-slate-900/50">
-              <select className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+              <select 
+                value={withdrawalStatus}
+                onChange={(e) => setWithdrawalStatus(e.target.value)}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+              >
                 <option value="all">全部状态</option>
                 <option value="pending">待审核</option>
                 <option value="approved">已打款</option>
@@ -125,6 +159,8 @@ export default function AdminFinance() {
               <input 
                 type="text" 
                 placeholder="搜索用户姓名/手机号/提现单号" 
+                value={withdrawalSearch}
+                onChange={(e) => setWithdrawalSearch(e.target.value)}
                 className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none w-64"
               />
             </div>
@@ -141,7 +177,7 @@ export default function AdminFinance() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {withdrawals.map((item) => (
+                {filteredWithdrawals.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                     <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.id}</td>
                     <td className="p-4">
@@ -206,18 +242,26 @@ export default function AdminFinance() {
         {activeTab === 'transactions' && (
           <div className="overflow-x-auto">
             <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex gap-4 bg-slate-50 dark:bg-slate-900/50">
-              <select className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+              <select 
+                value={transactionType}
+                onChange={(e) => setTransactionType(e.target.value)}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+              >
                 <option value="all">全部类型</option>
                 <option value="income">收入</option>
                 <option value="expense">支出</option>
               </select>
               <input 
                 type="date" 
-                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+                value={transactionDate}
+                onChange={(e) => setTransactionDate(e.target.value)}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none text-slate-500"
               />
               <input 
                 type="text" 
                 placeholder="搜索流水号/订单号" 
+                value={transactionSearch}
+                onChange={(e) => setTransactionSearch(e.target.value)}
                 className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none w-64"
               />
             </div>
@@ -235,7 +279,7 @@ export default function AdminFinance() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {transactions.map((item) => (
+                {filteredTransactions.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                     <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.id}</td>
                     <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.orderId}</td>
@@ -272,6 +316,14 @@ export default function AdminFinance() {
           </div>
         )}
       </div>
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in">
+          <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+          <p>{toastMessage}</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -3,11 +3,37 @@ import { useState } from 'react';
 export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState('basic');
 
+  // Operation Logs State
+  const [logDate, setLogDate] = useState('');
+  const [logOperator, setLogOperator] = useState('');
+  const [logType, setLogType] = useState('');
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
+  const logs = [
+    { id: 1, date: '2026-03-23 14:20:05', operator: 'finance_01', type: '审核提现', detail: '通过了用户(ID:1001)的提现申请，金额: 500.00元', ip: '192.168.1.100' },
+    { id: 2, date: '2026-03-23 10:15:22', operator: 'admin', type: '修改等级', detail: '将用户(ID:2055)的合伙人等级从一星调整为二星', ip: '10.0.0.5' },
+  ];
+
+  const filteredLogs = logs.filter(log => {
+    const matchesDate = logDate ? log.date.startsWith(logDate) : true;
+    const matchesOperator = logOperator ? log.operator === logOperator : true;
+    const matchesType = logType ? log.type === logType : true;
+    return matchesDate && matchesOperator && matchesType;
+  });
+
   return (
     <div className="max-w-7xl mx-auto pb-12">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">系统设置</h1>
-        <button className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm flex items-center gap-2">
+        <button 
+          onClick={() => showToast('设置保存成功')}
+          className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm flex items-center gap-2"
+        >
           <span className="material-symbols-outlined text-[18px]">save</span>
           保存设置
         </button>
@@ -181,17 +207,30 @@ export default function AdminSettings() {
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-md font-medium text-slate-900 dark:text-white">操作日志</h3>
                     <div className="flex gap-2">
-                      <input type="date" className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary" />
-                      <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary">
+                      <input 
+                        type="date" 
+                        value={logDate}
+                        onChange={(e) => setLogDate(e.target.value)}
+                        className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary text-slate-500" 
+                      />
+                      <select 
+                        value={logOperator}
+                        onChange={(e) => setLogOperator(e.target.value)}
+                        className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary"
+                      >
                         <option value="">全部操作人</option>
                         <option value="admin">admin</option>
                         <option value="finance_01">finance_01</option>
                       </select>
-                      <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary">
+                      <select 
+                        value={logType}
+                        onChange={(e) => setLogType(e.target.value)}
+                        className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary"
+                      >
                         <option value="">全部操作类型</option>
-                        <option value="withdraw">审核提现</option>
-                        <option value="level">修改等级</option>
-                        <option value="pool">调整分红池</option>
+                        <option value="审核提现">审核提现</option>
+                        <option value="修改等级">修改等级</option>
+                        <option value="调整分红池">调整分红池</option>
                       </select>
                     </div>
                   </div>
@@ -207,20 +246,15 @@ export default function AdminSettings() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                        <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">2026-03-23 14:20:05</td>
-                          <td className="p-4 text-sm text-slate-900 dark:text-white">finance_01</td>
-                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">审核提现</td>
-                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">通过了用户(ID:1001)的提现申请，金额: 500.00元</td>
-                          <td className="p-4 text-sm text-slate-500">192.168.1.100</td>
-                        </tr>
-                        <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">2026-03-23 10:15:22</td>
-                          <td className="p-4 text-sm text-slate-900 dark:text-white">admin</td>
-                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">修改等级</td>
-                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">将用户(ID:2055)的合伙人等级从一星调整为二星</td>
-                          <td className="p-4 text-sm text-slate-500">10.0.0.5</td>
-                        </tr>
+                        {filteredLogs.map(log => (
+                          <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{log.date}</td>
+                            <td className="p-4 text-sm text-slate-900 dark:text-white">{log.operator}</td>
+                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{log.type}</td>
+                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{log.detail}</td>
+                            <td className="p-4 text-sm text-slate-500">{log.ip}</td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
@@ -463,6 +497,14 @@ export default function AdminSettings() {
 
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in">
+          <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+          <p>{toastMessage}</p>
+        </div>
+      )}
     </div>
   );
 }

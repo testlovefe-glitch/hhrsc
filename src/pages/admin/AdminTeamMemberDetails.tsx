@@ -102,6 +102,45 @@ export default function AdminTeamMemberDetails() {
         </div>
       </div>
 
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden mb-6">
+        <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">关系链溯源</h2>
+        </div>
+        <div className="p-6">
+          <div className="flex items-center gap-4 overflow-x-auto pb-2">
+            {/* Top Partner */}
+            <div className="flex flex-col items-center min-w-[100px]">
+              <img src="https://ui-avatars.com/api/?name=平台&background=random" alt="平台" className="w-12 h-12 rounded-full mb-2" />
+              <span className="text-sm font-medium text-slate-900 dark:text-white">平台</span>
+              <span className="text-xs text-slate-500">直营</span>
+            </div>
+            
+            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700 min-w-[40px] relative">
+              <span className="material-symbols-outlined absolute right-[-8px] top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-600 text-[16px]">chevron_right</span>
+            </div>
+
+            {/* Referrer */}
+            <div className="flex flex-col items-center min-w-[100px]">
+              <img src="https://ui-avatars.com/api/?name=张三&background=random" alt="张三" className="w-12 h-12 rounded-full mb-2" />
+              <span className="text-sm font-medium text-slate-900 dark:text-white">张三</span>
+              <span className="text-xs text-amber-600 bg-amber-100 dark:bg-amber-500/20 px-2 py-0.5 rounded mt-1">高级合伙人</span>
+            </div>
+
+            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700 min-w-[40px] relative">
+              <span className="material-symbols-outlined absolute right-[-8px] top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-600 text-[16px]">chevron_right</span>
+            </div>
+
+            {/* Current Member */}
+            <div className="flex flex-col items-center min-w-[100px] relative">
+              <div className="absolute -top-2 -right-2 bg-primary text-white text-[10px] px-1.5 py-0.5 rounded-full">当前</div>
+              <img src={`https://ui-avatars.com/api/?name=${member.name}&background=random`} alt={member.name} className="w-12 h-12 rounded-full mb-2 ring-2 ring-primary ring-offset-2 dark:ring-offset-slate-800" />
+              <span className="text-sm font-medium text-slate-900 dark:text-white">{member.name}</span>
+              <span className="text-xs text-slate-600 bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded mt-1">{member.level}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 flex items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-500 flex items-center justify-center">

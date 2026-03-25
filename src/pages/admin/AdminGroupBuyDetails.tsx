@@ -1,8 +1,13 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function AdminGroupBuyDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
+
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
   // Mock data
   const groupRecords = [
@@ -43,6 +48,14 @@ export default function AdminGroupBuyDetails() {
     }
   ];
 
+  const filteredRecords = groupRecords.filter(record => {
+    const matchesSearch = record.leader.name.includes(searchQuery) || 
+                          record.leader.phone.includes(searchQuery) ||
+                          record.members.some(m => m.name.includes(searchQuery) || m.phone.includes(searchQuery));
+    const matchesStatus = statusFilter === '' ? true : record.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
   return (
     <div className="max-w-7xl mx-auto pb-12">
       <div className="flex items-center gap-4 mb-6">
@@ -67,10 +80,16 @@ export default function AdminGroupBuyDetails() {
               <input 
                 type="text" 
                 placeholder="搜索团长/团员..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 w-64"
               />
             </div>
-            <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+            <select 
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+            >
               <option value="">所有状态</option>
               <option value="success">拼团成功</option>
               <option value="pending">拼团中</option>
@@ -93,7 +112,7 @@ export default function AdminGroupBuyDetails() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {groupRecords.map((record) => (
+              {filteredRecords.map((record) => (
                 <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                   <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{record.id}</td>
                   <td className="p-4">

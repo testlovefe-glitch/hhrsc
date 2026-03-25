@@ -10,6 +10,14 @@ export default function AdminOrderDetails() {
   const [remark, setRemark] = useState('');
   const [showShipModal, setShowShipModal] = useState(false);
   const [showRefundModal, setShowRefundModal] = useState(false);
+  const [shippingCompany, setShippingCompany] = useState('顺丰速运');
+  const [trackingNo, setTrackingNo] = useState('');
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
 
   useEffect(() => {
     // Simulate API call
@@ -69,6 +77,31 @@ export default function AdminOrderDetails() {
       remarks: [{ time: new Date().toLocaleString(), user: '管理员', content: remark }, ...order.remarks]
     });
     setRemark('');
+    showToast('备注添加成功');
+  };
+
+  const handleShipOrder = () => {
+    if (!trackingNo.trim()) {
+      showToast('请输入物流单号');
+      return;
+    }
+    
+    setOrder({
+      ...order,
+      status: '已发货',
+      logistics: {
+        company: shippingCompany,
+        trackingNo: trackingNo,
+        status: '已发货',
+        history: [
+          { time: new Date().toLocaleString(), desc: '商家已发货，等待快递揽收' },
+          ...order.logistics.history
+        ]
+      }
+    });
+    
+    setShowShipModal(false);
+    showToast('发货成功');
   };
 
   return (
@@ -330,6 +363,14 @@ export default function AdminOrderDetails() {
       </div>
 
       {/* Modals */}
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] bg-slate-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in">
+          <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+          <span className="text-sm font-medium">{toastMessage}</span>
+        </div>
+      )}
+
       {showShipModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md shadow-xl border border-slate-200 dark:border-slate-700">
@@ -337,21 +378,31 @@ export default function AdminOrderDetails() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">物流公司</label>
-                <select className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary transition-colors">
-                  <option>顺丰速运</option>
-                  <option>中通快递</option>
-                  <option>圆通速递</option>
-                  <option>京东物流</option>
+                <select 
+                  value={shippingCompany}
+                  onChange={(e) => setShippingCompany(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary transition-colors"
+                >
+                  <option value="顺丰速运">顺丰速运</option>
+                  <option value="中通快递">中通快递</option>
+                  <option value="圆通速递">圆通速递</option>
+                  <option value="京东物流">京东物流</option>
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">物流单号</label>
-                <input type="text" placeholder="请输入物流单号" className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary transition-colors" />
+                <input 
+                  type="text" 
+                  value={trackingNo}
+                  onChange={(e) => setTrackingNo(e.target.value)}
+                  placeholder="请输入物流单号" 
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-primary transition-colors" 
+                />
               </div>
             </div>
             <div className="mt-6 flex justify-end gap-3">
               <button onClick={() => setShowShipModal(false)} className="px-4 py-2 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">取消</button>
-              <button onClick={() => setShowShipModal(false)} className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">确认发货</button>
+              <button onClick={handleShipOrder} className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">确认发货</button>
             </div>
           </div>
         </div>

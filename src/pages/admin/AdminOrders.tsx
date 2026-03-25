@@ -5,6 +5,22 @@ export default function AdminOrders() {
   const navigate = useNavigate();
   const [showExportModal, setShowExportModal] = useState(false);
 
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [referrerFilter, setReferrerFilter] = useState('');
+  const [minAmount, setMinAmount] = useState('');
+  const [maxAmount, setMaxAmount] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
+
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
   const orders = [
     { 
       id: 'ORD-20231024-001', 
@@ -57,7 +73,35 @@ export default function AdminOrders() {
       salesCommission: 100.00,
       dividendPool: 30.00
     },
+    { 
+      id: 'ORD-20231022-004', 
+      type: '普通',
+      user: '赵六', 
+      phone: '136****3456', 
+      product: '洋河 蓝色经典 52度 500ml x1',
+      productImg: 'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80',
+      amount: 299.00, 
+      paidAmount: 299.00,
+      paymentMethod: '微信支付',
+      paymentTime: '2023-10-22 10:15',
+      status: '退款/售后', 
+      date: '2023-10-22 10:10',
+      referrer: '无',
+      salesCommission: 0.00,
+      dividendPool: 0.00
+    },
   ];
+
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch = order.id.includes(searchQuery) || order.phone.includes(searchQuery) || order.user.includes(searchQuery);
+    const matchesType = typeFilter ? order.type === typeFilter : true;
+    const matchesStatus = statusFilter ? order.status === statusFilter : true;
+    const matchesReferrer = referrerFilter ? order.referrer.includes(referrerFilter) : true;
+    const matchesMinAmount = minAmount ? order.paidAmount >= parseFloat(minAmount) : true;
+    const matchesMaxAmount = maxAmount ? order.paidAmount <= parseFloat(maxAmount) : true;
+    const matchesDate = dateFilter ? order.date.startsWith(dateFilter) : true;
+    return matchesSearch && matchesType && matchesStatus && matchesReferrer && matchesMinAmount && matchesMaxAmount && matchesDate;
+  });
 
   return (
     <div className="max-w-7xl mx-auto pb-12">
@@ -81,43 +125,62 @@ export default function AdminOrders() {
               <input 
                 type="text" 
                 placeholder="搜索订单号/手机号..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 w-64"
               />
             </div>
-            <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+            <select 
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+            >
               <option value="">订单类型</option>
-              <option value="normal">普通订单</option>
-              <option value="flash">秒杀订单</option>
-              <option value="group">团购订单</option>
+              <option value="普通">普通订单</option>
+              <option value="秒杀">秒杀订单</option>
+              <option value="团购">团购订单</option>
             </select>
-            <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+            <select 
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+            >
               <option value="">所有状态</option>
-              <option value="pending_payment">待付款</option>
-              <option value="pending_shipment">待发货</option>
-              <option value="shipped">已发货</option>
-              <option value="completed">已完成</option>
-              <option value="cancelled">已取消</option>
+              <option value="待付款">待付款</option>
+              <option value="待发货">待发货</option>
+              <option value="已发货">已发货</option>
+              <option value="已完成">已完成</option>
+              <option value="退款/售后">退款/售后</option>
+              <option value="已取消">已取消</option>
             </select>
             <input 
               type="text" 
               placeholder="推荐人ID"
+              value={referrerFilter}
+              onChange={(e) => setReferrerFilter(e.target.value)}
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none w-32"
             />
             <div className="flex items-center gap-2">
               <input 
                 type="number" 
                 placeholder="最低金额"
+                value={minAmount}
+                onChange={(e) => setMinAmount(e.target.value)}
                 className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none w-24"
               />
               <span className="text-slate-400">-</span>
               <input 
                 type="number" 
                 placeholder="最高金额"
+                value={maxAmount}
+                onChange={(e) => setMaxAmount(e.target.value)}
                 className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none w-24"
               />
             </div>
             <input 
               type="date" 
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none text-slate-500"
             />
           </div>
@@ -139,7 +202,7 @@ export default function AdminOrders() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {orders.map((order) => (
+              {filteredOrders.map((order) => (
                 <tr key={order.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                   <td className="p-4">
                     <p className="text-sm font-medium text-slate-900 dark:text-white">{order.id}</p>
@@ -179,6 +242,7 @@ export default function AdminOrders() {
                       order.status === '待发货' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
                       order.status === '已发货' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
                       order.status === '已完成' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                      order.status === '退款/售后' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
                       order.status === '已取消' ? 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300' :
                       'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400'
                     }`}>
@@ -199,6 +263,11 @@ export default function AdminOrders() {
                         {(order.status === '待发货' || order.status === '已发货') && (
                           <button className="text-red-600 dark:text-red-400 text-xs font-medium hover:underline">
                             退款
+                          </button>
+                        )}
+                        {order.status === '退款/售后' && (
+                          <button className="text-red-600 dark:text-red-400 text-xs font-medium hover:underline">
+                            处理售后
                           </button>
                         )}
                         <button className="text-slate-500 dark:text-slate-400 text-xs font-medium hover:underline">
@@ -257,7 +326,10 @@ export default function AdminOrders() {
                 取消
               </button>
               <button 
-                onClick={() => setShowExportModal(false)}
+                onClick={() => {
+                  setShowExportModal(false);
+                  showToast('报表导出成功');
+                }}
                 className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2"
               >
                 <span className="material-symbols-outlined text-[18px]">download</span>
@@ -265,6 +337,14 @@ export default function AdminOrders() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in">
+          <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+          <p>{toastMessage}</p>
         </div>
       )}
     </div>

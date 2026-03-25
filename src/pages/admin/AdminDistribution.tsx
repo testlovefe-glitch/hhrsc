@@ -5,6 +5,18 @@ export default function AdminDistribution() {
   const [showSettleModal, setShowSettleModal] = useState(false);
   const [settleType, setSettleType] = useState('partner_1');
 
+  // Filter states for earnings records
+  const [earningsSearch, setEarningsSearch] = useState('');
+  const [earningsType, setEarningsType] = useState('');
+  const [earningsDate, setEarningsDate] = useState('');
+
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
   // Mock Data for Transactions
   const injectRecords = [
     { id: 'INJ-001', time: '2023-10-25 14:30:22', source: '订单 ORD-20231025-001', amount: '+1000.00', pool: '合伙人分红池 (均分至5星级)' },
@@ -23,6 +35,13 @@ export default function AdminDistribution() {
     { id: 'ERN-002', user: '王五', phone: '139****5678', type: '销售提成', amount: '+299.80', time: '2023-10-25 15:10:05', desc: '订单 ORD-20231025-002 (20%)' },
     { id: 'ERN-003', user: '赵六', phone: '137****9012', type: '分红收益', amount: '+400.00', time: '2023-10-01 00:00:00', desc: '9月一星合伙人分红' },
   ];
+
+  const filteredEarnings = earningRecords.filter(record => {
+    const matchesSearch = record.user.includes(earningsSearch) || record.phone.includes(earningsSearch);
+    const matchesType = earningsType ? record.type === earningsType : true;
+    const matchesDate = earningsDate ? record.time.startsWith(earningsDate) : true;
+    return matchesSearch && matchesType && matchesDate;
+  });
 
   return (
     <div className="max-w-7xl mx-auto pb-12">
@@ -68,6 +87,15 @@ export default function AdminDistribution() {
         {/* Tab Content: Level Config */}
         {activeTab === 'level-config' && (
           <div className="p-6 space-y-8">
+            <div className="flex justify-end mb-4">
+              <button 
+                onClick={() => showToast('配置保存成功')}
+                className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[18px]">save</span>
+                保存配置
+              </button>
+            </div>
             {/* 星级设置 */}
             <div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
@@ -403,16 +431,27 @@ export default function AdminDistribution() {
                   <input 
                     type="text" 
                     placeholder="搜索用户昵称/手机号..." 
+                    value={earningsSearch}
+                    onChange={(e) => setEarningsSearch(e.target.value)}
                     className="pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 w-64"
                   />
                 </div>
-                <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+                <select 
+                  value={earningsType}
+                  onChange={(e) => setEarningsType(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+                >
                   <option value="">所有收益类型</option>
-                  <option value="recommend">推荐奖励</option>
-                  <option value="sales">销售提成</option>
-                  <option value="dividend">分红收益</option>
+                  <option value="推荐奖励">推荐奖励</option>
+                  <option value="销售提成">销售提成</option>
+                  <option value="分红收益">分红收益</option>
                 </select>
-                <input type="date" className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary text-slate-500" />
+                <input 
+                  type="date" 
+                  value={earningsDate}
+                  onChange={(e) => setEarningsDate(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary text-slate-500" 
+                />
               </div>
             </div>
 
@@ -429,7 +468,7 @@ export default function AdminDistribution() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                  {earningRecords.map((record) => (
+                  {filteredEarnings.map((record) => (
                     <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                       <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
                       <td className="p-4">
@@ -518,13 +557,24 @@ export default function AdminDistribution() {
                 取消
               </button>
               <button 
-                onClick={() => setShowSettleModal(false)}
+                onClick={() => {
+                  setShowSettleModal(false);
+                  showToast('结算成功，分红已发放');
+                }}
                 className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
               >
                 确认结算
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in">
+          <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+          <p>{toastMessage}</p>
         </div>
       )}
     </div>

@@ -18,10 +18,32 @@ export default function AdminUsers() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.includes(searchQuery) || user.phone.includes(searchQuery) || user.id.includes(searchQuery);
+    const matchesLevel = filterLevel ? user.partnerLevel === filterLevel : true;
+    const matchesStatus = filterStatus ? user.status === filterStatus : true;
+    
+    // Simple date filtering (assuming joinDate is YYYY-MM-DD HH:mm:ss)
+    const userDate = user.joinDate.split(' ')[0];
+    const matchesStartDate = startDate ? userDate >= startDate : true;
+    const matchesEndDate = endDate ? userDate <= endDate : true;
+
+    return matchesSearch && matchesLevel && matchesStatus && matchesStartDate && matchesEndDate;
+  });
+
   const toggleStatus = (id: string) => {
     setUsers(users.map(user => {
       if (user.id === id) {
-        return { ...user, status: user.status === 'normal' ? 'frozen' : 'normal' };
+        const newStatus = user.status === 'normal' ? 'frozen' : 'normal';
+        showToast(`用户状态已更新为: ${newStatus === 'normal' ? '正常' : '冻结'}`);
+        return { ...user, status: newStatus };
       }
       return user;
     }));
@@ -114,7 +136,7 @@ export default function AdminUsers() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {users.map((user) => (
+              {filteredUsers.map((user) => (
                 <tr key={user.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                   <td className="p-4">
                     <div className="flex items-center gap-3">
@@ -199,6 +221,14 @@ export default function AdminUsers() {
           </div>
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in">
+          <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+          <p>{toastMessage}</p>
+        </div>
+      )}
     </div>
   );
 }

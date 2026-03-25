@@ -7,6 +7,7 @@ export default function AdminEditPartner() {
 
   const [partner, setPartner] = useState<any>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     // Mock API call
@@ -28,7 +29,8 @@ export default function AdminEditPartner() {
 
   const handleResetReferrer = () => {
     // Logic to reset referrer
-    alert('推荐关系已重置，并记录操作日志。');
+    setToastMessage('推荐关系已重置，并记录操作日志。');
+    setTimeout(() => setToastMessage(''), 3000);
     setShowResetConfirm(false);
   };
 
@@ -216,6 +218,13 @@ export default function AdminEditPartner() {
               </div>
             </div>
           </div>
+        </div>
+      )}
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-4 right-4 z-50 bg-slate-800 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-bottom-5">
+          <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+          <span className="text-sm font-medium">{toastMessage}</span>
         </div>
       )}
     </div>

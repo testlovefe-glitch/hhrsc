@@ -7,6 +7,13 @@ export default function AdminMarketing() {
   const [showDataModal, setShowDataModal] = useState(false);
   const [selectedFlashSale, setSelectedFlashSale] = useState<any>(null);
 
+  // Filter states
+  const [flashSaleSearch, setFlashSaleSearch] = useState('');
+  const [flashSaleStatus, setFlashSaleStatus] = useState('all');
+  
+  const [groupBuySearch, setGroupBuySearch] = useState('');
+  const [groupBuyStatus, setGroupBuyStatus] = useState('all');
+
   const flashSales = [
     { 
       id: 1, 
@@ -121,6 +128,18 @@ export default function AdminMarketing() {
     }
   ];
 
+  const filteredFlashSales = flashSales.filter(item => {
+    const matchesSearch = item.name.includes(flashSaleSearch) || item.productName.includes(flashSaleSearch);
+    const matchesStatus = flashSaleStatus === 'all' ? true : item.status === flashSaleStatus;
+    return matchesSearch && matchesStatus;
+  });
+
+  const filteredGroupBuys = groupBuys.filter(item => {
+    const matchesSearch = item.name.includes(groupBuySearch) || item.productName.includes(groupBuySearch);
+    const matchesStatus = groupBuyStatus === 'all' ? true : item.status === groupBuyStatus;
+    return matchesSearch && matchesStatus;
+  });
+
   return (
     <div className="max-w-7xl mx-auto pb-12">
       <div className="flex items-center justify-between mb-6">
@@ -165,6 +184,25 @@ export default function AdminMarketing() {
         {/* Tab Content: Flash Sale */}
         {activeTab === 'flash-sale' && (
           <div className="overflow-x-auto">
+            <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex gap-4 bg-slate-50 dark:bg-slate-900/50">
+              <select 
+                value={flashSaleStatus}
+                onChange={(e) => setFlashSaleStatus(e.target.value)}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+              >
+                <option value="all">全部状态</option>
+                <option value="active">进行中</option>
+                <option value="upcoming">未开始</option>
+                <option value="ended">已结束</option>
+              </select>
+              <input 
+                type="text" 
+                placeholder="搜索活动名称/商品名称" 
+                value={flashSaleSearch}
+                onChange={(e) => setFlashSaleSearch(e.target.value)}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none w-64"
+              />
+            </div>
             <table className="w-full text-left border-collapse whitespace-nowrap">
               <thead>
                 <tr className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">
@@ -178,7 +216,7 @@ export default function AdminMarketing() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {flashSales.map((item) => (
+                {filteredFlashSales.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                     <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.name}</td>
                     <td className="p-4">
@@ -303,6 +341,25 @@ export default function AdminMarketing() {
         {/* Tab Content: Group Buy */}
         {activeTab === 'group-buy' && (
           <div className="overflow-x-auto">
+            <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex gap-4 bg-slate-50 dark:bg-slate-900/50">
+              <select 
+                value={groupBuyStatus}
+                onChange={(e) => setGroupBuyStatus(e.target.value)}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+              >
+                <option value="all">全部状态</option>
+                <option value="active">进行中</option>
+                <option value="upcoming">未开始</option>
+                <option value="ended">已结束</option>
+              </select>
+              <input 
+                type="text" 
+                placeholder="搜索活动名称/商品名称" 
+                value={groupBuySearch}
+                onChange={(e) => setGroupBuySearch(e.target.value)}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none w-64"
+              />
+            </div>
             <table className="w-full text-left border-collapse whitespace-nowrap">
               <thead>
                 <tr className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">
@@ -317,7 +374,7 @@ export default function AdminMarketing() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {groupBuys.map((item) => (
+                {filteredGroupBuys.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                     <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.name}</td>
                     <td className="p-4">

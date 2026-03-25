@@ -18,10 +18,37 @@ export default function AdminPartners() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
+  const filteredPartners = partners.filter(partner => {
+    const matchesSearch = partner.name.includes(searchQuery) || partner.phone.includes(searchQuery) || partner.id.includes(searchQuery);
+    
+    let matchesLevel = true;
+    if (levelFilter === 'junior') matchesLevel = partner.level === '初级合伙人';
+    else if (levelFilter === 'middle') matchesLevel = partner.level === '中级合伙人';
+    else if (levelFilter === 'senior') matchesLevel = partner.level === '高级合伙人';
+
+    let matchesStatus = true;
+    if (statusFilter === 'active') matchesStatus = partner.status === '正常';
+    else if (statusFilter === 'frozen') matchesStatus = partner.status === '冻结';
+
+    const matchesStartDate = startDate ? partner.joinDate >= startDate : true;
+    const matchesEndDate = endDate ? partner.joinDate <= endDate : true;
+
+    return matchesSearch && matchesLevel && matchesStatus && matchesStartDate && matchesEndDate;
+  });
+
   const toggleStatus = (id: string) => {
     setPartners(partners.map(p => {
       if (p.id === id) {
-        return { ...p, status: p.status === '正常' ? '冻结' : '正常' };
+        const newStatus = p.status === '正常' ? '冻结' : '正常';
+        showToast(`合伙人状态已更新为: ${newStatus}`);
+        return { ...p, status: newStatus };
       }
       return p;
     }));
@@ -119,7 +146,7 @@ export default function AdminPartners() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {partners.map((partner) => (
+              {filteredPartners.map((partner) => (
                 <tr key={partner.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                   <td className="p-4">
                     <div className="flex items-center gap-3">
@@ -196,6 +223,14 @@ export default function AdminPartners() {
           </div>
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in">
+          <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+          <p>{toastMessage}</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -9,6 +9,11 @@ export default function AdminUserDetails() {
   const [activeTab, setActiveTab] = useState('basic');
   const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({ 'root': true });
 
+  // Filter states
+  const [incomeFilter, setIncomeFilter] = useState('all');
+  const [orderFilter, setOrderFilter] = useState('all');
+  const [afterSalesFilter, setAfterSalesFilter] = useState('all');
+
   const toggleNode = (id: string) => {
     setExpandedNodes(prev => ({ ...prev, [id]: !prev[id] }));
   };
@@ -120,6 +125,21 @@ export default function AdminUserDetails() {
       { id: 'U88294', name: '钱七', level: '初级合伙人', joinDate: '2023-03-01', referrer: '李四', contribution: 300.00 },
     ]
   };
+
+  const filteredIncomeRecords = incomeRecords.filter(record => {
+    if (incomeFilter === 'all') return true;
+    return record.type === incomeFilter;
+  });
+
+  const filteredOrders = recentOrders.filter(order => {
+    if (orderFilter === 'all') return true;
+    return order.status === orderFilter;
+  });
+
+  const filteredAfterSales = afterSales.filter(item => {
+    if (afterSalesFilter === 'all') return true;
+    return item.status === afterSalesFilter;
+  });
 
   useEffect(() => {
     // Mock API call
@@ -276,6 +296,16 @@ export default function AdminUserDetails() {
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
             <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
               <h2 className="text-lg font-semibold text-slate-900 dark:text-white">近期收益明细</h2>
+              <select 
+                value={incomeFilter}
+                onChange={(e) => setIncomeFilter(e.target.value)}
+                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+              >
+                <option value="all">全部类型</option>
+                <option value="直推奖励">直推奖励</option>
+                <option value="间推奖励">间推奖励</option>
+                <option value="团队分红">团队分红</option>
+              </select>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
@@ -290,7 +320,7 @@ export default function AdminUserDetails() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                  {incomeRecords.map((record) => (
+                  {filteredIncomeRecords.map((record) => (
                     <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                       <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{record.id}</td>
                       <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.type}</td>
@@ -325,7 +355,19 @@ export default function AdminUserDetails() {
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
           <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">订单与购买记录</h2>
-            <span className="text-sm text-slate-500">累计消费: ¥4896.00</span>
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-slate-500">累计消费: ¥4896.00</span>
+              <select 
+                value={orderFilter}
+                onChange={(e) => setOrderFilter(e.target.value)}
+                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+              >
+                <option value="all">全部状态</option>
+                <option value="已完成">已完成</option>
+                <option value="已发货">已发货</option>
+                <option value="待发货">待发货</option>
+              </select>
+            </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -340,7 +382,7 @@ export default function AdminUserDetails() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {recentOrders.map((order) => (
+                {filteredOrders.map((order) => (
                   <tr key={order.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                     <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{order.id}</td>
                     <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{order.products}</td>
@@ -373,8 +415,17 @@ export default function AdminUserDetails() {
       {/* Tab Content: After-sales */}
       {activeTab === 'aftersales' && (
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-          <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+          <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">售后记录</h2>
+            <select 
+              value={afterSalesFilter}
+              onChange={(e) => setAfterSalesFilter(e.target.value)}
+              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+            >
+              <option value="all">全部状态</option>
+              <option value="处理中">处理中</option>
+              <option value="已完成">已完成</option>
+            </select>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -390,7 +441,7 @@ export default function AdminUserDetails() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {afterSales.map((item) => (
+                {filteredAfterSales.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                     <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.id}</td>
                     <td className="p-4 text-sm text-slate-500 dark:text-slate-400">

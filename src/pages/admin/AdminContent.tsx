@@ -28,9 +28,109 @@ export default function AdminContent() {
 
   const [showBannerModal, setShowBannerModal] = useState(false);
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
+  
+  // Search States
+  const [bannerSearch, setBannerSearch] = useState('');
+  const [announcementSearch, setAnnouncementSearch] = useState('');
+
+  // New Banner State
+  const [newBanner, setNewBanner] = useState({
+    title: '',
+    type: 'carousel',
+    link: '',
+    imageUrl: 'https://images.unsplash.com/photo-1504675099198-7023dd85f5a3?auto=format&fit=crop&q=80&w=800'
+  });
+
+  // New Announcement State
+  const [newAnnouncement, setNewAnnouncement] = useState({
+    title: '',
+    content: '',
+    publishNow: false
+  });
+
+  // Toast State
+  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({
+    show: false,
+    message: '',
+    type: 'success'
+  });
+
+  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
+  };
+
+  const handleSaveBanner = () => {
+    if (!newBanner.title.trim()) {
+      showToast('请输入Banner标题', 'error');
+      return;
+    }
+    
+    const banner = {
+      id: Date.now(),
+      ...newBanner,
+      status: 'active',
+      sort: banners.length + 1
+    };
+    
+    setBanners([...banners, banner]);
+    setShowBannerModal(false);
+    setNewBanner({ title: '', type: 'carousel', link: '', imageUrl: 'https://images.unsplash.com/photo-1504675099198-7023dd85f5a3?auto=format&fit=crop&q=80&w=800' });
+    showToast('Banner添加成功');
+  };
+
+  const handleSaveAnnouncement = () => {
+    if (!newAnnouncement.title.trim()) {
+      showToast('请输入公告标题', 'error');
+      return;
+    }
+    if (!newAnnouncement.content.trim()) {
+      showToast('请输入公告内容', 'error');
+      return;
+    }
+
+    const announcement = {
+      id: Date.now(),
+      title: newAnnouncement.title,
+      content: newAnnouncement.content,
+      status: newAnnouncement.publishNow ? 'published' : 'draft',
+      publishTime: newAnnouncement.publishNow ? new Date().toLocaleString() : '-'
+    };
+
+    setAnnouncements([announcement, ...announcements]);
+    setShowAnnouncementModal(false);
+    setNewAnnouncement({ title: '', content: '', publishNow: false });
+    showToast(newAnnouncement.publishNow ? '公告发布成功' : '公告已保存为草稿');
+  };
+
+  const handleSaveRecruitConfig = () => {
+    if (!recruitConfig.title.trim()) {
+      showToast('请输入招募页主标题', 'error');
+      return;
+    }
+    showToast('招募页配置保存成功');
+  };
+
+  const filteredBanners = banners.filter(banner => 
+    banner.title.includes(bannerSearch)
+  );
+
+  const filteredAnnouncements = announcements.filter(ann => 
+    ann.title.includes(announcementSearch) || ann.content.includes(announcementSearch)
+  );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className={`fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg text-white ${toast.type === 'success' ? 'bg-emerald-500' : 'bg-red-500'} animate-in fade-in slide-in-from-top-4`}>
+          <span className="material-symbols-outlined text-xl">
+            {toast.type === 'success' ? 'check_circle' : 'error'}
+          </span>
+          <span className="font-medium">{toast.message}</span>
+        </div>
+      )}
+
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">内容管理</h1>
       </div>
@@ -76,13 +176,22 @@ export default function AdminContent() {
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
           <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Banner列表</h2>
-            <button 
-              onClick={() => setShowBannerModal(true)}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 text-sm"
-            >
-              <span className="material-symbols-outlined text-[20px]">add</span>
-              添加Banner
-            </button>
+            <div className="flex items-center gap-4">
+              <input 
+                type="text" 
+                placeholder="搜索Banner标题" 
+                value={bannerSearch}
+                onChange={(e) => setBannerSearch(e.target.value)}
+                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none w-64"
+              />
+              <button 
+                onClick={() => setShowBannerModal(true)}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 text-sm"
+              >
+                <span className="material-symbols-outlined text-[20px]">add</span>
+                添加Banner
+              </button>
+            </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -98,7 +207,7 @@ export default function AdminContent() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-                {banners.map((banner) => (
+                {filteredBanners.map((banner) => (
                   <tr key={banner.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                     <td className="p-4">
                       <img src={banner.imageUrl} alt={banner.title} className="w-24 h-12 object-cover rounded-lg border border-slate-200 dark:border-slate-700" />
@@ -141,13 +250,22 @@ export default function AdminContent() {
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
           <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">公告列表</h2>
-            <button 
-              onClick={() => setShowAnnouncementModal(true)}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 text-sm"
-            >
-              <span className="material-symbols-outlined text-[20px]">add</span>
-              发布公告
-            </button>
+            <div className="flex items-center gap-4">
+              <input 
+                type="text" 
+                placeholder="搜索公告标题/内容" 
+                value={announcementSearch}
+                onChange={(e) => setAnnouncementSearch(e.target.value)}
+                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none w-64"
+              />
+              <button 
+                onClick={() => setShowAnnouncementModal(true)}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 text-sm"
+              >
+                <span className="material-symbols-outlined text-[20px]">add</span>
+                发布公告
+              </button>
+            </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -161,7 +279,7 @@ export default function AdminContent() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-                {announcements.map((announcement) => (
+                {filteredAnnouncements.map((announcement) => (
                   <tr key={announcement.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                     <td className="p-4 text-sm text-slate-900 dark:text-white font-medium">{announcement.title}</td>
                     <td className="p-4 text-sm text-slate-600 dark:text-slate-400 max-w-xs truncate">{announcement.content}</td>
@@ -252,7 +370,10 @@ export default function AdminContent() {
             </div>
 
             <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-end">
-              <button className="px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium">
+              <button 
+                onClick={handleSaveRecruitConfig}
+                className="px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
+              >
                 保存配置
               </button>
             </div>
@@ -260,26 +381,42 @@ export default function AdminContent() {
         </div>
       )}
 
-      {/* Add Banner Modal (Placeholder) */}
+      {/* Add Banner Modal */}
       {showBannerModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md p-6 shadow-xl">
             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">添加Banner</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">标题</label>
-                <input type="text" className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent" placeholder="如：春季促销" />
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">标题 <span className="text-red-500">*</span></label>
+                <input 
+                  type="text" 
+                  value={newBanner.title}
+                  onChange={(e) => setNewBanner({...newBanner, title: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent focus:ring-2 focus:ring-primary/50 outline-none" 
+                  placeholder="如：春季促销" 
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">类型</label>
-                <select className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent">
+                <select 
+                  value={newBanner.type}
+                  onChange={(e) => setNewBanner({...newBanner, type: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent focus:ring-2 focus:ring-primary/50 outline-none appearance-none"
+                >
                   <option value="carousel">首页轮播</option>
                   <option value="popup">弹窗广告</option>
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">跳转链接</label>
-                <input type="text" className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent" placeholder="如：/products" />
+                <input 
+                  type="text" 
+                  value={newBanner.link}
+                  onChange={(e) => setNewBanner({...newBanner, link: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent focus:ring-2 focus:ring-primary/50 outline-none" 
+                  placeholder="如：/products" 
+                />
               </div>
             </div>
             <div className="mt-6 flex justify-end gap-3">
@@ -290,7 +427,7 @@ export default function AdminContent() {
                 取消
               </button>
               <button 
-                onClick={() => setShowBannerModal(false)}
+                onClick={handleSaveBanner}
                 className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
               >
                 保存
@@ -300,22 +437,40 @@ export default function AdminContent() {
         </div>
       )}
 
-      {/* Add Announcement Modal (Placeholder) */}
+      {/* Add Announcement Modal */}
       {showAnnouncementModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-lg p-6 shadow-xl">
             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">发布公告</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">公告标题</label>
-                <input type="text" className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent" placeholder="输入公告标题" />
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">公告标题 <span className="text-red-500">*</span></label>
+                <input 
+                  type="text" 
+                  value={newAnnouncement.title}
+                  onChange={(e) => setNewAnnouncement({...newAnnouncement, title: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent focus:ring-2 focus:ring-primary/50 outline-none" 
+                  placeholder="输入公告标题" 
+                />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">公告内容</label>
-                <textarea rows={4} className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent resize-none" placeholder="输入公告详细内容"></textarea>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">公告内容 <span className="text-red-500">*</span></label>
+                <textarea 
+                  rows={4} 
+                  value={newAnnouncement.content}
+                  onChange={(e) => setNewAnnouncement({...newAnnouncement, content: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent resize-none focus:ring-2 focus:ring-primary/50 outline-none" 
+                  placeholder="输入公告详细内容"
+                ></textarea>
               </div>
               <div className="flex items-center gap-2">
-                <input type="checkbox" id="publishNow" className="rounded border-slate-300 text-primary focus:ring-primary" />
+                <input 
+                  type="checkbox" 
+                  id="publishNow" 
+                  checked={newAnnouncement.publishNow}
+                  onChange={(e) => setNewAnnouncement({...newAnnouncement, publishNow: e.target.checked})}
+                  className="rounded border-slate-300 text-primary focus:ring-primary" 
+                />
                 <label htmlFor="publishNow" className="text-sm text-slate-700 dark:text-slate-300">立即发布</label>
               </div>
             </div>
@@ -327,7 +482,7 @@ export default function AdminContent() {
                 取消
               </button>
               <button 
-                onClick={() => setShowAnnouncementModal(false)}
+                onClick={handleSaveAnnouncement}
                 className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
               >
                 保存

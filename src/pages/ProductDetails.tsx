@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 export default function ProductDetails() {
   const navigate = useNavigate();
   const [showShareModal, setShowShareModal] = useState(false);
-  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   // Buy Modal State
   const [showBuyModal, setShowBuyModal] = useState(false);
@@ -14,8 +14,13 @@ export default function ProductDetails() {
   const [paymentMethod, setPaymentMethod] = useState('wechat');
 
   const handleAddToCart = () => {
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 2000);
+    setToastMessage('已添加到购物车');
+    setTimeout(() => setToastMessage(''), 2000);
+  };
+
+  const showCustomToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 2000);
   };
 
   return (
@@ -281,13 +286,13 @@ export default function ProductDetails() {
               </button>
             </div>
             <div className="grid grid-cols-4 gap-4">
-              <button className="flex flex-col items-center gap-2" onClick={() => { alert('海报已生成并保存到相册'); setShowShareModal(false); }}>
+              <button className="flex flex-col items-center gap-2" onClick={() => { showCustomToast('海报已生成并保存到相册'); setShowShareModal(false); }}>
                 <div className="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-500">
                   <span className="material-symbols-outlined">image</span>
                 </div>
                 <span className="text-xs text-slate-600 dark:text-slate-400">生成海报</span>
               </button>
-              <button className="flex flex-col items-center gap-2" onClick={() => { alert('链接已复制到剪贴板'); setShowShareModal(false); }}>
+              <button className="flex flex-col items-center gap-2" onClick={() => { showCustomToast('链接已复制到剪贴板'); setShowShareModal(false); }}>
                 <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-500">
                   <span className="material-symbols-outlined">link</span>
                 </div>
@@ -311,10 +316,10 @@ export default function ProductDetails() {
       )}
 
       {/* Toast Notification */}
-      {showToast && (
+      {toastMessage && (
         <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[110] bg-black/80 text-white px-6 py-3 rounded-lg flex items-center gap-2 animate-in fade-in zoom-in duration-200">
           <span className="material-symbols-outlined text-green-400">check_circle</span>
-          <span className="text-sm font-medium">已添加到购物车</span>
+          <span className="text-sm font-medium">{toastMessage}</span>
         </div>
       )}
     </div>

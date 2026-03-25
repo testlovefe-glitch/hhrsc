@@ -6,12 +6,22 @@ export default function AdminCouponRecords() {
   const { id } = useParams();
   const [showDistributeModal, setShowDistributeModal] = useState(false);
 
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+
   // Mock data
   const records = [
     { id: 'REC-001', user: '张三', phone: '138****1234', claimTime: '2023-10-24 14:30', useTime: '2023-10-25 09:15', status: '已使用', orderId: 'ORD-20231025-001' },
     { id: 'REC-002', user: '李四', phone: '139****5678', claimTime: '2023-10-24 15:20', useTime: '-', status: '未使用', orderId: '-' },
     { id: 'REC-003', user: '王五', phone: '137****9012', claimTime: '2023-10-23 08:45', useTime: '-', status: '已过期', orderId: '-' },
   ];
+
+  const filteredRecords = records.filter(record => {
+    const matchesSearch = record.user.includes(searchQuery) || record.phone.includes(searchQuery);
+    const matchesStatus = statusFilter === '' ? true : record.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="max-w-7xl mx-auto pb-12">
@@ -46,14 +56,20 @@ export default function AdminCouponRecords() {
               <input 
                 type="text" 
                 placeholder="搜索用户昵称/手机号..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 w-64"
               />
             </div>
-            <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+            <select 
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+            >
               <option value="">所有状态</option>
-              <option value="unused">未使用</option>
-              <option value="used">已使用</option>
-              <option value="expired">已过期</option>
+              <option value="未使用">未使用</option>
+              <option value="已使用">已使用</option>
+              <option value="已过期">已过期</option>
             </select>
           </div>
         </div>
@@ -72,7 +88,7 @@ export default function AdminCouponRecords() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {records.map((record) => (
+              {filteredRecords.map((record) => (
                 <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                   <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{record.id}</td>
                   <td className="p-4">

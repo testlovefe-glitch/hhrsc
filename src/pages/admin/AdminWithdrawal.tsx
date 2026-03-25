@@ -7,14 +7,24 @@ export default function AdminWithdrawal() {
   const [auditAction, setAuditAction] = useState<'pass' | 'reject'>('pass');
   const [rejectReason, setRejectReason] = useState('');
 
-  // Mock Data
-  const withdrawals = [
-    { id: 'WD-20231025-001', user: { name: '张三', phone: '138****1234' }, amount: 500.00, method: '微信零钱', fee: 0, actualAmount: 500.00, time: '2023-10-25 14:30:22', status: 'pending' },
-    { id: 'WD-20231025-002', user: { name: '李四', phone: '139****5678' }, amount: 1200.00, method: '银行卡', fee: 12.00, actualAmount: 1188.00, time: '2023-10-25 10:15:00', status: 'pending' },
-    { id: 'WD-20231024-003', user: { name: '王五', phone: '137****9012' }, amount: 300.00, method: '微信零钱', fee: 0, actualAmount: 300.00, time: '2023-10-24 16:45:10', status: 'passed' },
+  // Filter states for audit tab
+  const [auditSearch, setAuditSearch] = useState('');
+  const [auditStatus, setAuditStatus] = useState('');
+
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
+  const [withdrawals, setWithdrawals] = useState([
+    { id: 'WD-20231025-001', user: { name: '张三', phone: '138****1234' }, amount: 500.00, method: '微信零钱', fee: 0, actualAmount: 500.00, time: '2023-10-25 14:30:22', status: 'pending', reason: '' },
+    { id: 'WD-20231025-002', user: { name: '李四', phone: '139****5678' }, amount: 1200.00, method: '银行卡', fee: 12.00, actualAmount: 1188.00, time: '2023-10-25 10:15:00', status: 'pending', reason: '' },
+    { id: 'WD-20231024-003', user: { name: '王五', phone: '137****9012' }, amount: 300.00, method: '微信零钱', fee: 0, actualAmount: 300.00, time: '2023-10-24 16:45:10', status: 'passed', reason: '' },
     { id: 'WD-20231024-004', user: { name: '赵六', phone: '136****3456' }, amount: 800.00, method: '银行卡', fee: 8.00, actualAmount: 792.00, time: '2023-10-24 09:20:00', status: 'rejected', reason: '银行卡信息不匹配' },
     { id: 'WD-20231023-005', user: { name: '钱七', phone: '135****7890' }, amount: 2000.00, method: '微信零钱', fee: 0, actualAmount: 2000.00, time: '2023-10-23 11:10:00', status: 'failed', reason: '微信商户余额不足' },
-  ];
+  ]);
 
   const paymentRecords = [
     { id: 'PAY-001', withdrawalId: 'WD-20231024-003', user: '王五', amount: 300.00, method: '微信企业付款', time: '2023-10-24 17:00:00', status: 'success', reason: '-' },
@@ -33,6 +43,35 @@ export default function AdminWithdrawal() {
     setRejectReason('');
     setShowAuditModal(true);
   };
+
+  const handleAuditConfirm = () => {
+    if (!selectedRecord) return;
+    
+    if (auditAction === 'reject' && !rejectReason.trim()) {
+      showToast('请输入拒绝原因');
+      return;
+    }
+
+    setWithdrawals(prev => prev.map(w => {
+      if (w.id === selectedRecord.id) {
+        return {
+          ...w,
+          status: auditAction === 'pass' ? 'passed' : 'rejected',
+          reason: auditAction === 'reject' ? rejectReason : ''
+        };
+      }
+      return w;
+    }));
+
+    setShowAuditModal(false);
+    showToast(auditAction === 'pass' ? '审核已通过并打款' : '审核已拒绝');
+  };
+
+  const filteredWithdrawals = withdrawals.filter(record => {
+    const matchesSearch = record.user.name.includes(auditSearch) || record.user.phone.includes(auditSearch);
+    const matchesStatus = auditStatus ? record.status === auditStatus : true;
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="max-w-7xl mx-auto pb-12">
@@ -79,10 +118,16 @@ export default function AdminWithdrawal() {
                   <input 
                     type="text" 
                     placeholder="搜索申请人/手机号..." 
+                    value={auditSearch}
+                    onChange={(e) => setAuditSearch(e.target.value)}
                     className="pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 w-64"
                   />
                 </div>
-                <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+                <select 
+                  value={auditStatus}
+                  onChange={(e) => setAuditStatus(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+                >
                   <option value="">所有状态</option>
                   <option value="pending">待审核</option>
                   <option value="passed">审核通过</option>
@@ -108,7 +153,7 @@ export default function AdminWithdrawal() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                  {withdrawals.map((record) => (
+                  {filteredWithdrawals.map((record) => (
                     <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                       <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
                       <td className="p-4">
@@ -419,7 +464,7 @@ export default function AdminWithdrawal() {
                 取消
               </button>
               <button 
-                onClick={() => setShowAuditModal(false)}
+                onClick={handleAuditConfirm}
                 className={`px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors ${
                   auditAction === 'pass' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-red-500 hover:bg-red-600'
                 }`}
@@ -428,6 +473,16 @@ export default function AdminWithdrawal() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in">
+          <span className={`material-symbols-outlined ${toastMessage.includes('请') ? 'text-amber-400' : 'text-emerald-400'}`}>
+            {toastMessage.includes('请') ? 'warning' : 'check_circle'}
+          </span>
+          <p>{toastMessage}</p>
         </div>
       )}
     </div>

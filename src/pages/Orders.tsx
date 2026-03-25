@@ -96,6 +96,28 @@ export default function Orders() {
           </div>
         </Link>
 
+        <Link to="/order/4" className="block rounded-xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800 opacity-90">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-medium text-slate-400">订单号: 827390982</span>
+            <span className="text-sm font-semibold text-red-500">退款/售后</span>
+          </div>
+          <div className="flex gap-4">
+            <div className="h-20 w-20 shrink-0 bg-slate-100 dark:bg-slate-800 rounded-lg bg-center bg-no-repeat bg-cover" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=800&auto=format&fit=crop')" }}></div>
+            <div className="flex flex-col flex-1 min-w-0">
+              <p className="text-slate-900 dark:text-slate-100 text-sm font-bold truncate">飞天茅台 53度</p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">500ml, 酱香型白酒</p>
+              <div className="flex items-end justify-between mt-auto">
+                <p className="text-slate-900 dark:text-slate-100 text-base font-bold">¥2999.00</p>
+                <p className="text-slate-400 text-xs">x1</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-slate-50 dark:border-slate-800">
+            <button className="px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">查看进度</button>
+            <button className="px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">联系客服</button>
+          </div>
+        </Link>
+
         <div className="flex flex-col items-center justify-center py-8 text-slate-400">
           <span className="text-xs">没有更多订单了</span>
         </div>

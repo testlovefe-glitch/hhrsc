@@ -4,6 +4,10 @@ import { useNavigate } from 'react-router-dom';
 export default function AdminCoupons() {
   const navigate = useNavigate();
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+
   const coupons = [
     { 
       id: 1, 
@@ -43,6 +47,13 @@ export default function AdminCoupons() {
     },
   ];
 
+  const filteredCoupons = coupons.filter(coupon => {
+    const matchesSearch = coupon.name.includes(searchQuery);
+    const matchesType = typeFilter ? coupon.type === typeFilter : true;
+    const matchesStatus = statusFilter ? coupon.status === statusFilter : true;
+    return matchesSearch && matchesType && matchesStatus;
+  });
+
   return (
     <div className="max-w-7xl mx-auto pb-12">
       <div className="flex items-center justify-between mb-6">
@@ -73,16 +84,26 @@ export default function AdminCoupons() {
               <input 
                 type="text" 
                 placeholder="搜索优惠券名称..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 w-64"
               />
             </div>
-            <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+            <select 
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+            >
               <option value="">所有类型</option>
-              <option value="platform">平台通用</option>
-              <option value="product">商品券</option>
-              <option value="new_user">新人券</option>
+              <option value="平台通用">平台通用</option>
+              <option value="商品券">商品券</option>
+              <option value="新人券">新人券</option>
             </select>
-            <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+            <select 
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+            >
               <option value="">所有状态</option>
               <option value="active">发放中</option>
               <option value="ended">已结束</option>
@@ -107,7 +128,7 @@ export default function AdminCoupons() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {coupons.map((item) => (
+              {filteredCoupons.map((item) => (
                 <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                   <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.name}</td>
                   <td className="p-4 text-sm text-slate-600 dark:text-slate-300">

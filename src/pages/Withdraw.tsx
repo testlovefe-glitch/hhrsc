@@ -162,11 +162,12 @@ export default function Withdraw() {
                 <div>
                   <p className="text-sm font-bold">支付宝提现</p>
                   <p className="text-[10px] text-slate-400">2026年03月05日 • 18:45</p>
+                  <p className="text-[10px] text-red-500 mt-0.5">原因: 账号信息不匹配</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-bold">¥1,000.00</p>
-                <p className="text-[10px] text-red-500 font-semibold uppercase">失败</p>
+                <p className="text-sm font-bold text-slate-400 line-through">¥1,000.00</p>
+                <p className="text-[10px] text-red-500 font-semibold uppercase">审核拒绝</p>
               </div>
             </div>
           </div>

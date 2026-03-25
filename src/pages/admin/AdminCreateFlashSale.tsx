@@ -5,6 +5,34 @@ export default function AdminCreateFlashSale() {
   const navigate = useNavigate();
   const [showProductModal, setShowProductModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 2000);
+  };
+
+  const handleSave = () => {
+    if (!startTime || !endTime) {
+      showToast('请选择活动时间段');
+      return;
+    }
+    if (new Date(startTime) >= new Date(endTime)) {
+      showToast('结束时间必须晚于开始时间');
+      return;
+    }
+    if (!selectedProduct) {
+      showToast('请选择商品');
+      return;
+    }
+    
+    showToast('保存成功');
+    setTimeout(() => {
+      navigate('/admin/marketing');
+    }, 1000);
+  };
 
   return (
     <div className="max-w-4xl mx-auto pb-12">
@@ -38,9 +66,19 @@ export default function AdminCreateFlashSale() {
                 活动时间段 <span className="text-red-500">*</span>
               </label>
               <div className="flex items-center gap-2">
-                <input type="datetime-local" className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors text-slate-500" />
+                <input 
+                  type="datetime-local" 
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors text-slate-500" 
+                />
                 <span className="text-slate-400">-</span>
-                <input type="datetime-local" className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors text-slate-500" />
+                <input 
+                  type="datetime-local" 
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary transition-colors text-slate-500" 
+                />
               </div>
             </div>
           </div>
@@ -155,13 +193,21 @@ export default function AdminCreateFlashSale() {
             取消
           </button>
           <button 
-            onClick={() => navigate('/admin/marketing')}
+            onClick={handleSave}
             className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm"
           >
             保存并发布
           </button>
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[110] bg-black/80 text-white px-6 py-3 rounded-lg flex items-center gap-2 animate-in fade-in zoom-in duration-200">
+          <span className="material-symbols-outlined text-green-400">info</span>
+          <span className="text-sm font-medium">{toastMessage}</span>
+        </div>
+      )}
 
       {/* Product Selection Modal */}
       {showProductModal && (

@@ -9,6 +9,10 @@ export default function AdminPartnerDetails() {
   const [activeTab, setActiveTab] = useState('basic');
   const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({ 'root': true });
 
+  // Filter states
+  const [teamFilter, setTeamFilter] = useState('all');
+  const [commissionFilter, setCommissionFilter] = useState('all');
+
   const toggleNode = (id: string) => {
     setExpandedNodes(prev => ({ ...prev, [id]: !prev[id] }));
   };
@@ -105,6 +109,20 @@ export default function AdminPartnerDetails() {
     { id: 'C003', orderId: 'ORD-20231024-120', buyerName: '孙八', buyerPhone: '135****7788', orderAmount: 199.00, type: '间推佣金', rate: '5%', amount: 9.95, date: '2023-10-24 09:15:00' },
     { id: 'C004', orderId: 'ORD-20231023-045', buyerName: '钱七', buyerPhone: '139****5566', orderAmount: 899.00, type: '间推佣金', rate: '5%', amount: 44.95, date: '2023-10-23 18:20:00' },
   ];
+
+  const filteredTeamMembers = teamMembers.filter(member => {
+    if (teamFilter === 'all') return true;
+    if (teamFilter === 'direct') return member.type === '直推';
+    if (teamFilter === 'indirect') return member.type === '间推';
+    return true;
+  });
+
+  const filteredCommissions = commissions.filter(comm => {
+    if (commissionFilter === 'all') return true;
+    if (commissionFilter === 'direct') return comm.type === '直推佣金';
+    if (commissionFilter === 'team') return comm.type === '间推佣金';
+    return true;
+  });
 
   useEffect(() => {
     // Mock API call
@@ -305,7 +323,11 @@ export default function AdminPartnerDetails() {
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
           <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">团队成员列表</h2>
-            <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+            <select 
+              value={teamFilter}
+              onChange={(e) => setTeamFilter(e.target.value)}
+              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+            >
               <option value="all">全部成员</option>
               <option value="direct">直推成员 (45)</option>
               <option value="indirect">间推成员 (83)</option>
@@ -324,7 +346,7 @@ export default function AdminPartnerDetails() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {teamMembers.map(member => (
+                {filteredTeamMembers.map(member => (
                   <tr key={member.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
@@ -371,7 +393,11 @@ export default function AdminPartnerDetails() {
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
           <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">佣金明细</h2>
-            <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+            <select 
+              value={commissionFilter}
+              onChange={(e) => setCommissionFilter(e.target.value)}
+              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+            >
               <option value="all">全部类型</option>
               <option value="direct">直推佣金</option>
               <option value="team">团队分红</option>
@@ -392,7 +418,7 @@ export default function AdminPartnerDetails() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {commissions.map(commission => (
+                {filteredCommissions.map(commission => (
                   <tr key={commission.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                     <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{commission.orderId}</td>
                     <td className="p-4">
