@@ -24,7 +24,7 @@ export default function AdminMarketing() {
       originalPrice: 2999.00,
       stock: 45,
       totalStock: 100,
-      status: 'active', 
+      status: '进行中', 
       startTime: '2023-11-01 10:00', 
       endTime: '2023-11-02 23:59',
       stats: { participants: 1250, orders: 55, amount: 82445.00, soldOutTime: '-' }
@@ -38,7 +38,7 @@ export default function AdminMarketing() {
       originalPrice: 1499.00,
       stock: 200,
       totalStock: 200,
-      status: 'upcoming', 
+      status: '未开始', 
       startTime: '2023-11-05 00:00', 
       endTime: '2023-11-10 23:59',
       stats: { participants: 0, orders: 0, amount: 0.00, soldOutTime: '-' }
@@ -52,7 +52,7 @@ export default function AdminMarketing() {
       originalPrice: 489.00,
       stock: 0,
       totalStock: 500,
-      status: 'ended', 
+      status: '已结束', 
       startTime: '2023-09-28 00:00', 
       endTime: '2023-09-30 23:59',
       stats: { participants: 8500, orders: 500, amount: 179500.00, soldOutTime: '2023-09-28 14:23:05' }
@@ -70,7 +70,7 @@ export default function AdminMarketing() {
       freeRule: '团长免单',
       startTime: '2023-10-01 00:00',
       endTime: '2023-10-31 23:59',
-      status: 'active'
+      status: '进行中'
     },
     {
       id: 2,
@@ -82,7 +82,7 @@ export default function AdminMarketing() {
       freeRule: '随机免单一员',
       startTime: '2023-11-01 00:00',
       endTime: '2023-11-11 23:59',
-      status: 'upcoming'
+      status: '未开始'
     },
     {
       id: 3,
@@ -94,7 +94,7 @@ export default function AdminMarketing() {
       freeRule: '随机免单一员',
       startTime: '2023-09-01 00:00',
       endTime: '2023-09-30 23:59',
-      status: 'ended'
+      status: '已结束'
     }
   ];
 
@@ -191,9 +191,9 @@ export default function AdminMarketing() {
                 className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
               >
                 <option value="all">全部状态</option>
-                <option value="active">进行中</option>
-                <option value="upcoming">未开始</option>
-                <option value="ended">已结束</option>
+                <option value="进行中">进行中</option>
+                <option value="未开始">未开始</option>
+                <option value="已结束">已结束</option>
               </select>
               <input 
                 type="text" 
@@ -243,11 +243,11 @@ export default function AdminMarketing() {
                     </td>
                     <td className="p-4">
                       <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        item.status === 'active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                        item.status === 'upcoming' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                        item.status === '进行中' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        item.status === '未开始' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
                         'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
                       }`}>
-                        {item.status === 'active' ? '进行中' : item.status === 'upcoming' ? '未开始' : '已结束'}
+                        {item.status}
                       </span>
                     </td>
                     <td className="p-4 text-right">
@@ -348,9 +348,9 @@ export default function AdminMarketing() {
                 className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
               >
                 <option value="all">全部状态</option>
-                <option value="active">进行中</option>
-                <option value="upcoming">未开始</option>
-                <option value="ended">已结束</option>
+                <option value="进行中">进行中</option>
+                <option value="未开始">未开始</option>
+                <option value="已结束">已结束</option>
               </select>
               <input 
                 type="text" 
@@ -398,11 +398,11 @@ export default function AdminMarketing() {
                     </td>
                     <td className="p-4">
                       <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        item.status === 'active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                        item.status === 'upcoming' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                        item.status === '进行中' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        item.status === '未开始' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
                         'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
                       }`}>
-                        {item.status === 'active' ? '进行中' : item.status === 'upcoming' ? '未开始' : '已结束'}
+                        {item.status}
                       </span>
                     </td>
                     <td className="p-4 text-right">

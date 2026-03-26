@@ -19,7 +19,7 @@ export default function AdminCoupons() {
       claimed: 4520, 
       used: 1200,
       validity: '领取后7天有效',
-      status: 'active' 
+      status: '发放中' 
     },
     { 
       id: 2, 
@@ -31,7 +31,7 @@ export default function AdminCoupons() {
       claimed: 5000, 
       used: 4800,
       validity: '2023-10-01 至 2023-10-31',
-      status: 'ended' 
+      status: '已结束' 
     },
     { 
       id: 3, 
@@ -43,7 +43,7 @@ export default function AdminCoupons() {
       claimed: 120, 
       used: 10,
       validity: '2023-11-01 至 2023-11-11',
-      status: 'active' 
+      status: '发放中' 
     },
   ];
 
@@ -105,8 +105,8 @@ export default function AdminCoupons() {
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
             >
               <option value="">所有状态</option>
-              <option value="active">发放中</option>
-              <option value="ended">已结束</option>
+              <option value="发放中">发放中</option>
+              <option value="已结束">已结束</option>
             </select>
           </div>
         </div>
@@ -164,10 +164,10 @@ export default function AdminCoupons() {
                   <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.validity}</td>
                   <td className="p-4">
                     <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                      item.status === 'active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                      item.status === '发放中' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
                       'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
                     }`}>
-                      {item.status === 'active' ? '发放中' : '已结束'}
+                      {item.status}
                     </span>
                   </td>
                   <td className="p-4 text-right">
@@ -179,7 +179,7 @@ export default function AdminCoupons() {
                         发放记录
                       </button>
                       <button className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-sm font-medium hover:underline">编辑</button>
-                      {item.status === 'active' && (
+                      {item.status === '发放中' && (
                         <button className="text-red-500 hover:text-red-600 text-sm font-medium hover:underline">停发</button>
                       )}
                     </div>

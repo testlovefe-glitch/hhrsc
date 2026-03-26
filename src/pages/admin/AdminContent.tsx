@@ -5,13 +5,13 @@ export default function AdminContent() {
 
   // Mock Data
   const [banners, setBanners] = useState([
-    { id: 1, title: '春季新品上市', type: 'carousel', imageUrl: 'https://images.unsplash.com/photo-1504675099198-7023dd85f5a3?auto=format&fit=crop&q=80&w=800', link: '/products', status: 'active', sort: 1 },
-    { id: 2, title: '新人注册礼', type: 'popup', imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=800', link: '/register', status: 'inactive', sort: 2 },
+    { id: 1, title: '春季新品上市', type: 'carousel', imageUrl: 'https://images.unsplash.com/photo-1504675099198-7023dd85f5a3?auto=format&fit=crop&q=80&w=800', link: '/products', status: '显示中', sort: 1 },
+    { id: 2, title: '新人注册礼', type: 'popup', imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=800', link: '/register', status: '已隐藏', sort: 2 },
   ]);
 
   const [announcements, setAnnouncements] = useState([
-    { id: 1, title: '系统升级维护通知', content: '为了提供更好的服务，系统将于本周日凌晨2点进行升级维护。', status: 'published', publishTime: '2026-03-20 10:00:00' },
-    { id: 2, title: '五一劳动节放假安排', content: '五一期间发货时间调整公告...', status: 'draft', publishTime: '-' },
+    { id: 1, title: '系统升级维护通知', content: '为了提供更好的服务，系统将于本周日凌晨2点进行升级维护。', status: '已发布', publishTime: '2026-03-20 10:00:00' },
+    { id: 2, title: '五一劳动节放假安排', content: '五一期间发货时间调整公告...', status: '草稿', publishTime: '-' },
   ]);
 
   const [recruitConfig, setRecruitConfig] = useState({
@@ -69,7 +69,7 @@ export default function AdminContent() {
     const banner = {
       id: Date.now(),
       ...newBanner,
-      status: 'active',
+      status: '显示中',
       sort: banners.length + 1
     };
     
@@ -93,7 +93,7 @@ export default function AdminContent() {
       id: Date.now(),
       title: newAnnouncement.title,
       content: newAnnouncement.content,
-      status: newAnnouncement.publishNow ? 'published' : 'draft',
+      status: newAnnouncement.publishNow ? '已发布' : '草稿',
       publishTime: newAnnouncement.publishNow ? new Date().toLocaleString() : '-'
     };
 
@@ -220,11 +220,11 @@ export default function AdminContent() {
                     <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{banner.sort}</td>
                     <td className="p-4">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                        banner.status === 'active' 
+                        banner.status === '显示中' 
                           ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400'
                           : 'bg-slate-100 text-slate-800 dark:bg-slate-500/20 dark:text-slate-400'
                       }`}>
-                        {banner.status === 'active' ? '显示中' : '已隐藏'}
+                        {banner.status}
                       </span>
                     </td>
                     <td className="p-4">
@@ -286,11 +286,11 @@ export default function AdminContent() {
                     <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{announcement.publishTime}</td>
                     <td className="p-4">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                        announcement.status === 'published' 
+                        announcement.status === '已发布' 
                           ? 'bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400'
                           : 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400'
                       }`}>
-                        {announcement.status === 'published' ? '已发布' : '草稿'}
+                        {announcement.status}
                       </span>
                     </td>
                     <td className="p-4">

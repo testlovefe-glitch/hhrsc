@@ -19,16 +19,16 @@ export default function AdminWithdrawal() {
   };
 
   const [withdrawals, setWithdrawals] = useState([
-    { id: 'WD-20231025-001', user: { name: '张三', phone: '138****1234' }, amount: 500.00, method: '微信零钱', fee: 0, actualAmount: 500.00, time: '2023-10-25 14:30:22', status: 'pending', reason: '' },
-    { id: 'WD-20231025-002', user: { name: '李四', phone: '139****5678' }, amount: 1200.00, method: '银行卡', fee: 12.00, actualAmount: 1188.00, time: '2023-10-25 10:15:00', status: 'pending', reason: '' },
-    { id: 'WD-20231024-003', user: { name: '王五', phone: '137****9012' }, amount: 300.00, method: '微信零钱', fee: 0, actualAmount: 300.00, time: '2023-10-24 16:45:10', status: 'passed', reason: '' },
-    { id: 'WD-20231024-004', user: { name: '赵六', phone: '136****3456' }, amount: 800.00, method: '银行卡', fee: 8.00, actualAmount: 792.00, time: '2023-10-24 09:20:00', status: 'rejected', reason: '银行卡信息不匹配' },
-    { id: 'WD-20231023-005', user: { name: '钱七', phone: '135****7890' }, amount: 2000.00, method: '微信零钱', fee: 0, actualAmount: 2000.00, time: '2023-10-23 11:10:00', status: 'failed', reason: '微信商户余额不足' },
+    { id: 'WD-20231025-001', user: { name: '张三', phone: '138****1234' }, amount: 500.00, method: '微信零钱', fee: 0, actualAmount: 500.00, time: '2023-10-25 14:30:22', status: '处理中', reason: '' },
+    { id: 'WD-20231025-002', user: { name: '李四', phone: '139****5678' }, amount: 1200.00, method: '银行卡', fee: 12.00, actualAmount: 1188.00, time: '2023-10-25 10:15:00', status: '处理中', reason: '' },
+    { id: 'WD-20231024-003', user: { name: '王五', phone: '137****9012' }, amount: 300.00, method: '微信零钱', fee: 0, actualAmount: 300.00, time: '2023-10-24 16:45:10', status: '成功', reason: '' },
+    { id: 'WD-20231024-004', user: { name: '赵六', phone: '136****3456' }, amount: 800.00, method: '银行卡', fee: 8.00, actualAmount: 792.00, time: '2023-10-24 09:20:00', status: '审核拒绝', reason: '银行卡信息不匹配' },
+    { id: 'WD-20231023-005', user: { name: '钱七', phone: '135****7890' }, amount: 2000.00, method: '微信零钱', fee: 0, actualAmount: 2000.00, time: '2023-10-23 11:10:00', status: '打款失败', reason: '微信商户余额不足' },
   ]);
 
   const paymentRecords = [
-    { id: 'PAY-001', withdrawalId: 'WD-20231024-003', user: '王五', amount: 300.00, method: '微信企业付款', time: '2023-10-24 17:00:00', status: 'success', reason: '-' },
-    { id: 'PAY-002', withdrawalId: 'WD-20231023-005', user: '钱七', amount: 2000.00, method: '微信企业付款', time: '2023-10-23 11:30:00', status: 'failed', reason: '微信商户余额不足，请充值后重试' },
+    { id: 'PAY-001', withdrawalId: 'WD-20231024-003', user: '王五', amount: 300.00, method: '微信企业付款', time: '2023-10-24 17:00:00', status: '打款成功', reason: '-' },
+    { id: 'PAY-002', withdrawalId: 'WD-20231023-005', user: '钱七', amount: 2000.00, method: '微信企业付款', time: '2023-10-23 11:30:00', status: '打款失败', reason: '微信商户余额不足，请充值后重试' },
   ];
 
   const accounts = [
@@ -56,7 +56,7 @@ export default function AdminWithdrawal() {
       if (w.id === selectedRecord.id) {
         return {
           ...w,
-          status: auditAction === 'pass' ? 'passed' : 'rejected',
+          status: auditAction === 'pass' ? '成功' : '审核拒绝',
           reason: auditAction === 'reject' ? rejectReason : ''
         };
       }
@@ -129,10 +129,10 @@ export default function AdminWithdrawal() {
                   className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
                 >
                   <option value="">所有状态</option>
-                  <option value="pending">待审核</option>
-                  <option value="passed">审核通过</option>
-                  <option value="rejected">审核拒绝</option>
-                  <option value="failed">打款失败</option>
+                  <option value="处理中">待审核</option>
+                  <option value="成功">审核通过</option>
+                  <option value="审核拒绝">审核拒绝</option>
+                  <option value="打款失败">打款失败</option>
                 </select>
               </div>
             </div>
@@ -176,21 +176,21 @@ export default function AdminWithdrawal() {
                       <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.time}</td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          record.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
-                          record.status === 'passed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                          record.status === 'failed' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
+                          record.status === '处理中' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+                          record.status === '成功' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                          record.status === '打款失败' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
                           'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
                         }`}>
-                          {record.status === 'pending' ? '待审核' : 
-                           record.status === 'passed' ? '审核通过' : 
-                           record.status === 'failed' ? '打款失败' : '审核拒绝'}
+                          {record.status === '处理中' ? '待审核' : 
+                           record.status === '成功' ? '审核通过' : 
+                           record.status === '打款失败' ? '打款失败' : '审核拒绝'}
                         </span>
-                        {(record.status === 'rejected' || record.status === 'failed') && (
+                        {(record.status === '审核拒绝' || record.status === '打款失败') && (
                           <p className="text-xs text-red-500 mt-1 max-w-[150px] truncate" title={record.reason}>{record.reason}</p>
                         )}
                       </td>
                       <td className="p-4 text-right">
-                        {record.status === 'pending' ? (
+                        {record.status === '处理中' ? (
                           <div className="flex items-center justify-end gap-3">
                             <button 
                               onClick={() => openAuditModal(record, 'pass')}
@@ -205,7 +205,7 @@ export default function AdminWithdrawal() {
                               拒绝
                             </button>
                           </div>
-                        ) : record.status === 'failed' ? (
+                        ) : record.status === '打款失败' ? (
                           <button className="text-primary hover:text-primary/80 text-sm font-medium hover:underline">重新打款</button>
                         ) : (
                           <span className="text-sm text-slate-400">-</span>
@@ -243,8 +243,8 @@ export default function AdminWithdrawal() {
                 </div>
                 <select className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
                   <option value="">所有状态</option>
-                  <option value="success">打款成功</option>
-                  <option value="failed">打款失败</option>
+                  <option value="打款成功">打款成功</option>
+                  <option value="打款失败">打款失败</option>
                 </select>
               </div>
             </div>
@@ -274,10 +274,10 @@ export default function AdminWithdrawal() {
                       <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.time}</td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          record.status === 'success' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                          record.status === '打款成功' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
                           'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
                         }`}>
-                          {record.status === 'success' ? '打款成功' : '打款失败'}
+                          {record.status}
                         </span>
                       </td>
                       <td className="p-4 text-sm text-red-500 max-w-[200px] truncate" title={record.reason}>{record.reason}</td>

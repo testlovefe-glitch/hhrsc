@@ -17,7 +17,7 @@ export default function Orders() {
 
       <div className="sticky top-[73px] z-40 bg-white dark:bg-slate-900 overflow-x-auto hide-scrollbar border-b border-slate-200 dark:border-slate-800">
         <div className="flex px-4 min-w-max">
-          {['全部', '待付款', '待发货', '待收货', '已完成', '退款/售后'].map((tab, i) => (
+          {['全部', '待付款', '待发货', '已发货', '已完成', '退款/售后'].map((tab, i) => (
             <button key={i} className={`flex flex-col items-center justify-center border-b-2 px-4 py-3 ${i === 0 ? 'border-primary text-primary' : 'border-transparent text-slate-500 dark:text-slate-400'}`}>
               <span className={`text-sm ${i === 0 ? 'font-bold' : 'font-medium'}`}>{tab}</span>
             </button>
@@ -51,7 +51,7 @@ export default function Orders() {
         <Link to="/order/2" className="block rounded-xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-medium text-slate-400">订单号: 827391035</span>
-            <span className="text-sm font-semibold text-primary">待收货</span>
+            <span className="text-sm font-semibold text-primary">已发货</span>
           </div>
           <div className="flex gap-4">
             <div className="h-20 w-20 shrink-0 bg-slate-100 dark:bg-slate-800 rounded-lg bg-center bg-no-repeat bg-cover" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1569529465841-dfecdab7503b?q=80&w=800&auto=format&fit=crop')" }}></div>

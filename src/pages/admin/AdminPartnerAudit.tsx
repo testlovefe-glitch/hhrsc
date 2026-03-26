@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function AdminPartnerAudit() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('pending');
+  const [activeTab, setActiveTab] = useState('待审核');
   const [searchQuery, setSearchQuery] = useState('');
 
   const [toastMessage, setToastMessage] = useState('');
@@ -14,11 +14,11 @@ export default function AdminPartnerAudit() {
   };
 
   const [applications, setApplications] = useState([
-    { id: 'APP-001', userId: 'U99201', name: '王五', phone: '137****1122', applyLevel: '初级合伙人', applyDate: '2023-10-26 09:30', status: 'pending', reason: '拥有500人社群资源' },
-    { id: 'APP-002', userId: 'U99205', name: '赵六', phone: '136****3344', applyLevel: '中级合伙人', applyDate: '2023-10-25 14:20', status: 'pending', reason: '线下实体店主，客源稳定' },
-    { id: 'APP-003', userId: 'U99210', name: '钱七', phone: '139****5566', applyLevel: '高级合伙人', applyDate: '2023-10-24 11:15', status: 'pending', reason: '电商从业者，月销百万' },
-    { id: 'APP-004', userId: 'U99188', name: '孙八', phone: '135****7788', applyLevel: '初级合伙人', applyDate: '2023-10-20 16:45', status: 'approved', reason: '微商团队长' },
-    { id: 'APP-005', userId: 'U99150', name: '周九', phone: '138****9900', applyLevel: '中级合伙人', applyDate: '2023-10-18 10:00', status: 'rejected', reason: '资料不全' },
+    { id: 'APP-001', userId: 'U99201', name: '王五', phone: '137****1122', applyLevel: '初级合伙人', applyDate: '2023-10-26 09:30', status: '待审核', reason: '拥有500人社群资源' },
+    { id: 'APP-002', userId: 'U99205', name: '赵六', phone: '136****3344', applyLevel: '中级合伙人', applyDate: '2023-10-25 14:20', status: '待审核', reason: '线下实体店主，客源稳定' },
+    { id: 'APP-003', userId: 'U99210', name: '钱七', phone: '139****5566', applyLevel: '高级合伙人', applyDate: '2023-10-24 11:15', status: '待审核', reason: '电商从业者，月销百万' },
+    { id: 'APP-004', userId: 'U99188', name: '孙八', phone: '135****7788', applyLevel: '初级合伙人', applyDate: '2023-10-20 16:45', status: '已通过', reason: '微商团队长' },
+    { id: 'APP-005', userId: 'U99150', name: '周九', phone: '138****9900', applyLevel: '中级合伙人', applyDate: '2023-10-18 10:00', status: '已拒绝', reason: '资料不全' },
   ]);
 
   const filteredApplications = applications.filter(app => {
@@ -28,12 +28,12 @@ export default function AdminPartnerAudit() {
   });
 
   const handleApprove = (id: string) => {
-    setApplications(apps => apps.map(app => app.id === id ? { ...app, status: 'approved' } : app));
+    setApplications(apps => apps.map(app => app.id === id ? { ...app, status: '已通过' } : app));
     showToast('申请已通过');
   };
 
   const handleReject = (id: string) => {
-    setApplications(apps => apps.map(app => app.id === id ? { ...app, status: 'rejected' } : app));
+    setApplications(apps => apps.map(app => app.id === id ? { ...app, status: '已拒绝' } : app));
     showToast('申请已拒绝');
   };
 
@@ -54,23 +54,23 @@ export default function AdminPartnerAudit() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 dark:border-slate-700 p-4 sm:p-0">
           <div className="flex overflow-x-auto hide-scrollbar">
             <button 
-              onClick={() => setActiveTab('pending')}
-              className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${activeTab === 'pending' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
+              onClick={() => setActiveTab('待审核')}
+              className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${activeTab === '待审核' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
             >
               待审核
               <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">
-                {applications.filter(a => a.status === 'pending').length}
+                {applications.filter(a => a.status === '待审核').length}
               </span>
             </button>
             <button 
-              onClick={() => setActiveTab('approved')}
-              className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'approved' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
+              onClick={() => setActiveTab('已通过')}
+              className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === '已通过' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
             >
               已通过
             </button>
             <button 
-              onClick={() => setActiveTab('rejected')}
-              className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'rejected' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
+              onClick={() => setActiveTab('已拒绝')}
+              className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === '已拒绝' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
             >
               已拒绝
             </button>
@@ -130,15 +130,15 @@ export default function AdminPartnerAudit() {
                     <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{app.applyDate}</td>
                     <td className="p-4">
                       <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        app.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
-                        app.status === 'approved' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        app.status === '待审核' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+                        app.status === '已通过' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
                         'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
                       }`}>
-                        {app.status === 'pending' ? '待审核' : app.status === 'approved' ? '已通过' : '已拒绝'}
+                        {app.status}
                       </span>
                     </td>
                     <td className="p-4 text-right">
-                      {app.status === 'pending' ? (
+                      {app.status === '待审核' ? (
                         <div className="flex items-center justify-end gap-2">
                           <button 
                             onClick={() => handleApprove(app.id)}
@@ -168,7 +168,7 @@ export default function AdminPartnerAudit() {
               ) : (
                 <tr>
                   <td colSpan={6} className="p-8 text-center text-slate-500 dark:text-slate-400">
-                    暂无{activeTab === 'pending' ? '待审核' : activeTab === 'approved' ? '已通过' : '已拒绝'}的申请记录
+                    暂无{activeTab}的申请记录
                   </td>
                 </tr>
               )}

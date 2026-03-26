@@ -10,6 +10,13 @@ export default function AdminCouponRecords() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
   // Mock data
   const records = [
     { id: 'REC-001', user: '张三', phone: '138****1234', claimTime: '2023-10-24 14:30', useTime: '2023-10-25 09:15', status: '已使用', orderId: 'ORD-20231025-001' },
@@ -183,7 +190,10 @@ export default function AdminCouponRecords() {
                 取消
               </button>
               <button 
-                onClick={() => setShowDistributeModal(false)}
+                onClick={() => {
+                  setShowDistributeModal(false);
+                  showToast('优惠券批量派发成功');
+                }}
                 className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2"
               >
                 <span className="material-symbols-outlined text-[18px]">send</span>
@@ -191,6 +201,14 @@ export default function AdminCouponRecords() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in">
+          <span className="material-symbols-outlined text-emerald-400">check_circle</span>
+          <p>{toastMessage}</p>
         </div>
       )}
     </div>

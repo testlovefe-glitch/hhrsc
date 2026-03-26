@@ -51,7 +51,7 @@ export default function AdminEditProduct() {
       groupPrice: 2899.00,
       flashPrice: 2799.00,
       stock: 156,
-      status: 'active',
+      status: '上架',
       isMultiSpec: true,
       images: ['https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=200&auto=format&fit=crop'],
       specs: [

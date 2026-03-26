@@ -12,7 +12,7 @@ export default function OrderDetails() {
       <main className="flex-1 overflow-y-auto pb-32">
         <div className="bg-primary px-6 py-8 flex items-center justify-between text-white">
           <div className="flex flex-col gap-1">
-            <p className="text-2xl font-bold">待收货</p>
+            <p className="text-2xl font-bold">已发货</p>
             <p className="text-white/80 text-sm">您的包裹正在路上，请注意查收</p>
           </div>
           <span className="material-symbols-outlined text-6xl opacity-80">local_shipping</span>

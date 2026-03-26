@@ -18,7 +18,7 @@ export default function AdminGroupBuyDetails() {
         { name: '李四', phone: '139****5678', avatar: 'https://ui-avatars.com/api/?name=李四&background=random' },
         { name: '王五', phone: '137****9012', avatar: 'https://ui-avatars.com/api/?name=王五&background=random' }
       ],
-      status: 'success', // success, pending, failed
+      status: '拼团成功', // success, pending, failed
       freeWinner: '李四',
       startTime: '2023-10-24 14:30:00',
       endTime: '2023-10-24 18:45:22'
@@ -29,7 +29,7 @@ export default function AdminGroupBuyDetails() {
       members: [
         { name: '钱七', phone: '135****7890', avatar: 'https://ui-avatars.com/api/?name=钱七&background=random' }
       ],
-      status: 'pending',
+      status: '拼团中',
       freeWinner: '-',
       startTime: '2023-10-25 09:15:00',
       endTime: '-'
@@ -41,7 +41,7 @@ export default function AdminGroupBuyDetails() {
         { name: '周九', phone: '133****3344', avatar: 'https://ui-avatars.com/api/?name=周九&background=random' },
         { name: '吴十', phone: '132****5566', avatar: 'https://ui-avatars.com/api/?name=吴十&background=random' }
       ],
-      status: 'failed',
+      status: '拼团失败',
       freeWinner: '-',
       startTime: '2023-10-20 10:00:00',
       endTime: '2023-10-21 10:00:00'
@@ -91,9 +91,9 @@ export default function AdminGroupBuyDetails() {
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
             >
               <option value="">所有状态</option>
-              <option value="success">拼团成功</option>
-              <option value="pending">拼团中</option>
-              <option value="failed">拼团失败</option>
+              <option value="拼团成功">拼团成功</option>
+              <option value="拼团中">拼团中</option>
+              <option value="拼团失败">拼团失败</option>
             </select>
           </div>
         </div>
@@ -136,11 +136,11 @@ export default function AdminGroupBuyDetails() {
                   </td>
                   <td className="p-4">
                     <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                      record.status === 'success' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                      record.status === 'pending' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                      record.status === '拼团成功' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                      record.status === '拼团中' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
                       'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
                     }`}>
-                      {record.status === 'success' ? '拼团成功' : record.status === 'pending' ? '拼团中' : '拼团失败'}
+                      {record.status}
                     </span>
                   </td>
                   <td className="p-4">

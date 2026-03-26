@@ -14,7 +14,7 @@ export default function AdminEditPartnerLevel() {
       name: '张三',
       phone: '13812345678',
       level: 'partner_senior',
-      status: 'active',
+      status: '正常',
     });
   }, [id]);
 
