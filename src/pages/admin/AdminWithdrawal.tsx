@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Empty from '../../components/Empty';
 
 export default function AdminWithdrawal() {
   const [activeTab, setActiveTab] = useState('audit');
@@ -153,66 +154,83 @@ export default function AdminWithdrawal() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                  {filteredWithdrawals.map((record) => (
-                    <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                      <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
-                      <td className="p-4">
-                        <p className="text-sm font-medium text-slate-900 dark:text-white">{record.user.name}</p>
-                        <p className="text-xs text-slate-500 mt-0.5">{record.user.phone}</p>
-                      </td>
-                      <td className="p-4 text-sm font-medium text-slate-900 dark:text-white text-right">¥{record.amount.toFixed(2)}</td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                        <span className="flex items-center gap-1">
-                          {record.method === '微信零钱' ? (
-                            <span className="material-symbols-outlined text-emerald-500 text-[16px]">chat</span>
-                          ) : (
-                            <span className="material-symbols-outlined text-blue-500 text-[16px]">credit_card</span>
+                  {filteredWithdrawals.length > 0 ? (
+                    filteredWithdrawals.map((record) => (
+                      <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                        <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
+                        <td className="p-4">
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">{record.user.name}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">{record.user.phone}</p>
+                        </td>
+                        <td className="p-4 text-sm font-medium text-slate-900 dark:text-white text-right">¥{record.amount.toFixed(2)}</td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                          <span className="flex items-center gap-1">
+                            {record.method === '微信零钱' ? (
+                              <span className="material-symbols-outlined text-emerald-500 text-[16px]">chat</span>
+                            ) : (
+                              <span className="material-symbols-outlined text-blue-500 text-[16px]">credit_card</span>
+                            )}
+                            {record.method}
+                          </span>
+                        </td>
+                        <td className="p-4 text-sm text-slate-500 text-right">¥{record.fee.toFixed(2)}</td>
+                        <td className="p-4 text-sm font-bold text-emerald-600 dark:text-emerald-400 text-right">¥{record.actualAmount.toFixed(2)}</td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.time}</td>
+                        <td className="p-4">
+                          <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                            record.status === '处理中' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+                            record.status === '成功' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                            record.status === '打款失败' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
+                            'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                          }`}>
+                            {record.status === '处理中' ? '待审核' : 
+                             record.status === '成功' ? '审核通过' : 
+                             record.status === '打款失败' ? '打款失败' : '审核拒绝'}
+                          </span>
+                          {(record.status === '审核拒绝' || record.status === '打款失败') && (
+                            <p className="text-xs text-red-500 mt-1 max-w-[150px] truncate" title={record.reason}>{record.reason}</p>
                           )}
-                          {record.method}
-                        </span>
-                      </td>
-                      <td className="p-4 text-sm text-slate-500 text-right">¥{record.fee.toFixed(2)}</td>
-                      <td className="p-4 text-sm font-bold text-emerald-600 dark:text-emerald-400 text-right">¥{record.actualAmount.toFixed(2)}</td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.time}</td>
-                      <td className="p-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          record.status === '处理中' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
-                          record.status === '成功' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                          record.status === '打款失败' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
-                          'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
-                        }`}>
-                          {record.status === '处理中' ? '待审核' : 
-                           record.status === '成功' ? '审核通过' : 
-                           record.status === '打款失败' ? '打款失败' : '审核拒绝'}
-                        </span>
-                        {(record.status === '审核拒绝' || record.status === '打款失败') && (
-                          <p className="text-xs text-red-500 mt-1 max-w-[150px] truncate" title={record.reason}>{record.reason}</p>
-                        )}
-                      </td>
-                      <td className="p-4 text-right">
-                        {record.status === '处理中' ? (
-                          <div className="flex items-center justify-end gap-3">
-                            <button 
-                              onClick={() => openAuditModal(record, 'pass')}
-                              className="text-emerald-600 hover:text-emerald-700 text-sm font-medium hover:underline"
-                            >
-                              通过
-                            </button>
-                            <button 
-                              onClick={() => openAuditModal(record, 'reject')}
-                              className="text-red-500 hover:text-red-600 text-sm font-medium hover:underline"
-                            >
-                              拒绝
-                            </button>
-                          </div>
-                        ) : record.status === '打款失败' ? (
-                          <button className="text-primary hover:text-primary/80 text-sm font-medium hover:underline">重新打款</button>
-                        ) : (
-                          <span className="text-sm text-slate-400">-</span>
-                        )}
+                        </td>
+                        <td className="p-4 text-right">
+                          {record.status === '处理中' ? (
+                            <div className="flex items-center justify-end gap-3">
+                              <button 
+                                onClick={() => openAuditModal(record, 'pass')}
+                                className="text-emerald-600 hover:text-emerald-700 text-sm font-medium hover:underline"
+                              >
+                                通过
+                              </button>
+                              <button 
+                                onClick={() => openAuditModal(record, 'reject')}
+                                className="text-red-500 hover:text-red-600 text-sm font-medium hover:underline"
+                              >
+                                拒绝
+                              </button>
+                            </div>
+                          ) : record.status === '打款失败' ? (
+                            <button className="text-primary hover:text-primary/80 text-sm font-medium hover:underline">重新打款</button>
+                          ) : (
+                            <span className="text-sm text-slate-400">-</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={9} className="p-0">
+                        <Empty 
+                          icon="search_off"
+                          title="未找到提现申请"
+                          description="没有找到符合条件的提现申请，请尝试更改搜索条件"
+                          actionText="清除筛选"
+                          onAction={() => {
+                            setAuditSearch('');
+                            setAuditStatus('');
+                          }}
+                        />
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -264,25 +282,41 @@ export default function AdminWithdrawal() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                  {paymentRecords.map((record) => (
-                    <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                      <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
-                      <td className="p-4 text-sm text-primary hover:underline cursor-pointer">{record.withdrawalId}</td>
-                      <td className="p-4 text-sm text-slate-900 dark:text-white">{record.user}</td>
-                      <td className="p-4 text-sm font-medium text-emerald-600 dark:text-emerald-400 text-right">¥{record.amount.toFixed(2)}</td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.method}</td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.time}</td>
-                      <td className="p-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          record.status === '打款成功' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                          'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
-                        }`}>
-                          {record.status}
-                        </span>
+                  {paymentRecords.length > 0 ? (
+                    paymentRecords.map((record) => (
+                      <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                        <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
+                        <td className="p-4 text-sm text-primary hover:underline cursor-pointer">{record.withdrawalId}</td>
+                        <td className="p-4 text-sm text-slate-900 dark:text-white">{record.user}</td>
+                        <td className="p-4 text-sm font-medium text-emerald-600 dark:text-emerald-400 text-right">¥{record.amount.toFixed(2)}</td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.method}</td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.time}</td>
+                        <td className="p-4">
+                          <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                            record.status === '打款成功' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                            'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
+                          }`}>
+                            {record.status}
+                          </span>
+                        </td>
+                        <td className="p-4 text-sm text-red-500 max-w-[200px] truncate" title={record.reason}>{record.reason}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={8} className="p-0">
+                        <Empty 
+                          icon="receipt_long"
+                          title="未找到打款记录"
+                          description="没有找到符合条件的打款记录，请尝试更改搜索条件"
+                          actionText="清除筛选"
+                          onAction={() => {
+                            // Add clear filter logic here if needed
+                          }}
+                        />
                       </td>
-                      <td className="p-4 text-sm text-red-500 max-w-[200px] truncate" title={record.reason}>{record.reason}</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -323,30 +357,46 @@ export default function AdminWithdrawal() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                  {accounts.map((record) => (
-                    <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                      <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
-                      <td className="p-4">
-                        <p className="text-sm font-medium text-slate-900 dark:text-white">{record.user.name}</p>
-                        <p className="text-xs text-slate-500 mt-0.5">{record.user.phone}</p>
-                      </td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                        <span className="flex items-center gap-1">
-                          {record.type === '微信零钱' ? (
-                            <span className="material-symbols-outlined text-emerald-500 text-[16px]">chat</span>
-                          ) : (
-                            <span className="material-symbols-outlined text-blue-500 text-[16px]">credit_card</span>
-                          )}
-                          {record.type}
-                        </span>
-                      </td>
-                      <td className="p-4 text-sm font-mono text-slate-600 dark:text-slate-300">{record.accountNo}</td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.bindTime}</td>
-                      <td className="p-4 text-right">
-                        <button className="text-red-500 hover:text-red-600 text-sm font-medium hover:underline">解绑</button>
+                  {accounts.length > 0 ? (
+                    accounts.map((record) => (
+                      <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                        <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
+                        <td className="p-4">
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">{record.user.name}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">{record.user.phone}</p>
+                        </td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                          <span className="flex items-center gap-1">
+                            {record.type === '微信零钱' ? (
+                              <span className="material-symbols-outlined text-emerald-500 text-[16px]">chat</span>
+                            ) : (
+                              <span className="material-symbols-outlined text-blue-500 text-[16px]">credit_card</span>
+                            )}
+                            {record.type}
+                          </span>
+                        </td>
+                        <td className="p-4 text-sm font-mono text-slate-600 dark:text-slate-300">{record.accountNo}</td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.bindTime}</td>
+                        <td className="p-4 text-right">
+                          <button className="text-red-500 hover:text-red-600 text-sm font-medium hover:underline">解绑</button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6} className="p-0">
+                        <Empty 
+                          icon="account_balance_wallet"
+                          title="未找到提现账户"
+                          description="没有找到符合条件的提现账户，请尝试更改搜索条件"
+                          actionText="清除筛选"
+                          onAction={() => {
+                            // Add clear filter logic here if needed
+                          }}
+                        />
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

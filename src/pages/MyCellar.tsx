@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import Empty from '../components/Empty';
 
 export default function MyCellar() {
   const cellarItems = [
@@ -53,25 +54,36 @@ export default function MyCellar() {
         </div>
 
         <div className="flex flex-col gap-3">
-          {cellarItems.map(item => (
-            <div key={item.id} className="bg-white dark:bg-slate-900 rounded-xl p-3 flex gap-4 shadow-sm border border-slate-100 dark:border-slate-800">
-              <div className="w-20 h-24 shrink-0 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800">
-                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-              </div>
-              <div className="flex-1 flex flex-col justify-between py-1">
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug">{item.name}</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-1.5 py-0.5 rounded">年份: {item.vintage}</span>
+          {cellarItems.length > 0 ? (
+            cellarItems.map(item => (
+              <div key={item.id} className="bg-white dark:bg-slate-900 rounded-xl p-3 flex gap-4 shadow-sm border border-slate-100 dark:border-slate-800">
+                <div className="w-20 h-24 shrink-0 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800">
+                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 flex flex-col justify-between py-1">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug">{item.name}</h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-1.5 py-0.5 rounded">年份: {item.vintage}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-end justify-between mt-2">
+                    <div className="text-primary font-bold">{item.price}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">数量: <span className="font-bold text-slate-700 dark:text-slate-300">{item.quantity}</span></div>
                   </div>
                 </div>
-                <div className="flex items-end justify-between mt-2">
-                  <div className="text-primary font-bold">{item.price}</div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400">数量: <span className="font-bold text-slate-700 dark:text-slate-300">{item.quantity}</span></div>
-                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <Empty 
+              icon="wine_bar"
+              title="酒窖空空如也"
+              description="您还没有任何藏酒，快去挑选一些心仪的美酒吧"
+              actionText="去逛逛"
+              actionLink="/"
+              className="mt-10"
+            />
+          )}
         </div>
       </main>
     </div>

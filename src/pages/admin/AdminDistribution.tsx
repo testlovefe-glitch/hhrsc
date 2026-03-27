@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Empty from '../../components/Empty';
 
 export default function AdminDistribution() {
   const [activeTab, setActiveTab] = useState('level-config');
@@ -9,6 +10,10 @@ export default function AdminDistribution() {
   const [earningsSearch, setEarningsSearch] = useState('');
   const [earningsType, setEarningsType] = useState('');
   const [earningsDate, setEarningsDate] = useState('');
+
+  // Leaderboard states
+  const [leaderboardType, setLeaderboardType] = useState('team');
+  const [leaderboardMonth, setLeaderboardMonth] = useState('2023-10');
 
   const [toastMessage, setToastMessage] = useState('');
 
@@ -43,11 +48,19 @@ export default function AdminDistribution() {
     return matchesSearch && matchesType && matchesDate;
   });
 
+  const leaderboardData = [
+    { rank: 1, name: '张三', phone: '138****1234', level: '五星合伙人', teamSales: 1500000, personalSales: 200000, totalEarnings: 50000 },
+    { rank: 2, name: '李四', phone: '139****5678', level: '四星合伙人', teamSales: 1200000, personalSales: 150000, totalEarnings: 40000 },
+    { rank: 3, name: '王五', phone: '137****9012', level: '三星合伙人', teamSales: 800000, personalSales: 100000, totalEarnings: 25000 },
+    { rank: 4, name: '赵六', phone: '136****3456', level: '二星合伙人', teamSales: 500000, personalSales: 80000, totalEarnings: 15000 },
+    { rank: 5, name: '孙七', phone: '135****7890', level: '一星合伙人', teamSales: 200000, personalSales: 50000, totalEarnings: 8000 },
+  ];
+
   return (
     <div className="max-w-7xl mx-auto pb-12">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">分销管理</h1>
-        {activeTab === 'earnings-records' && (
+        {(activeTab === 'earnings-records' || activeTab === 'sales-leaderboard') && (
           <button className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 shadow-sm">
             <span className="material-symbols-outlined text-[18px]">download</span>
             导出报表
@@ -81,6 +94,12 @@ export default function AdminDistribution() {
             className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'earnings-records' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
           >
             收益记录
+          </button>
+          <button 
+            onClick={() => setActiveTab('sales-leaderboard')} 
+            className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'sales-leaderboard' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
+          >
+            销售龙虎榜
           </button>
         </div>
 
@@ -375,15 +394,27 @@ export default function AdminDistribution() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                    {injectRecords.map((record) => (
-                      <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                        <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
-                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.time}</td>
-                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.source}</td>
-                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.pool}</td>
-                        <td className="p-4 text-sm font-medium text-emerald-600 dark:text-emerald-400 text-right">{record.amount}</td>
+                    {injectRecords.length > 0 ? (
+                      injectRecords.map((record) => (
+                        <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                          <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.time}</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.source}</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.pool}</td>
+                          <td className="p-4 text-sm font-medium text-emerald-600 dark:text-emerald-400 text-right">{record.amount}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="p-0">
+                          <Empty 
+                            icon="account_balance_wallet"
+                            title="未找到资金注入记录"
+                            description="没有找到符合条件的资金注入记录"
+                          />
+                        </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -403,17 +434,29 @@ export default function AdminDistribution() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                    {distributeRecords.map((record) => (
-                      <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                        <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
-                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.time}</td>
-                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.pool}</td>
-                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.period}</td>
-                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.rule}</td>
-                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.participants} 人</td>
-                        <td className="p-4 text-sm font-medium text-red-500 text-right">- {record.totalAmount}</td>
+                    {distributeRecords.length > 0 ? (
+                      distributeRecords.map((record) => (
+                        <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                          <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.time}</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.pool}</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.period}</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.rule}</td>
+                          <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.participants} 人</td>
+                          <td className="p-4 text-sm font-medium text-red-500 text-right">- {record.totalAmount}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={7} className="p-0">
+                          <Empty 
+                            icon="payments"
+                            title="未找到分红发放记录"
+                            description="没有找到符合条件的分红发放记录"
+                          />
+                        </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -468,27 +511,45 @@ export default function AdminDistribution() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                  {filteredEarnings.map((record) => (
-                    <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                      <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
-                      <td className="p-4">
-                        <p className="text-sm font-medium text-slate-900 dark:text-white">{record.user}</p>
-                        <p className="text-xs text-slate-500 mt-0.5">{record.phone}</p>
+                  {filteredEarnings.length > 0 ? (
+                    filteredEarnings.map((record) => (
+                      <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                        <td className="p-4 text-sm text-slate-900 dark:text-white">{record.id}</td>
+                        <td className="p-4">
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">{record.user}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">{record.phone}</p>
+                        </td>
+                        <td className="p-4">
+                          <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                            record.type === '推荐奖励' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                            record.type === '销售提成' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                            'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400'
+                          }`}>
+                            {record.type}
+                          </span>
+                        </td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.desc}</td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.time}</td>
+                        <td className="p-4 text-sm font-medium text-emerald-600 dark:text-emerald-400 text-right">{record.amount}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6} className="p-0">
+                        <Empty 
+                          icon="receipt_long"
+                          title="未找到收益记录"
+                          description="没有找到符合条件的收益记录，请尝试更改搜索条件"
+                          actionText="清除筛选"
+                          onAction={() => {
+                            setEarningsSearch('');
+                            setEarningsType('');
+                            setEarningsDate('');
+                          }}
+                        />
                       </td>
-                      <td className="p-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          record.type === '推荐奖励' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
-                          record.type === '销售提成' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                          'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400'
-                        }`}>
-                          {record.type}
-                        </span>
-                      </td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.desc}</td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.time}</td>
-                      <td className="p-4 text-sm font-medium text-emerald-600 dark:text-emerald-400 text-right">{record.amount}</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -500,6 +561,87 @@ export default function AdminDistribution() {
                 <button className="px-3 py-1.5 border border-primary bg-primary text-white rounded">1</button>
                 <button className="px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50" disabled>下一页</button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab Content: Sales Leaderboard */}
+        {activeTab === 'sales-leaderboard' && (
+          <div className="p-6">
+            <div className="flex flex-col md:flex-row gap-4 mb-6">
+              <select 
+                value={leaderboardType}
+                onChange={(e) => setLeaderboardType(e.target.value)}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+              >
+                <option value="team">团队销售额排行</option>
+                <option value="personal">个人直推销售额排行</option>
+              </select>
+              <input 
+                type="month" 
+                value={leaderboardMonth}
+                onChange={(e) => setLeaderboardMonth(e.target.value)}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+              />
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse whitespace-nowrap">
+                <thead>
+                  <tr className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">
+                    <th className="p-4 font-medium">排名</th>
+                    <th className="p-4 font-medium">合伙人信息</th>
+                    <th className="p-4 font-medium">等级</th>
+                    <th className="p-4 font-medium">{leaderboardType === 'team' ? '团队销售额' : '个人销售额'}</th>
+                    <th className="p-4 font-medium">累计收益</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                  {leaderboardData.length > 0 ? (
+                    leaderboardData.sort((a, b) => leaderboardType === 'team' ? b.teamSales - a.teamSales : b.personalSales - a.personalSales).map((item, index) => (
+                      <tr key={item.rank} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                        <td className="p-4">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                            index === 0 ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400' :
+                            index === 1 ? 'bg-slate-200 text-slate-600 dark:bg-slate-600 dark:text-slate-300' :
+                            index === 2 ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400' :
+                            'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
+                          }`}>
+                            {index + 1}
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium text-slate-900 dark:text-white">{item.name}</span>
+                            <span className="text-xs text-slate-500 dark:text-slate-400">{item.phone}</span>
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-primary/10 text-primary">
+                            {item.level}
+                          </span>
+                        </td>
+                        <td className="p-4 text-sm font-bold text-slate-900 dark:text-white">
+                          ¥{(leaderboardType === 'team' ? item.teamSales : item.personalSales).toLocaleString()}
+                        </td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                          ¥{item.totalEarnings.toLocaleString()}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="p-0">
+                        <Empty 
+                          icon="leaderboard"
+                          title="暂无排行数据"
+                          description="当前月份还没有销售数据"
+                        />
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         )}

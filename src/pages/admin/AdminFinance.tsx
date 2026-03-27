@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Empty from '../../components/Empty';
 
 export default function AdminFinance() {
   const navigate = useNavigate();
@@ -177,62 +178,79 @@ export default function AdminFinance() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {filteredWithdrawals.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                    <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.id}</td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <img src={`https://ui-avatars.com/api/?name=${item.name}&background=random`} alt={item.name} className="w-8 h-8 rounded-full" />
-                        <div>
-                          <p className="text-sm font-medium text-slate-900 dark:text-white">{item.name}</p>
-                          <p className="text-xs text-slate-500">{item.userId}</p>
+                {filteredWithdrawals.length > 0 ? (
+                  filteredWithdrawals.map((item) => (
+                    <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                      <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.id}</td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-3">
+                          <img src={`https://ui-avatars.com/api/?name=${item.name}&background=random`} alt={item.name} className="w-8 h-8 rounded-full" />
+                          <div>
+                            <p className="text-sm font-medium text-slate-900 dark:text-white">{item.name}</p>
+                            <p className="text-xs text-slate-500">{item.userId}</p>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="p-4 text-sm font-bold text-slate-900 dark:text-white">¥{item.amount.toFixed(2)}</td>
-                    <td className="p-4">
-                      <p className="text-sm text-slate-900 dark:text-white">{item.method}</p>
-                      <p className="text-xs text-slate-500">{item.account}</p>
-                    </td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.date}</td>
-                    <td className="p-4">
-                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        item.status === '处理中' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
-                        item.status === '成功' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                        'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
-                      }`}>
-                        {item.status === '处理中' ? '待审核' : item.status === '成功' ? '已打款' : '已拒绝'}
-                      </span>
-                      {item.reason && <p className="text-xs text-red-500 mt-1">{item.reason}</p>}
-                    </td>
-                    <td className="p-4 text-right">
-                      {item.status === '处理中' ? (
-                        <div className="flex items-center justify-end gap-2">
+                      </td>
+                      <td className="p-4 text-sm font-bold text-slate-900 dark:text-white">¥{item.amount.toFixed(2)}</td>
+                      <td className="p-4">
+                        <p className="text-sm text-slate-900 dark:text-white">{item.method}</p>
+                        <p className="text-xs text-slate-500">{item.account}</p>
+                      </td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.date}</td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                          item.status === '处理中' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+                          item.status === '成功' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                          'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
+                        }`}>
+                          {item.status === '处理中' ? '待审核' : item.status === '成功' ? '已打款' : '已拒绝'}
+                        </span>
+                        {item.reason && <p className="text-xs text-red-500 mt-1">{item.reason}</p>}
+                      </td>
+                      <td className="p-4 text-right">
+                        {item.status === '处理中' ? (
+                          <div className="flex items-center justify-end gap-2">
+                            <button 
+                              onClick={() => handleApprove(item.id)}
+                              className="text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 dark:hover:text-emerald-400 text-sm font-medium hover:underline"
+                            >
+                              打款
+                            </button>
+                            <span className="text-slate-300 dark:text-slate-600">|</span>
+                            <button 
+                              onClick={() => handleReject(item.id)}
+                              className="text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400 text-sm font-medium hover:underline"
+                            >
+                              拒绝
+                            </button>
+                          </div>
+                        ) : (
                           <button 
-                            onClick={() => handleApprove(item.id)}
-                            className="text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 dark:hover:text-emerald-400 text-sm font-medium hover:underline"
+                            onClick={() => navigate(`/admin/users/${item.userId}`)}
+                            className="text-primary text-sm font-medium hover:underline"
                           >
-                            打款
+                            查看用户
                           </button>
-                          <span className="text-slate-300 dark:text-slate-600">|</span>
-                          <button 
-                            onClick={() => handleReject(item.id)}
-                            className="text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400 text-sm font-medium hover:underline"
-                          >
-                            拒绝
-                          </button>
-                        </div>
-                      ) : (
-                        <button 
-                          onClick={() => navigate(`/admin/users/${item.userId}`)}
-                          className="text-primary text-sm font-medium hover:underline"
-                        >
-                          查看用户
-                        </button>
-                      )}
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={7} className="p-0">
+                      <Empty 
+                        icon="account_balance_wallet"
+                        title="未找到提现记录"
+                        description="没有找到符合条件的提现记录，请尝试更改搜索条件"
+                        actionText="清除筛选"
+                        onAction={() => {
+                          setWithdrawalSearch('');
+                          setWithdrawalStatus('all');
+                        }}
+                      />
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -279,38 +297,56 @@ export default function AdminFinance() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {filteredTransactions.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                    <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.id}</td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.orderId}</td>
-                    <td className="p-4">
-                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        item.amount > 0 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                        'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
-                      }`}>
-                        {item.type}
-                      </span>
-                    </td>
-                    <td className={`p-4 text-sm font-bold ${item.amount > 0 ? 'text-emerald-600 dark:text-emerald-500' : 'text-red-600 dark:text-red-500'}`}>
-                      {item.amount > 0 ? '+' : ''}{item.amount.toFixed(2)}
-                    </td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.payMethod}</td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.date}</td>
-                    <td className="p-4">
-                      <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
-                        {item.status}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <button 
-                        onClick={() => navigate(`/admin/orders/${item.orderId}`)}
-                        className="text-primary text-sm font-medium hover:underline"
-                      >
-                        查看订单
-                      </button>
+                {filteredTransactions.length > 0 ? (
+                  filteredTransactions.map((item) => (
+                    <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                      <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.id}</td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.orderId}</td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                          item.amount > 0 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                          'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
+                        }`}>
+                          {item.type}
+                        </span>
+                      </td>
+                      <td className={`p-4 text-sm font-bold ${item.amount > 0 ? 'text-emerald-600 dark:text-emerald-500' : 'text-red-600 dark:text-red-500'}`}>
+                        {item.amount > 0 ? '+' : ''}{item.amount.toFixed(2)}
+                      </td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.payMethod}</td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.date}</td>
+                      <td className="p-4">
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
+                          {item.status}
+                        </span>
+                      </td>
+                      <td className="p-4 text-right">
+                        <button 
+                          onClick={() => navigate(`/admin/orders/${item.orderId}`)}
+                          className="text-primary text-sm font-medium hover:underline"
+                        >
+                          查看订单
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="p-0">
+                      <Empty 
+                        icon="receipt_long"
+                        title="未找到资金流水"
+                        description="没有找到符合条件的资金流水，请尝试更改搜索条件"
+                        actionText="清除筛选"
+                        onAction={() => {
+                          setTransactionSearch('');
+                          setTransactionType('all');
+                          setTransactionDate('');
+                        }}
+                      />
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

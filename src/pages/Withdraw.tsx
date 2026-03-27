@@ -1,7 +1,18 @@
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 export default function Withdraw() {
   const navigate = useNavigate();
+  // 模拟用户状态，实际应从全局状态或 API 获取
+  const [userStatus] = useState<'正常' | '冻结'>('冻结');
+  const [amount, setAmount] = useState<string>('500.00');
+
+  const availableBalance = 1280.50;
+  const feeRate = 0.003; // 0.3% 手续费
+  
+  const numAmount = parseFloat(amount) || 0;
+  const fee = Math.max(0, numAmount * feeRate);
+  const actualReceived = Math.max(0, numAmount - fee);
 
   return (
     <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
@@ -14,6 +25,16 @@ export default function Withdraw() {
         <div className="w-10"></div> {/* 占位符 */}
       </nav>
 
+      {userStatus === '冻结' && (
+        <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 text-sm flex items-start gap-2 border-b border-red-100 dark:border-red-900/30">
+          <span className="material-symbols-outlined text-base mt-0.5">block</span>
+          <div className="flex-1">
+            <p className="font-bold">账号已冻结</p>
+            <p className="text-xs mt-0.5 opacity-90">您的合伙人权限已被冻结，提现功能暂时受限。如有疑问请联系客服。</p>
+          </div>
+        </div>
+      )}
+
       <main className="max-w-md mx-auto pb-24 flex-1 w-full">
         {/* 余额卡片 */}
         <div className="p-4">
@@ -22,7 +43,7 @@ export default function Withdraw() {
               <p className="text-primary-foreground/80 text-sm font-medium opacity-90">可用余额</p>
               <div className="flex items-baseline gap-1 mt-1">
                 <span className="text-xl font-bold">¥</span>
-                <span className="text-4xl font-bold tracking-tight">1,280.50</span>
+                <span className="text-4xl font-bold tracking-tight">{availableBalance.toFixed(2)}</span>
               </div>
               <div className="mt-4 flex items-center gap-2 text-xs bg-white/10 w-fit px-2 py-1 rounded">
                 <span className="material-symbols-outlined text-sm">verified_user</span>
@@ -40,7 +61,12 @@ export default function Withdraw() {
           <section>
             <div className="flex justify-between items-end mb-2">
               <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">提现金额</label>
-              <button className="text-primary text-xs font-bold uppercase tracking-wider">全部提现</button>
+              <button 
+                onClick={() => setAmount(availableBalance.toString())}
+                className="text-primary text-xs font-bold uppercase tracking-wider"
+              >
+                全部提现
+              </button>
             </div>
             <div className="relative flex items-center">
               <span className="absolute left-4 text-xl font-bold text-slate-400">¥</span>
@@ -48,10 +74,14 @@ export default function Withdraw() {
                 className="w-full pl-10 pr-4 py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-xl font-bold" 
                 placeholder="0.00" 
                 type="number" 
-                defaultValue="500.00" 
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
               />
             </div>
-            <p className="mt-2 text-xs text-slate-500">手续费: ¥1.50</p>
+            <div className="mt-2 flex justify-between items-center text-xs">
+              <p className="text-slate-500">扣除手续费 (0.3%): <span className="font-medium text-slate-700 dark:text-slate-300">¥{fee.toFixed(2)}</span></p>
+              <p className="text-slate-500">实际到账金额: <span className="font-bold text-primary">¥{actualReceived.toFixed(2)}</span></p>
+            </div>
           </section>
 
           {/* 方式选择 */}
@@ -103,7 +133,14 @@ export default function Withdraw() {
 
         {/* 提交按钮容器 */}
         <div className="p-4 mt-4">
-          <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-transform active:scale-[0.98]">
+          <button 
+            disabled={userStatus === '冻结'}
+            className={`w-full font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-transform ${
+              userStatus === '冻结' 
+                ? 'bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none' 
+                : 'bg-primary hover:bg-primary/90 text-white shadow-primary/30 active:scale-[0.98]'
+            }`}
+          >
             <span className="material-symbols-outlined">send</span>
             提交申请
           </button>

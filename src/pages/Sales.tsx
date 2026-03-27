@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Empty from '../components/Empty';
 
 type RecordType = '全部' | '推荐奖励' | '销售提成' | '分红收益';
 
@@ -131,9 +132,12 @@ export default function Sales() {
                   </div>
                 ))
               ) : (
-                <div className="py-12 text-center text-slate-400 text-sm">
-                  暂无收益记录
-                </div>
+                <Empty 
+                  icon="receipt_long"
+                  title="暂无收益记录"
+                  description={`没有找到${activeTab === '全部' ? '' : activeTab}相关的收益记录`}
+                  className="py-12"
+                />
               )}
             </div>
             

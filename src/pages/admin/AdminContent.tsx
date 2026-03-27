@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import Empty from '../../components/Empty';
 
 export default function AdminContent() {
-  const [activeTab, setActiveTab] = useState<'banner' | 'announcement' | 'recruit'>('banner');
+  const [activeTab, setActiveTab] = useState<'banner' | 'announcement' | 'recruit' | 'faq'>('banner');
 
   // Mock Data
   const [banners, setBanners] = useState([
@@ -26,12 +27,20 @@ export default function AdminContent() {
     ]
   });
 
+  const [faqs, setFaqs] = useState([
+    { id: 1, category: '佣金规则', question: '佣金如何结算与提现？', answer: '佣金在订单完成后7天结算到账，满100元即可申请提现，提现通常在1-3个工作日内到账。', status: '显示中', sort: 1 },
+    { id: 2, category: '升级规则', question: '如何升级合伙人等级？', answer: '合伙人等级根据您的累计销售额和直推人数自动升级，具体条件请参考合伙人权益说明。', status: '显示中', sort: 2 },
+    { id: 3, category: '邀请规则', question: '邀请好友有什么奖励？', answer: '邀请好友注册并成为合伙人，您将获得其销售额一定比例的间推奖励。', status: '已隐藏', sort: 3 },
+  ]);
+
   const [showBannerModal, setShowBannerModal] = useState(false);
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
+  const [showFaqModal, setShowFaqModal] = useState(false);
   
   // Search States
   const [bannerSearch, setBannerSearch] = useState('');
   const [announcementSearch, setAnnouncementSearch] = useState('');
+  const [faqSearch, setFaqSearch] = useState('');
 
   // New Banner State
   const [newBanner, setNewBanner] = useState({
@@ -46,6 +55,14 @@ export default function AdminContent() {
     title: '',
     content: '',
     publishNow: false
+  });
+
+  // New FAQ State
+  const [newFaq, setNewFaq] = useState({
+    category: '佣金规则',
+    question: '',
+    answer: '',
+    status: '显示中'
   });
 
   // Toast State
@@ -111,12 +128,38 @@ export default function AdminContent() {
     showToast('招募页配置保存成功');
   };
 
+  const handleSaveFaq = () => {
+    if (!newFaq.question.trim()) {
+      showToast('请输入问题', 'error');
+      return;
+    }
+    if (!newFaq.answer.trim()) {
+      showToast('请输入回答', 'error');
+      return;
+    }
+
+    const faq = {
+      id: Date.now(),
+      ...newFaq,
+      sort: faqs.length + 1
+    };
+
+    setFaqs([...faqs, faq]);
+    setShowFaqModal(false);
+    setNewFaq({ category: '佣金规则', question: '', answer: '', status: '显示中' });
+    showToast('FAQ添加成功');
+  };
+
   const filteredBanners = banners.filter(banner => 
     banner.title.includes(bannerSearch)
   );
 
   const filteredAnnouncements = announcements.filter(ann => 
     ann.title.includes(announcementSearch) || ann.content.includes(announcementSearch)
+  );
+
+  const filteredFaqs = faqs.filter(faq => 
+    faq.question.includes(faqSearch) || faq.answer.includes(faqSearch) || faq.category.includes(faqSearch)
   );
 
   return (
@@ -168,6 +211,16 @@ export default function AdminContent() {
           >
             合伙人招募页配置
           </button>
+          <button
+            onClick={() => setActiveTab('faq')}
+            className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+              activeTab === 'faq'
+                ? 'bg-primary text-white shadow'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+            }`}
+          >
+            规则与FAQ
+          </button>
         </div>
       </div>
 
@@ -207,38 +260,52 @@ export default function AdminContent() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-                {filteredBanners.map((banner) => (
-                  <tr key={banner.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <td className="p-4">
-                      <img src={banner.imageUrl} alt={banner.title} className="w-24 h-12 object-cover rounded-lg border border-slate-200 dark:border-slate-700" />
-                    </td>
-                    <td className="p-4 text-sm text-slate-900 dark:text-white font-medium">{banner.title}</td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-400">
-                      {banner.type === 'carousel' ? '首页轮播' : '弹窗广告'}
-                    </td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{banner.link}</td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{banner.sort}</td>
-                    <td className="p-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                        banner.status === '显示中' 
-                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400'
-                          : 'bg-slate-100 text-slate-800 dark:bg-slate-500/20 dark:text-slate-400'
-                      }`}>
-                        {banner.status}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex gap-2">
-                        <button className="p-1 text-slate-400 hover:text-primary transition-colors">
-                          <span className="material-symbols-outlined text-[20px]">edit</span>
-                        </button>
-                        <button className="p-1 text-slate-400 hover:text-red-500 transition-colors">
-                          <span className="material-symbols-outlined text-[20px]">delete</span>
-                        </button>
-                      </div>
+                {filteredBanners.length > 0 ? (
+                  filteredBanners.map((banner) => (
+                    <tr key={banner.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                      <td className="p-4">
+                        <img src={banner.imageUrl} alt={banner.title} className="w-24 h-12 object-cover rounded-lg border border-slate-200 dark:border-slate-700" />
+                      </td>
+                      <td className="p-4 text-sm text-slate-900 dark:text-white font-medium">{banner.title}</td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-400">
+                        {banner.type === 'carousel' ? '首页轮播' : '弹窗广告'}
+                      </td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{banner.link}</td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{banner.sort}</td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                          banner.status === '显示中' 
+                            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400'
+                            : 'bg-slate-100 text-slate-800 dark:bg-slate-500/20 dark:text-slate-400'
+                        }`}>
+                          {banner.status}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex gap-2">
+                          <button className="p-1 text-slate-400 hover:text-primary transition-colors">
+                            <span className="material-symbols-outlined text-[20px]">edit</span>
+                          </button>
+                          <button className="p-1 text-slate-400 hover:text-red-500 transition-colors">
+                            <span className="material-symbols-outlined text-[20px]">delete</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={7} className="p-0">
+                      <Empty 
+                        icon="view_carousel"
+                        title="未找到Banner"
+                        description="没有找到符合条件的Banner，请尝试更改搜索条件"
+                        actionText="清除筛选"
+                        onAction={() => setBannerSearch('')}
+                      />
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -279,32 +346,46 @@ export default function AdminContent() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-                {filteredAnnouncements.map((announcement) => (
-                  <tr key={announcement.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <td className="p-4 text-sm text-slate-900 dark:text-white font-medium">{announcement.title}</td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-400 max-w-xs truncate">{announcement.content}</td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{announcement.publishTime}</td>
-                    <td className="p-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                        announcement.status === '已发布' 
-                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400'
-                          : 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400'
-                      }`}>
-                        {announcement.status}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex gap-2">
-                        <button className="p-1 text-slate-400 hover:text-primary transition-colors">
-                          <span className="material-symbols-outlined text-[20px]">edit</span>
-                        </button>
-                        <button className="p-1 text-slate-400 hover:text-red-500 transition-colors">
-                          <span className="material-symbols-outlined text-[20px]">delete</span>
-                        </button>
-                      </div>
+                {filteredAnnouncements.length > 0 ? (
+                  filteredAnnouncements.map((announcement) => (
+                    <tr key={announcement.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                      <td className="p-4 text-sm text-slate-900 dark:text-white font-medium">{announcement.title}</td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-400 max-w-xs truncate">{announcement.content}</td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{announcement.publishTime}</td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                          announcement.status === '已发布' 
+                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400'
+                            : 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400'
+                        }`}>
+                          {announcement.status}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex gap-2">
+                          <button className="p-1 text-slate-400 hover:text-primary transition-colors">
+                            <span className="material-symbols-outlined text-[20px]">edit</span>
+                          </button>
+                          <button className="p-1 text-slate-400 hover:text-red-500 transition-colors">
+                            <span className="material-symbols-outlined text-[20px]">delete</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="p-0">
+                      <Empty 
+                        icon="campaign"
+                        title="未找到公告"
+                        description="没有找到符合条件的公告，请尝试更改搜索条件"
+                        actionText="清除筛选"
+                        onAction={() => setAnnouncementSearch('')}
+                      />
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -377,6 +458,86 @@ export default function AdminContent() {
                 保存配置
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* FAQ Management */}
+      {activeTab === 'faq' && (
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+          <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">规则与FAQ列表</h2>
+            <div className="flex items-center gap-4">
+              <input 
+                type="text" 
+                placeholder="搜索问题或分类" 
+                value={faqSearch}
+                onChange={(e) => setFaqSearch(e.target.value)}
+                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none w-64"
+              />
+              <button 
+                onClick={() => setShowFaqModal(true)}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 text-sm"
+              >
+                <span className="material-symbols-outlined text-[20px]">add</span>
+                添加FAQ
+              </button>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                  <th className="p-4 text-sm font-medium text-slate-500 dark:text-slate-400">排序</th>
+                  <th className="p-4 text-sm font-medium text-slate-500 dark:text-slate-400">分类</th>
+                  <th className="p-4 text-sm font-medium text-slate-500 dark:text-slate-400">问题</th>
+                  <th className="p-4 text-sm font-medium text-slate-500 dark:text-slate-400">状态</th>
+                  <th className="p-4 text-sm font-medium text-slate-500 dark:text-slate-400 text-right">操作</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+                {filteredFaqs.length > 0 ? (
+                  filteredFaqs.map((faq) => (
+                    <tr key={faq.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                      <td className="p-4 text-sm text-slate-900 dark:text-white">{faq.sort}</td>
+                      <td className="p-4 text-sm text-slate-900 dark:text-white">
+                        <span className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs font-medium">
+                          {faq.category}
+                        </span>
+                      </td>
+                      <td className="p-4 text-sm text-slate-900 dark:text-white max-w-md">
+                        <p className="font-medium truncate">{faq.question}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-1">{faq.answer}</p>
+                      </td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                          faq.status === '显示中' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                          'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400'
+                        }`}>
+                          {faq.status}
+                        </span>
+                      </td>
+                      <td className="p-4 text-right">
+                        <button className="text-primary hover:text-primary/80 font-medium text-sm mr-4 transition-colors">编辑</button>
+                        <button className="text-red-500 hover:text-red-600 font-medium text-sm transition-colors">删除</button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="p-0">
+                      <Empty 
+                        icon="help"
+                        title="未找到规则与FAQ"
+                        description="没有找到符合条件的规则与FAQ，请尝试更改搜索条件"
+                        actionText="清除筛选"
+                        onAction={() => setFaqSearch('')}
+                      />
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
@@ -483,6 +644,74 @@ export default function AdminContent() {
               </button>
               <button 
                 onClick={handleSaveAnnouncement}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                保存
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Add FAQ Modal */}
+      {showFaqModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-lg p-6 shadow-xl">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">添加FAQ</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">分类</label>
+                <select 
+                  value={newFaq.category}
+                  onChange={(e) => setNewFaq({...newFaq, category: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent focus:ring-2 focus:ring-primary/50 outline-none appearance-none"
+                >
+                  <option value="佣金规则">佣金规则</option>
+                  <option value="升级规则">升级规则</option>
+                  <option value="邀请规则">邀请规则</option>
+                  <option value="其他问题">其他问题</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">问题 <span className="text-red-500">*</span></label>
+                <input 
+                  type="text" 
+                  value={newFaq.question}
+                  onChange={(e) => setNewFaq({...newFaq, question: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent focus:ring-2 focus:ring-primary/50 outline-none" 
+                  placeholder="输入常见问题" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">回答 <span className="text-red-500">*</span></label>
+                <textarea 
+                  rows={4} 
+                  value={newFaq.answer}
+                  onChange={(e) => setNewFaq({...newFaq, answer: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent resize-none focus:ring-2 focus:ring-primary/50 outline-none" 
+                  placeholder="输入详细解答"
+                ></textarea>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">状态</label>
+                <select 
+                  value={newFaq.status}
+                  onChange={(e) => setNewFaq({...newFaq, status: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent focus:ring-2 focus:ring-primary/50 outline-none appearance-none"
+                >
+                  <option value="显示中">显示中</option>
+                  <option value="已隐藏">已隐藏</option>
+                </select>
+              </div>
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <button 
+                onClick={() => setShowFaqModal(false)}
+                className="px-4 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              >
+                取消
+              </button>
+              <button 
+                onClick={handleSaveFaq}
                 className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
               >
                 保存

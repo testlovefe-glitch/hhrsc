@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Empty from '../../components/Empty';
 
 export default function AdminProducts() {
   const navigate = useNavigate();
@@ -326,67 +327,86 @@ export default function AdminProducts() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                  {filteredProducts.map((product) => (
-                    <tr key={product.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                      <td className="p-4">
-                        <div className="flex items-center gap-3">
-                          <img src={product.image} alt={product.name} className="w-12 h-12 rounded object-cover border border-slate-200 dark:border-slate-700 flex-shrink-0" />
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <p className="text-sm font-medium text-slate-900 dark:text-white line-clamp-1" title={product.name}>{product.name}</p>
-                              {product.isMultiSpec && (
-                                <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] rounded whitespace-nowrap">多规格</span>
-                              )}
+                  {filteredProducts.length > 0 ? (
+                    filteredProducts.map((product) => (
+                      <tr key={product.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                        <td className="p-4">
+                          <div className="flex items-center gap-3">
+                            <img src={product.image} alt={product.name} className="w-12 h-12 rounded object-cover border border-slate-200 dark:border-slate-700 flex-shrink-0" />
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <p className="text-sm font-medium text-slate-900 dark:text-white line-clamp-1" title={product.name}>{product.name}</p>
+                                {product.isMultiSpec && (
+                                  <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] rounded whitespace-nowrap">多规格</span>
+                                )}
+                              </div>
+                              <p className="text-xs text-slate-500 mt-0.5">ID: {product.id}</p>
                             </div>
-                            <p className="text-xs text-slate-500 mt-0.5">ID: {product.id}</p>
                           </div>
-                        </div>
-                      </td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{product.category}</td>
-                      <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">¥{product.price}</td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                        <span className={product.stock === 0 ? 'text-red-500 font-medium' : ''}>{product.stock}</span>
-                      </td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{product.sales}</td>
-                      <td className="p-4">
-                        <div className="flex flex-wrap gap-1">
-                          {product.tags.length > 0 ? product.tags.map(tag => (
-                            <span key={tag} className={`px-2 py-0.5 rounded text-xs font-medium ${
-                              tag === '秒杀' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
-                              tag === '团购' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
-                              'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400'
-                            }`}>
-                              {tag}
-                            </span>
-                          )) : <span className="text-xs text-slate-400">-</span>}
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          product.status === '上架' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                          'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
-                        }`}>
-                          {product.status}
-                        </span>
-                      </td>
-                      <td className="p-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button onClick={() => openTagModal(product)} className="text-xs text-primary hover:underline font-medium px-2 py-1">
-                            设置标签
-                          </button>
-                          <button onClick={() => toggleStatus(product.id)} className={`text-xs font-medium px-2 py-1 hover:underline ${product.status === '上架' ? 'text-slate-500' : 'text-emerald-600'}`}>
-                            {product.status === '上架' ? '下架' : '上架'}
-                          </button>
-                          <button onClick={() => navigate(`/admin/products/edit/${product.id}`)} className="p-1.5 text-slate-400 hover:text-primary transition-colors rounded hover:bg-slate-100 dark:hover:bg-slate-700" title="编辑">
-                            <span className="material-symbols-outlined text-[18px]">edit</span>
-                          </button>
-                          <button onClick={() => deleteProduct(product.id)} className="p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded hover:bg-slate-100 dark:hover:bg-slate-700" title="删除">
-                            <span className="material-symbols-outlined text-[18px]">delete</span>
-                          </button>
-                        </div>
+                        </td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{product.category}</td>
+                        <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">¥{product.price}</td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                          <span className={product.stock === 0 ? 'text-red-500 font-medium' : ''}>{product.stock}</span>
+                        </td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{product.sales}</td>
+                        <td className="p-4">
+                          <div className="flex flex-wrap gap-1">
+                            {product.tags.length > 0 ? product.tags.map(tag => (
+                              <span key={tag} className={`px-2 py-0.5 rounded text-xs font-medium ${
+                                tag === '秒杀' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
+                                tag === '团购' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+                                'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400'
+                              }`}>
+                                {tag}
+                              </span>
+                            )) : <span className="text-xs text-slate-400">-</span>}
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                            product.status === '上架' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                            'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                          }`}>
+                            {product.status}
+                          </span>
+                        </td>
+                        <td className="p-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button onClick={() => openTagModal(product)} className="text-xs text-primary hover:underline font-medium px-2 py-1">
+                              设置标签
+                            </button>
+                            <button onClick={() => toggleStatus(product.id)} className={`text-xs font-medium px-2 py-1 hover:underline ${product.status === '上架' ? 'text-slate-500' : 'text-emerald-600'}`}>
+                              {product.status === '上架' ? '下架' : '上架'}
+                            </button>
+                            <button onClick={() => navigate(`/admin/products/edit/${product.id}`)} className="p-1.5 text-slate-400 hover:text-primary transition-colors rounded hover:bg-slate-100 dark:hover:bg-slate-700" title="编辑">
+                              <span className="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                            <button onClick={() => deleteProduct(product.id)} className="p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded hover:bg-slate-100 dark:hover:bg-slate-700" title="删除">
+                              <span className="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={8} className="p-0">
+                        <Empty 
+                          icon="search_off"
+                          title="未找到商品"
+                          description="没有找到符合条件的商品，请尝试更改搜索条件"
+                          actionText="清除筛选"
+                          onAction={() => {
+                            setSearchQuery('');
+                            setCategoryFilter('');
+                            setStatusFilter('');
+                            setTagFilter('');
+                          }}
+                        />
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -418,58 +438,70 @@ export default function AdminProducts() {
                   <div className="col-span-2 text-right">操作</div>
                 </div>
                 <div className="divide-y divide-slate-200 dark:divide-slate-700">
-                  {categories.map((category) => (
-                    <div key={category.id}>
-                      {/* Level 1 */}
-                      <div className="grid grid-cols-12 gap-4 p-4 items-center hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors">
-                        <div className="col-span-4 flex items-center gap-2">
-                          <span className="material-symbols-outlined text-slate-400 text-[20px] cursor-pointer">
-                            {category.children.length > 0 ? 'expand_more' : 'chevron_right'}
-                          </span>
-                          <span className="font-medium text-slate-900 dark:text-white">{category.name}</span>
-                        </div>
-                        <div className="col-span-2 text-center text-sm text-slate-600 dark:text-slate-400">一级</div>
-                        <div className="col-span-2 text-center">
-                          <input 
-                            type="number" 
-                            value={category.sort} 
-                            onChange={(e) => updateCategorySort(category.id, parseInt(e.target.value) || 0)}
-                            className="w-16 text-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 text-sm outline-none focus:border-primary" 
-                          />
-                        </div>
-                        <div className="col-span-2 text-center text-sm text-slate-600 dark:text-slate-400">{category.productCount}</div>
-                        <div className="col-span-2 flex items-center justify-end gap-2">
-                          <button onClick={() => openCategoryModal(null, category.id)} className="text-xs text-primary hover:underline font-medium">添加子分类</button>
-                          <button onClick={() => openCategoryModal(category)} className="text-slate-400 hover:text-primary transition-colors" title="编辑"><span className="material-symbols-outlined text-[18px]">edit</span></button>
-                          <button onClick={() => deleteCategory(category.id)} className="text-slate-400 hover:text-red-500 transition-colors" title="删除"><span className="material-symbols-outlined text-[18px]">delete</span></button>
-                        </div>
-                      </div>
-                      
-                      {/* Level 2 */}
-                      {category.children.map((child) => (
-                        <div key={child.id} className="grid grid-cols-12 gap-4 p-4 items-center bg-white dark:bg-slate-800/30 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors border-t border-slate-100 dark:border-slate-800">
-                          <div className="col-span-4 flex items-center gap-2 pl-8">
-                            <span className="w-4 border-b border-l border-slate-300 dark:border-slate-600 h-4 -mt-4 rounded-bl"></span>
-                            <span className="text-sm text-slate-700 dark:text-slate-300">{child.name}</span>
+                  {categories.length > 0 ? (
+                    categories.map((category) => (
+                      <div key={category.id}>
+                        {/* Level 1 */}
+                        <div className="grid grid-cols-12 gap-4 p-4 items-center hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors">
+                          <div className="col-span-4 flex items-center gap-2">
+                            <span className="material-symbols-outlined text-slate-400 text-[20px] cursor-pointer">
+                              {category.children.length > 0 ? 'expand_more' : 'chevron_right'}
+                            </span>
+                            <span className="font-medium text-slate-900 dark:text-white">{category.name}</span>
                           </div>
-                          <div className="col-span-2 text-center text-sm text-slate-500 dark:text-slate-500">二级</div>
+                          <div className="col-span-2 text-center text-sm text-slate-600 dark:text-slate-400">一级</div>
                           <div className="col-span-2 text-center">
                             <input 
                               type="number" 
-                              value={child.sort} 
-                              onChange={(e) => updateCategorySort(child.id, parseInt(e.target.value) || 0, category.id)}
+                              value={category.sort} 
+                              onChange={(e) => updateCategorySort(category.id, parseInt(e.target.value) || 0)}
                               className="w-16 text-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 text-sm outline-none focus:border-primary" 
                             />
                           </div>
-                          <div className="col-span-2 text-center text-sm text-slate-600 dark:text-slate-400">{child.productCount}</div>
+                          <div className="col-span-2 text-center text-sm text-slate-600 dark:text-slate-400">{category.productCount}</div>
                           <div className="col-span-2 flex items-center justify-end gap-2">
-                            <button onClick={() => openCategoryModal(child, category.id)} className="text-slate-400 hover:text-primary transition-colors" title="编辑"><span className="material-symbols-outlined text-[18px]">edit</span></button>
-                            <button onClick={() => deleteCategory(child.id, category.id)} className="text-slate-400 hover:text-red-500 transition-colors" title="删除"><span className="material-symbols-outlined text-[18px]">delete</span></button>
+                            <button onClick={() => openCategoryModal(null, category.id)} className="text-xs text-primary hover:underline font-medium">添加子分类</button>
+                            <button onClick={() => openCategoryModal(category)} className="text-slate-400 hover:text-primary transition-colors" title="编辑"><span className="material-symbols-outlined text-[18px]">edit</span></button>
+                            <button onClick={() => deleteCategory(category.id)} className="text-slate-400 hover:text-red-500 transition-colors" title="删除"><span className="material-symbols-outlined text-[18px]">delete</span></button>
                           </div>
                         </div>
-                      ))}
+                        
+                        {/* Level 2 */}
+                        {category.children.map((child) => (
+                          <div key={child.id} className="grid grid-cols-12 gap-4 p-4 items-center bg-white dark:bg-slate-800/30 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors border-t border-slate-100 dark:border-slate-800">
+                            <div className="col-span-4 flex items-center gap-2 pl-8">
+                              <span className="w-4 border-b border-l border-slate-300 dark:border-slate-600 h-4 -mt-4 rounded-bl"></span>
+                              <span className="text-sm text-slate-700 dark:text-slate-300">{child.name}</span>
+                            </div>
+                            <div className="col-span-2 text-center text-sm text-slate-500 dark:text-slate-500">二级</div>
+                            <div className="col-span-2 text-center">
+                              <input 
+                                type="number" 
+                                value={child.sort} 
+                                onChange={(e) => updateCategorySort(child.id, parseInt(e.target.value) || 0, category.id)}
+                                className="w-16 text-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 text-sm outline-none focus:border-primary" 
+                              />
+                            </div>
+                            <div className="col-span-2 text-center text-sm text-slate-600 dark:text-slate-400">{child.productCount}</div>
+                            <div className="col-span-2 flex items-center justify-end gap-2">
+                              <button onClick={() => openCategoryModal(child, category.id)} className="text-slate-400 hover:text-primary transition-colors" title="编辑"><span className="material-symbols-outlined text-[18px]">edit</span></button>
+                              <button onClick={() => deleteCategory(child.id, category.id)} className="text-slate-400 hover:text-red-500 transition-colors" title="删除"><span className="material-symbols-outlined text-[18px]">delete</span></button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-0">
+                      <Empty 
+                        icon="category"
+                        title="暂无分类"
+                        description="还没有添加任何商品分类，请点击右上角添加"
+                        actionText="添加一级分类"
+                        onAction={() => openCategoryModal()}
+                      />
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </div>

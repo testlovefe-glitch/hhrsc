@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 export default function Checkout() {
   const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState<any>(null);
+  // 模拟用户状态，实际应从全局状态或 API 获取
+  const [userStatus] = useState<'正常' | '冻结'>('冻结');
 
   const coupons = [
     { id: 1, name: '新人专享券', discount: 50, condition: '满500可用' },
@@ -24,6 +26,16 @@ export default function Checkout() {
         </Link>
         <h1 className="flex-1 text-center text-lg font-bold leading-tight mr-8">确认订单</h1>
       </header>
+
+      {userStatus === '冻结' && (
+        <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 text-sm flex items-start gap-2 border-b border-red-100 dark:border-red-900/30">
+          <span className="material-symbols-outlined text-base mt-0.5">block</span>
+          <div className="flex-1">
+            <p className="font-bold">账号已冻结</p>
+            <p className="text-xs mt-0.5 opacity-90">您的账号当前处于冻结状态，无法进行下单操作。如有疑问请联系客服。</p>
+          </div>
+        </div>
+      )}
 
       <main className="flex-1 overflow-y-auto pb-32">
         {/* Address Selector Section */}
@@ -142,9 +154,15 @@ export default function Checkout() {
             <span className="text-primary text-[24px] font-black tracking-tight">¥{total.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
           </div>
         </div>
-        <Link to="/payment" className="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-12 rounded-full transition-all active:scale-[0.97] shadow-lg shadow-primary/25 text-base">
-          提交订单
-        </Link>
+        {userStatus === '冻结' ? (
+          <button disabled className="bg-slate-300 dark:bg-slate-700 text-slate-500 font-bold py-3 px-12 rounded-full cursor-not-allowed text-base">
+            不可下单
+          </button>
+        ) : (
+          <Link to="/payment" className="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-12 rounded-full transition-all active:scale-[0.97] shadow-lg shadow-primary/25 text-base">
+            提交订单
+          </Link>
+        )}
       </footer>
 
       {/* Coupon Modal */}

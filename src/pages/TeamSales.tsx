@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import Empty from '../components/Empty';
 
 export default function TeamSales() {
   const navigate = useNavigate();
@@ -230,9 +231,12 @@ export default function TeamSales() {
             ))}
             
             {filteredAndSortedSales.length === 0 && (
-              <div className="text-center py-8 text-slate-500 dark:text-slate-400 text-sm bg-slate-50 dark:bg-slate-800/50 rounded-xl">
-                没有找到匹配的记录
-              </div>
+              <Empty 
+                icon="search_off"
+                title="未找到记录"
+                description="没有找到匹配的销售记录"
+                className="mt-4"
+              />
             )}
           </div>
           

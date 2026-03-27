@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Partner() {
+  // 模拟用户状态，实际应从全局状态或 API 获取
+  const [userStatus] = useState<'正常' | '冻结'>('冻结');
+
   return (
     <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark pb-24">
       <div className="flex items-center bg-white dark:bg-slate-900 p-4 sticky top-0 z-10 border-b border-slate-200 dark:border-slate-800 justify-between">
@@ -14,6 +18,16 @@ export default function Partner() {
           </button>
         </div>
       </div>
+
+      {userStatus === '冻结' && (
+        <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 text-sm flex items-start gap-2 border-b border-red-100 dark:border-red-900/30">
+          <span className="material-symbols-outlined text-base mt-0.5">block</span>
+          <div className="flex-1">
+            <p className="font-bold">账号已冻结</p>
+            <p className="text-xs mt-0.5 opacity-90">您的合伙人权限已被冻结，提现和邀请功能暂时受限。如有疑问请联系客服。</p>
+          </div>
+        </div>
+      )}
 
       <div className="p-4">
         <div className="flex flex-col items-stretch justify-start rounded-xl shadow-lg bg-gradient-to-br from-primary to-blue-700 text-white overflow-hidden relative">
@@ -71,9 +85,15 @@ export default function Partner() {
               <p className="text-white/90 text-xs mt-1">邀请好友加入，享二级返佣加成</p>
             </div>
           </div>
-          <Link to="/partner/invite" className="bg-white text-[#ff7a18] px-4 py-2 rounded-full text-sm font-bold shadow-sm whitespace-nowrap active:opacity-90 transition-opacity">
-            立即邀请
-          </Link>
+          {userStatus === '冻结' ? (
+            <button disabled className="bg-white/50 text-[#ff7a18]/50 px-4 py-2 rounded-full text-sm font-bold shadow-sm whitespace-nowrap cursor-not-allowed">
+              不可用
+            </button>
+          ) : (
+            <Link to="/partner/invite" className="bg-white text-[#ff7a18] px-4 py-2 rounded-full text-sm font-bold shadow-sm whitespace-nowrap active:opacity-90 transition-opacity">
+              立即邀请
+            </Link>
+          )}
         </div>
       </div>
 

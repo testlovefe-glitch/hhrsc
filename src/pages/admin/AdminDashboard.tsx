@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import Empty from '../../components/Empty';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -201,28 +202,36 @@ export default function AdminDashboard() {
                 </button>
               </div>
               <div className="space-y-3">
-                {pendingWithdrawals.map((item, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-100 dark:border-slate-700/50">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-sm font-medium text-slate-600 dark:text-slate-300">
-                        {item.name[0]}
+                {pendingWithdrawals.length > 0 ? (
+                  pendingWithdrawals.map((item, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-100 dark:border-slate-700/50">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-sm font-medium text-slate-600 dark:text-slate-300">
+                          {item.name[0]}
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">{item.name} <span className="text-xs text-slate-500 font-normal ml-1">{item.time}</span></p>
+                          <p className="text-xs text-slate-500">单号: {item.id}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-slate-900 dark:text-white">{item.name} <span className="text-xs text-slate-500 font-normal ml-1">{item.time}</span></p>
-                        <p className="text-xs text-slate-500">单号: {item.id}</p>
+                      <div className="flex items-center gap-4">
+                        <p className="text-sm font-bold text-slate-900 dark:text-white">{item.amount}</p>
+                        <button 
+                          onClick={() => navigate('/admin/finance')}
+                          className="px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-md text-xs font-medium transition-colors"
+                        >
+                          去处理
+                        </button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <p className="text-sm font-bold text-slate-900 dark:text-white">{item.amount}</p>
-                      <button 
-                        onClick={() => navigate('/admin/finance')}
-                        className="px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-md text-xs font-medium transition-colors"
-                      >
-                        去处理
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <Empty 
+                    icon="check_circle"
+                    title="暂无待办事项"
+                    description="所有提现申请已处理完毕"
+                  />
+                )}
               </div>
             </div>
 

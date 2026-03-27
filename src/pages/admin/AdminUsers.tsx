@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Empty from '../../components/Empty';
 
 export default function AdminUsers() {
   const navigate = useNavigate();
@@ -136,75 +137,95 @@ export default function AdminUsers() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700" />
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm font-medium text-slate-900 dark:text-white">{user.name}</p>
-                          <span className="text-[10px] text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{user.id}</span>
+              {filteredUsers.length > 0 ? (
+                filteredUsers.map((user) => (
+                  <tr key={user.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700" />
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-medium text-slate-900 dark:text-white">{user.name}</p>
+                            <span className="text-[10px] text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{user.id}</span>
+                          </div>
+                          <p className="text-xs text-slate-500 mt-0.5">{user.phone}</p>
                         </div>
-                        <p className="text-xs text-slate-500 mt-0.5">{user.phone}</p>
                       </div>
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex flex-col gap-1 items-start">
-                      {user.isPartner ? (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400">
-                          {user.partnerLevel}
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                          非合伙人
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                    {user.referrer}
-                  </td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                    {user.teamSize} 人
-                  </td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                    {user.joinDate}
-                  </td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                      user.status === '正常' 
-                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' 
-                        : 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
-                    }`}>
-                      {user.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <div className="flex items-center justify-end gap-3">
-                      <button 
-                        onClick={() => navigate(`/admin/users/${user.id}`)}
-                        className="text-primary text-sm font-medium hover:underline"
-                      >
-                        查看详情
-                      </button>
-                      <button 
-                        onClick={() => navigate(`/admin/users/edit/${user.id}`)}
-                        className="text-primary text-sm font-medium hover:underline"
-                      >
-                        编辑
-                      </button>
-                      <button 
-                        onClick={() => toggleStatus(user.id)}
-                        className={`text-sm font-medium hover:underline ${user.status === '正常' ? 'text-red-500 hover:text-red-600' : 'text-emerald-500 hover:text-emerald-600'}`}
-                      >
-                        {user.status === '正常' ? '冻结' : '解冻'}
-                      </button>
-                    </div>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex flex-col gap-1 items-start">
+                        {user.isPartner ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400">
+                            {user.partnerLevel}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                            非合伙人
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                      {user.referrer}
+                    </td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                      {user.teamSize} 人
+                    </td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                      {user.joinDate}
+                    </td>
+                    <td className="p-4">
+                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                        user.status === '正常' 
+                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' 
+                          : 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
+                      }`}>
+                        {user.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right">
+                      <div className="flex items-center justify-end gap-3">
+                        <button 
+                          onClick={() => navigate(`/admin/users/${user.id}`)}
+                          className="text-primary text-sm font-medium hover:underline"
+                        >
+                          查看详情
+                        </button>
+                        <button 
+                          onClick={() => navigate(`/admin/users/edit/${user.id}`)}
+                          className="text-primary text-sm font-medium hover:underline"
+                        >
+                          编辑
+                        </button>
+                        <button 
+                          onClick={() => toggleStatus(user.id)}
+                          className={`text-sm font-medium hover:underline ${user.status === '正常' ? 'text-red-500 hover:text-red-600' : 'text-emerald-500 hover:text-emerald-600'}`}
+                        >
+                          {user.status === '正常' ? '冻结' : '解冻'}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={7} className="p-0">
+                    <Empty 
+                      icon="search_off"
+                      title="未找到用户"
+                      description="没有找到符合条件的用户，请尝试更改搜索条件"
+                      actionText="清除筛选"
+                      onAction={() => {
+                        setSearchQuery('');
+                        setFilterLevel('');
+                        setFilterStatus('');
+                        setStartDate('');
+                        setEndDate('');
+                      }}
+                    />
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

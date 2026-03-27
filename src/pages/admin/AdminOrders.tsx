@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Empty from '../../components/Empty';
 
 export default function AdminOrders() {
   const navigate = useNavigate();
@@ -202,82 +203,104 @@ export default function AdminOrders() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {filteredOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                  <td className="p-4">
-                    <p className="text-sm font-medium text-slate-900 dark:text-white">{order.id}</p>
-                    <span className={`inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-medium ${
-                      order.type === '普通' ? 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' :
-                      order.type === '秒杀' ? 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400' :
-                      'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400'
-                    }`}>
-                      {order.type}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <p className="text-sm text-slate-900 dark:text-white">{order.user}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{order.phone}</p>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <img src={order.productImg} alt="商品" className="w-10 h-10 rounded object-cover border border-slate-200 dark:border-slate-700" />
-                      <p className="text-sm text-slate-900 dark:text-white max-w-[150px] truncate" title={order.product}>{order.product}</p>
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <p className="text-sm text-slate-500">总额: <span className="line-through">¥{order.amount.toFixed(2)}</span></p>
-                    <p className="text-sm font-bold text-primary mt-0.5">实付: ¥{order.paidAmount.toFixed(2)}</p>
-                  </td>
-                  <td className="p-4">
-                    <p className="text-sm text-slate-900 dark:text-white">{order.paymentMethod}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{order.paymentTime}</p>
-                  </td>
-                  <td className="p-4">
-                    <p className="text-xs text-slate-500">推荐人: <span className="text-slate-900 dark:text-white">{order.referrer}</span></p>
-                    <p className="text-xs text-slate-500 mt-0.5">提成: <span className="text-emerald-600 dark:text-emerald-400">¥{order.salesCommission.toFixed(2)}</span></p>
-                    <p className="text-xs text-slate-500 mt-0.5">分红池: <span className="text-purple-600 dark:text-purple-400">¥{order.dividendPool.toFixed(2)}</span></p>
-                  </td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                      order.status === '待发货' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
-                      order.status === '已发货' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
-                      order.status === '已完成' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                      order.status === '退款/售后' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
-                      order.status === '已取消' ? 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300' :
-                      'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400'
-                    }`}>
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <div className="flex flex-col items-end gap-2">
-                      <button onClick={() => navigate(`/admin/orders/${order.id}`)} className="text-primary text-sm font-medium hover:underline">
-                        查看详情
-                      </button>
-                      <div className="flex items-center gap-2">
-                        {order.status === '待发货' && (
-                          <button className="text-emerald-600 dark:text-emerald-400 text-xs font-medium hover:underline">
-                            发货
-                          </button>
-                        )}
-                        {(order.status === '待发货' || order.status === '已发货') && (
-                          <button className="text-red-600 dark:text-red-400 text-xs font-medium hover:underline">
-                            退款
-                          </button>
-                        )}
-                        {order.status === '退款/售后' && (
-                          <button className="text-red-600 dark:text-red-400 text-xs font-medium hover:underline">
-                            处理售后
-                          </button>
-                        )}
-                        <button className="text-slate-500 dark:text-slate-400 text-xs font-medium hover:underline">
-                          备注
-                        </button>
+              {filteredOrders.length > 0 ? (
+                filteredOrders.map((order) => (
+                  <tr key={order.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                    <td className="p-4">
+                      <p className="text-sm font-medium text-slate-900 dark:text-white">{order.id}</p>
+                      <span className={`inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-medium ${
+                        order.type === '普通' ? 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' :
+                        order.type === '秒杀' ? 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400' :
+                        'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400'
+                      }`}>
+                        {order.type}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <p className="text-sm text-slate-900 dark:text-white">{order.user}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{order.phone}</p>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <img src={order.productImg} alt="商品" className="w-10 h-10 rounded object-cover border border-slate-200 dark:border-slate-700" />
+                        <p className="text-sm text-slate-900 dark:text-white max-w-[150px] truncate" title={order.product}>{order.product}</p>
                       </div>
-                    </div>
+                    </td>
+                    <td className="p-4">
+                      <p className="text-sm text-slate-500">总额: <span className="line-through">¥{order.amount.toFixed(2)}</span></p>
+                      <p className="text-sm font-bold text-primary mt-0.5">实付: ¥{order.paidAmount.toFixed(2)}</p>
+                    </td>
+                    <td className="p-4">
+                      <p className="text-sm text-slate-900 dark:text-white">{order.paymentMethod}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{order.paymentTime}</p>
+                    </td>
+                    <td className="p-4">
+                      <p className="text-xs text-slate-500">推荐人: <span className="text-slate-900 dark:text-white">{order.referrer}</span></p>
+                      <p className="text-xs text-slate-500 mt-0.5">提成: <span className="text-emerald-600 dark:text-emerald-400">¥{order.salesCommission.toFixed(2)}</span></p>
+                      <p className="text-xs text-slate-500 mt-0.5">分红池: <span className="text-purple-600 dark:text-purple-400">¥{order.dividendPool.toFixed(2)}</span></p>
+                    </td>
+                    <td className="p-4">
+                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                        order.status === '待发货' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+                        order.status === '已发货' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                        order.status === '已完成' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        order.status === '退款/售后' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
+                        order.status === '已取消' ? 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300' :
+                        'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400'
+                      }`}>
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right">
+                      <div className="flex flex-col items-end gap-2">
+                        <button onClick={() => navigate(`/admin/orders/${order.id}`)} className="text-primary text-sm font-medium hover:underline">
+                          查看详情
+                        </button>
+                        <div className="flex items-center gap-2">
+                          {order.status === '待发货' && (
+                            <button className="text-emerald-600 dark:text-emerald-400 text-xs font-medium hover:underline">
+                              发货
+                            </button>
+                          )}
+                          {(order.status === '待发货' || order.status === '已发货') && (
+                            <button className="text-red-600 dark:text-red-400 text-xs font-medium hover:underline">
+                              退款
+                            </button>
+                          )}
+                          {order.status === '退款/售后' && (
+                            <button className="text-red-600 dark:text-red-400 text-xs font-medium hover:underline">
+                              处理售后
+                            </button>
+                          )}
+                          <button className="text-slate-500 dark:text-slate-400 text-xs font-medium hover:underline">
+                            备注
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={8} className="p-0">
+                    <Empty 
+                      icon="search_off"
+                      title="未找到订单"
+                      description="没有找到符合条件的订单，请尝试更改搜索条件"
+                      actionText="清除筛选"
+                      onAction={() => {
+                        setSearchQuery('');
+                        setTypeFilter('');
+                        setStatusFilter('');
+                        setReferrerFilter('');
+                        setMinAmount('');
+                        setMaxAmount('');
+                        setDateFilter('');
+                      }}
+                    />
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

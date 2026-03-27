@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import Empty from '../../components/Empty';
 
 export default function AdminPartners() {
   const navigate = useNavigate();
@@ -146,67 +147,87 @@ export default function AdminPartners() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {filteredPartners.map((partner) => (
-                <tr key={partner.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <img src={`https://ui-avatars.com/api/?name=${partner.name}&background=random`} alt={partner.name} className="w-10 h-10 rounded-full" />
-                      <div>
-                        <p className="text-sm font-medium text-slate-900 dark:text-white">{partner.name}</p>
-                        <p className="text-xs text-slate-500 mt-0.5">{partner.phone} · {partner.id}</p>
+              {filteredPartners.length > 0 ? (
+                filteredPartners.map((partner) => (
+                  <tr key={partner.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <img src={`https://ui-avatars.com/api/?name=${partner.name}&background=random`} alt={partner.name} className="w-10 h-10 rounded-full" />
+                        <div>
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">{partner.name}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">{partner.phone} · {partner.id}</p>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                      partner.level === '高级合伙人' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
-                      partner.level === '中级合伙人' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
-                      'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
-                    }`}>
-                      {partner.level}
-                    </span>
-                  </td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{partner.referrer}</td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                    <div className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[16px] text-slate-400">group</span>
-                      {partner.teamSize}
-                    </div>
-                  </td>
-                  <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">¥{partner.monthSales.toFixed(2)}</td>
-                  <td className="p-4 text-sm font-medium text-emerald-600 dark:text-emerald-400">¥{partner.totalReferralReward.toFixed(2)}</td>
-                  <td className="p-4 text-sm font-medium text-primary">¥{partner.totalSalesCommission.toFixed(2)}</td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{partner.joinDate}</td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                      partner.status === '正常' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                      'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
-                    }`}>
-                      {partner.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <button 
-                      onClick={() => navigate(`/admin/partners/${partner.id}`)}
-                      className="text-primary text-sm font-medium hover:underline mr-3"
-                    >
-                      查看详情
-                    </button>
-                    <button 
-                      onClick={() => navigate(`/admin/partners/edit/${partner.id}`)}
-                      className="text-slate-500 hover:text-primary text-sm font-medium hover:underline mr-3"
-                    >
-                      编辑
-                    </button>
-                    <button 
-                      onClick={() => toggleStatus(partner.id)}
-                      className={`${partner.status === '正常' ? 'text-red-500 hover:text-red-600' : 'text-emerald-500 hover:text-emerald-600'} text-sm font-medium hover:underline`}
-                    >
-                      {partner.status === '正常' ? '冻结' : '解冻'}
-                    </button>
+                    </td>
+                    <td className="p-4">
+                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                        partner.level === '高级合伙人' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+                        partner.level === '中级合伙人' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                        'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                      }`}>
+                        {partner.level}
+                      </span>
+                    </td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{partner.referrer}</td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                      <div className="flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[16px] text-slate-400">group</span>
+                        {partner.teamSize}
+                      </div>
+                    </td>
+                    <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">¥{partner.monthSales.toFixed(2)}</td>
+                    <td className="p-4 text-sm font-medium text-emerald-600 dark:text-emerald-400">¥{partner.totalReferralReward.toFixed(2)}</td>
+                    <td className="p-4 text-sm font-medium text-primary">¥{partner.totalSalesCommission.toFixed(2)}</td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{partner.joinDate}</td>
+                    <td className="p-4">
+                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                        partner.status === '正常' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
+                      }`}>
+                        {partner.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right">
+                      <button 
+                        onClick={() => navigate(`/admin/partners/${partner.id}`)}
+                        className="text-primary text-sm font-medium hover:underline mr-3"
+                      >
+                        查看详情
+                      </button>
+                      <button 
+                        onClick={() => navigate(`/admin/partners/edit/${partner.id}`)}
+                        className="text-slate-500 hover:text-primary text-sm font-medium hover:underline mr-3"
+                      >
+                        编辑
+                      </button>
+                      <button 
+                        onClick={() => toggleStatus(partner.id)}
+                        className={`${partner.status === '正常' ? 'text-red-500 hover:text-red-600' : 'text-emerald-500 hover:text-emerald-600'} text-sm font-medium hover:underline`}
+                      >
+                        {partner.status === '正常' ? '冻结' : '解冻'}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={10} className="p-0">
+                    <Empty 
+                      icon="group_off"
+                      title="未找到合伙人"
+                      description="没有找到符合条件的合伙人，请尝试更改搜索条件"
+                      actionText="清除筛选"
+                      onAction={() => {
+                        setSearchQuery('');
+                        setLevelFilter('');
+                        setStatusFilter('');
+                        setStartDate('');
+                        setEndDate('');
+                      }}
+                    />
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

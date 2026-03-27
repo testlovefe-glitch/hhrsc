@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Empty from '../components/Empty';
 
 type CouponStatus = '未使用' | '已使用' | '已过期';
 
@@ -111,10 +112,14 @@ export default function MyCoupons() {
             );
           })
         ) : (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <span className="material-symbols-outlined text-6xl mb-4 opacity-20">confirmation_number</span>
-            <p className="text-sm">暂无{activeTab}的优惠券</p>
-          </div>
+          <Empty 
+            icon="confirmation_number"
+            title={`暂无${activeTab}的优惠券`}
+            description="去领券中心看看吧"
+            actionText="去领券"
+            actionLink="/coupons"
+            className="mt-10"
+          />
         )}
       </main>
     </div>

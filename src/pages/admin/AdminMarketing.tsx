@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Empty from '../../components/Empty';
 
 export default function AdminMarketing() {
   const navigate = useNavigate();
@@ -13,6 +14,44 @@ export default function AdminMarketing() {
   
   const [groupBuySearch, setGroupBuySearch] = useState('');
   const [groupBuyStatus, setGroupBuyStatus] = useState('all');
+
+  const [partnerPackageSearch, setPartnerPackageSearch] = useState('');
+  const [partnerPackageStatus, setPartnerPackageStatus] = useState('all');
+  const [showPackageModal, setShowPackageModal] = useState(false);
+  const [editingPackage, setEditingPackage] = useState<any>(null);
+
+  const [partnerPackages, setPartnerPackages] = useState([
+    {
+      id: 1,
+      name: '尊享酱香套餐',
+      price: 3300,
+      originalPrice: 4599,
+      desc: '飞天茅台53度500ml × 1 + 奔富MAX干红葡萄酒 × 2',
+      img: 'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+      status: '上架',
+      sales: 120
+    },
+    {
+      id: 2,
+      name: '品味浓香套餐',
+      price: 1888,
+      originalPrice: 2599,
+      desc: '五粮液普五52度500ml × 1 + 剑南春水晶剑52度500ml × 2',
+      img: 'https://images.unsplash.com/photo-1585553616435-2dc0a54e271d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+      status: '上架',
+      sales: 85
+    },
+    {
+      id: 3,
+      name: '清雅清香套餐',
+      price: 999,
+      originalPrice: 1399,
+      desc: '青花汾酒20年53度500ml × 2',
+      img: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+      status: '下架',
+      sales: 42
+    }
+  ]);
 
   const flashSales = [
     { 
@@ -140,13 +179,48 @@ export default function AdminMarketing() {
     return matchesSearch && matchesStatus;
   });
 
+  const filteredPartnerPackages = partnerPackages.filter(item => {
+    const matchesSearch = item.name.includes(partnerPackageSearch) || item.desc.includes(partnerPackageSearch);
+    const matchesStatus = partnerPackageStatus === 'all' ? true : item.status === partnerPackageStatus;
+    return matchesSearch && matchesStatus;
+  });
+
+  const handleSavePackage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingPackage.id) {
+      setPartnerPackages(partnerPackages.map(p => p.id === editingPackage.id ? editingPackage : p));
+    } else {
+      setPartnerPackages([...partnerPackages, { ...editingPackage, id: Date.now(), sales: 0 }]);
+    }
+    setShowPackageModal(false);
+  };
+
+  const togglePackageStatus = (id: number) => {
+    setPartnerPackages(partnerPackages.map(p => {
+      if (p.id === id) {
+        return { ...p, status: p.status === '上架' ? '下架' : '上架' };
+      }
+      return p;
+    }));
+  };
+
+  const deletePackage = (id: number) => {
+    if (window.confirm('确定要删除该礼包吗？')) {
+      setPartnerPackages(partnerPackages.filter(p => p.id !== id));
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto pb-12">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">营销活动</h1>
         <button 
           onClick={() => {
-            if (activeTab === 'flash-sale') navigate('/admin/marketing/flash-sale/create');
+            if (activeTab === 'partner-package') {
+              setEditingPackage({ name: '', price: '', originalPrice: '', desc: '', img: '', status: '上架' });
+              setShowPackageModal(true);
+            }
+            else if (activeTab === 'flash-sale') navigate('/admin/marketing/flash-sale/create');
             else if (activeTab === 'coupons') navigate('/admin/marketing/coupons/create');
             else if (activeTab === 'group-buy') navigate('/admin/marketing/group-buy/create');
             else navigate('/admin/marketing/create');
@@ -178,6 +252,12 @@ export default function AdminMarketing() {
             className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === 'group-buy' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
           >
             团购免单
+          </button>
+          <button 
+            onClick={() => setActiveTab('partner-package')}
+            className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === 'partner-package' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
+          >
+            合伙人礼包
           </button>
         </div>
 
@@ -216,57 +296,74 @@ export default function AdminMarketing() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {filteredFlashSales.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                    <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.name}</td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <img src={item.productImg} alt={item.productName} className="w-10 h-10 rounded object-cover border border-slate-200 dark:border-slate-700" />
-                        <p className="text-sm text-slate-900 dark:text-white max-w-[150px] truncate" title={item.productName}>{item.productName}</p>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <p className="text-sm font-bold text-red-500">¥{item.price.toFixed(2)}</p>
-                      <p className="text-xs text-slate-500 line-through">¥{item.originalPrice.toFixed(2)}</p>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden w-16">
-                          <div className={`h-full ${item.stock === 0 ? 'bg-slate-400' : 'bg-orange-500'}`} style={{ width: `${(item.stock / item.totalStock) * 100}%` }}></div>
+                {filteredFlashSales.length > 0 ? (
+                  filteredFlashSales.map((item) => (
+                    <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                      <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.name}</td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-3">
+                          <img src={item.productImg} alt={item.productName} className="w-10 h-10 rounded object-cover border border-slate-200 dark:border-slate-700" />
+                          <p className="text-sm text-slate-900 dark:text-white max-w-[150px] truncate" title={item.productName}>{item.productName}</p>
                         </div>
-                        <span className="text-xs text-slate-600 dark:text-slate-400">{item.stock}/{item.totalStock}</span>
-                      </div>
-                    </td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                      <div>起：{item.startTime}</div>
-                      <div>止：{item.endTime}</div>
-                    </td>
-                    <td className="p-4">
-                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        item.status === '进行中' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                        item.status === '未开始' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
-                        'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
-                      }`}>
-                        {item.status}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-3">
-                        <button className="text-primary text-sm font-medium hover:underline">编辑</button>
-                        <button 
-                          onClick={() => {
-                            setSelectedFlashSale(item);
-                            setShowDataModal(true);
-                          }}
-                          className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-sm font-medium hover:underline"
-                        >
-                          数据
-                        </button>
-                        <button className="text-red-500 hover:text-red-600 text-sm font-medium hover:underline">删除</button>
-                      </div>
+                      </td>
+                      <td className="p-4">
+                        <p className="text-sm font-bold text-red-500">¥{item.price.toFixed(2)}</p>
+                        <p className="text-xs text-slate-500 line-through">¥{item.originalPrice.toFixed(2)}</p>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden w-16">
+                            <div className={`h-full ${item.stock === 0 ? 'bg-slate-400' : 'bg-orange-500'}`} style={{ width: `${(item.stock / item.totalStock) * 100}%` }}></div>
+                          </div>
+                          <span className="text-xs text-slate-600 dark:text-slate-400">{item.stock}/{item.totalStock}</span>
+                        </div>
+                      </td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                        <div>起：{item.startTime}</div>
+                        <div>止：{item.endTime}</div>
+                      </td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                          item.status === '进行中' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                          item.status === '未开始' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                          'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                        }`}>
+                          {item.status}
+                        </span>
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex items-center justify-end gap-3">
+                          <button className="text-primary text-sm font-medium hover:underline">编辑</button>
+                          <button 
+                            onClick={() => {
+                              setSelectedFlashSale(item);
+                              setShowDataModal(true);
+                            }}
+                            className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-sm font-medium hover:underline"
+                          >
+                            数据
+                          </button>
+                          <button className="text-red-500 hover:text-red-600 text-sm font-medium hover:underline">删除</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={7} className="p-0">
+                      <Empty 
+                        icon="bolt"
+                        title="未找到秒杀活动"
+                        description="没有找到符合条件的秒杀活动，请尝试更改搜索条件"
+                        actionText="清除筛选"
+                        onAction={() => {
+                          setFlashSaleSearch('');
+                          setFlashSaleStatus('all');
+                        }}
+                      />
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -374,51 +471,174 @@ export default function AdminMarketing() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {filteredGroupBuys.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                    <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.name}</td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <img src={item.productImg} alt={item.productName} className="w-10 h-10 rounded object-cover border border-slate-200 dark:border-slate-700" />
-                        <p className="text-sm text-slate-900 dark:text-white max-w-[150px] truncate" title={item.productName}>{item.productName}</p>
-                      </div>
-                    </td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.groupSize}人团</td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.completedGroups}</td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                      <span className={`px-2 py-0.5 rounded text-xs ${
-                        item.freeRule === '团长免单' ? 'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400' : 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400'
-                      }`}>
-                        {item.freeRule}
-                      </span>
-                    </td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                      <div>起：{item.startTime}</div>
-                      <div>止：{item.endTime}</div>
-                    </td>
-                    <td className="p-4">
-                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        item.status === '进行中' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                        item.status === '未开始' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
-                        'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
-                      }`}>
-                        {item.status}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-3">
-                        <button className="text-primary text-sm font-medium hover:underline">编辑</button>
-                        <button 
-                          onClick={() => navigate(`/admin/marketing/group-buy/details/${item.id}`)}
-                          className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-sm font-medium hover:underline"
-                        >
-                          详情
-                        </button>
-                        <button className="text-red-500 hover:text-red-600 text-sm font-medium hover:underline">删除</button>
-                      </div>
+                {filteredGroupBuys.length > 0 ? (
+                  filteredGroupBuys.map((item) => (
+                    <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                      <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.name}</td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-3">
+                          <img src={item.productImg} alt={item.productName} className="w-10 h-10 rounded object-cover border border-slate-200 dark:border-slate-700" />
+                          <p className="text-sm text-slate-900 dark:text-white max-w-[150px] truncate" title={item.productName}>{item.productName}</p>
+                        </div>
+                      </td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.groupSize}人团</td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.completedGroups}</td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                        <span className={`px-2 py-0.5 rounded text-xs ${
+                          item.freeRule === '团长免单' ? 'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400' : 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400'
+                        }`}>
+                          {item.freeRule}
+                        </span>
+                      </td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                        <div>起：{item.startTime}</div>
+                        <div>止：{item.endTime}</div>
+                      </td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                          item.status === '进行中' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                          item.status === '未开始' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                          'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                        }`}>
+                          {item.status}
+                        </span>
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex items-center justify-end gap-3">
+                          <button className="text-primary text-sm font-medium hover:underline">编辑</button>
+                          <button 
+                            onClick={() => navigate(`/admin/marketing/group-buy/details/${item.id}`)}
+                            className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-sm font-medium hover:underline"
+                          >
+                            详情
+                          </button>
+                          <button className="text-red-500 hover:text-red-600 text-sm font-medium hover:underline">删除</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="p-0">
+                      <Empty 
+                        icon="groups"
+                        title="未找到团购免单活动"
+                        description="没有找到符合条件的团购免单活动，请尝试更改搜索条件"
+                        actionText="清除筛选"
+                        onAction={() => {
+                          setGroupBuySearch('');
+                          setGroupBuyStatus('all');
+                        }}
+                      />
                     </td>
                   </tr>
-                ))}
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Tab Content: Partner Package */}
+        {activeTab === 'partner-package' && (
+          <div className="overflow-x-auto">
+            <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex gap-4 bg-slate-50 dark:bg-slate-900/50">
+              <select 
+                value={partnerPackageStatus}
+                onChange={(e) => setPartnerPackageStatus(e.target.value)}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
+              >
+                <option value="all">全部状态</option>
+                <option value="上架">上架</option>
+                <option value="下架">下架</option>
+              </select>
+              <input 
+                type="text" 
+                placeholder="搜索礼包名称/描述" 
+                value={partnerPackageSearch}
+                onChange={(e) => setPartnerPackageSearch(e.target.value)}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none w-64"
+              />
+            </div>
+            <table className="w-full text-left border-collapse whitespace-nowrap">
+              <thead>
+                <tr className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">
+                  <th className="p-4 font-medium">礼包信息</th>
+                  <th className="p-4 font-medium">价格</th>
+                  <th className="p-4 font-medium">销量</th>
+                  <th className="p-4 font-medium">状态</th>
+                  <th className="p-4 font-medium text-right">操作</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                {filteredPartnerPackages.length > 0 ? (
+                  filteredPartnerPackages.map((item) => (
+                    <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                      <td className="p-4">
+                        <div className="flex items-center gap-3">
+                          <img src={item.img} alt={item.name} className="w-12 h-12 rounded object-cover border border-slate-200 dark:border-slate-700" />
+                          <div>
+                            <p className="text-sm font-medium text-slate-900 dark:text-white">{item.name}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-[300px] truncate" title={item.desc}>{item.desc}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium text-primary">¥{item.price}</span>
+                          <span className="text-xs text-slate-400 line-through">¥{item.originalPrice}</span>
+                        </div>
+                      </td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.sales}</td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                          item.status === '上架' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                        }`}>
+                          {item.status}
+                        </span>
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex items-center justify-end gap-3">
+                          <button 
+                            onClick={() => {
+                              setEditingPackage(item);
+                              setShowPackageModal(true);
+                            }}
+                            className="text-primary text-sm font-medium hover:underline"
+                          >
+                            编辑
+                          </button>
+                          <button 
+                            onClick={() => togglePackageStatus(item.id)}
+                            className={`${item.status === '上架' ? 'text-amber-500 hover:text-amber-600' : 'text-emerald-500 hover:text-emerald-600'} text-sm font-medium hover:underline`}
+                          >
+                            {item.status === '上架' ? '下架' : '上架'}
+                          </button>
+                          <button 
+                            onClick={() => deletePackage(item.id)}
+                            className="text-red-500 hover:text-red-600 text-sm font-medium hover:underline"
+                          >
+                            删除
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="p-0">
+                      <Empty 
+                        icon="card_giftcard"
+                        title="未找到合伙人礼包"
+                        description="没有找到符合条件的合伙人礼包，请尝试更改搜索条件"
+                        actionText="清除筛选"
+                        onAction={() => {
+                          setPartnerPackageSearch('');
+                          setPartnerPackageStatus('all');
+                        }}
+                      />
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -463,6 +683,114 @@ export default function AdminMarketing() {
                 关闭
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Package Modal */}
+      {showPackageModal && editingPackage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-lg shadow-xl border border-slate-200 dark:border-slate-700">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                {editingPackage.id ? '编辑礼包' : '添加礼包'}
+              </h3>
+              <button onClick={() => setShowPackageModal(false)} className="text-slate-400 hover:text-slate-500">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            
+            <form onSubmit={handleSavePackage} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">礼包名称</label>
+                <input 
+                  type="text" 
+                  required
+                  value={editingPackage.name}
+                  onChange={e => setEditingPackage({...editingPackage, name: e.target.value})}
+                  className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-sm outline-none focus:border-primary"
+                  placeholder="如：尊享酱香套餐"
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">价格 (¥)</label>
+                  <input 
+                    type="number" 
+                    required
+                    min="0"
+                    step="0.01"
+                    value={editingPackage.price}
+                    onChange={e => setEditingPackage({...editingPackage, price: Number(e.target.value)})}
+                    className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-sm outline-none focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">原价 (¥)</label>
+                  <input 
+                    type="number" 
+                    required
+                    min="0"
+                    step="0.01"
+                    value={editingPackage.originalPrice}
+                    onChange={e => setEditingPackage({...editingPackage, originalPrice: Number(e.target.value)})}
+                    className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-sm outline-none focus:border-primary"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">礼包内容描述</label>
+                <textarea 
+                  required
+                  value={editingPackage.desc}
+                  onChange={e => setEditingPackage({...editingPackage, desc: e.target.value})}
+                  className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-sm outline-none focus:border-primary h-20 resize-none"
+                  placeholder="如：飞天茅台53度500ml × 1 + 奔富MAX干红葡萄酒 × 2"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">图片链接</label>
+                <input 
+                  type="url" 
+                  required
+                  value={editingPackage.img}
+                  onChange={e => setEditingPackage({...editingPackage, img: e.target.value})}
+                  className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-sm outline-none focus:border-primary"
+                  placeholder="https://..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">状态</label>
+                <select 
+                  value={editingPackage.status}
+                  onChange={e => setEditingPackage({...editingPackage, status: e.target.value})}
+                  className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-sm outline-none focus:border-primary"
+                >
+                  <option value="上架">上架</option>
+                  <option value="下架">下架</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-700 mt-6">
+                <button 
+                  type="button"
+                  onClick={() => setShowPackageModal(false)}
+                  className="px-6 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                >
+                  取消
+                </button>
+                <button 
+                  type="submit"
+                  className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+                >
+                  保存
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

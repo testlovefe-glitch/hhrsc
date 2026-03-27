@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import Empty from '../components/Empty';
 
 export default function GroupBuy() {
   const navigate = useNavigate();
@@ -201,10 +202,14 @@ export default function GroupBuy() {
                 </div>
               </div>
             )) : (
-              <div className="py-20 flex flex-col items-center justify-center text-slate-400">
-                <span className="material-symbols-outlined text-4xl mb-2 opacity-50">group_off</span>
-                <p className="text-sm">暂无参与的团购</p>
-              </div>
+              <Empty 
+                icon="group_off"
+                title="暂无参与的团购"
+                description="您还没有参与任何团购活动"
+                actionText="去看看热门团购"
+                onAction={() => setActiveTab('hot')}
+                className="py-12"
+              />
             )}
           </div>
         )}

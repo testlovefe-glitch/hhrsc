@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Empty from '../components/Empty';
 
 interface Address {
   id: string;
@@ -81,36 +82,45 @@ export default function Addresses() {
 
       {/* Address List Scroll Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-24">
-        {addresses.map((address) => (
-          <div key={address.id} className={`bg-white dark:bg-slate-800 border ${address.isDefault ? 'border-primary/20' : 'border-slate-100 dark:border-slate-700'} rounded-lg p-5 shadow-sm relative`}>
-            <div className="flex justify-between items-start mb-2">
-              <div className="flex items-center gap-3">
-                <span className="text-slate-900 dark:text-slate-100 font-bold text-base">{address.name}</span>
-                <span className="text-slate-500 dark:text-slate-400 text-sm font-medium">{address.phone}</span>
+        {addresses.length > 0 ? (
+          addresses.map((address) => (
+            <div key={address.id} className={`bg-white dark:bg-slate-800 border ${address.isDefault ? 'border-primary/20' : 'border-slate-100 dark:border-slate-700'} rounded-lg p-5 shadow-sm relative`}>
+              <div className="flex justify-between items-start mb-2">
+                <div className="flex items-center gap-3">
+                  <span className="text-slate-900 dark:text-slate-100 font-bold text-base">{address.name}</span>
+                  <span className="text-slate-500 dark:text-slate-400 text-sm font-medium">{address.phone}</span>
+                </div>
+                {address.isDefault && (
+                  <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-sm">默认</span>
+                )}
               </div>
-              {address.isDefault && (
-                <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-sm">默认</span>
-              )}
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                {address.address}
+              </p>
+              <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-700 pt-4">
+                <div className="flex gap-6">
+                  <button onClick={() => handleEditClick(address)} className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors">
+                    <span className="material-symbols-outlined text-lg">edit</span>
+                    编辑
+                  </button>
+                  <button className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-sm font-medium hover:text-red-500 transition-colors">
+                    <span className="material-symbols-outlined text-lg">delete</span>
+                    删除
+                  </button>
+                </div>
+                <div className="w-16 h-10 bg-slate-100 dark:bg-slate-700 rounded overflow-hidden" style={{ backgroundImage: `url("${address.bgImage}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                </div>
+              </div>
             </div>
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
-              {address.address}
-            </p>
-            <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-700 pt-4">
-              <div className="flex gap-6">
-                <button onClick={() => handleEditClick(address)} className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors">
-                  <span className="material-symbols-outlined text-lg">edit</span>
-                  编辑
-                </button>
-                <button className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-sm font-medium hover:text-red-500 transition-colors">
-                  <span className="material-symbols-outlined text-lg">delete</span>
-                  删除
-                </button>
-              </div>
-              <div className="w-16 h-10 bg-slate-100 dark:bg-slate-700 rounded overflow-hidden" style={{ backgroundImage: `url("${address.bgImage}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-              </div>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <Empty 
+            icon="location_on"
+            title="暂无收货地址"
+            description="您还没有添加任何收货地址"
+            className="mt-10"
+          />
+        )}
       </div>
 
       {/* Sticky Bottom Action Button */}
