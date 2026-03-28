@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Empty from '../../components/Empty';
 
 export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState('basic');
@@ -246,15 +247,27 @@ export default function AdminSettings() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                        {filteredLogs.map(log => (
-                          <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{log.date}</td>
-                            <td className="p-4 text-sm text-slate-900 dark:text-white">{log.operator}</td>
-                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{log.type}</td>
-                            <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{log.detail}</td>
-                            <td className="p-4 text-sm text-slate-500">{log.ip}</td>
+                        {filteredLogs.length > 0 ? (
+                          filteredLogs.map(log => (
+                            <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                              <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{log.date}</td>
+                              <td className="p-4 text-sm text-slate-900 dark:text-white">{log.operator}</td>
+                              <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{log.type}</td>
+                              <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{log.detail}</td>
+                              <td className="p-4 text-sm text-slate-500">{log.ip}</td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan={5} className="p-0">
+                              <Empty 
+                                icon="history" 
+                                title="暂无操作日志" 
+                                description="没有找到符合条件的操作日志" 
+                              />
+                            </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>

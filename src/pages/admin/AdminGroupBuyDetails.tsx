@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import Empty from '../../components/Empty';
+import { GroupBuyStatus } from '../../types';
 
 export default function AdminGroupBuyDetails() {
   const navigate = useNavigate();
@@ -18,7 +20,7 @@ export default function AdminGroupBuyDetails() {
         { name: '李四', phone: '139****5678', avatar: 'https://ui-avatars.com/api/?name=李四&background=random' },
         { name: '王五', phone: '137****9012', avatar: 'https://ui-avatars.com/api/?name=王五&background=random' }
       ],
-      status: '拼团成功', // success, pending, failed
+      status: GroupBuyStatus.SUCCESS, // success, pending, failed
       freeWinner: '李四',
       startTime: '2023-10-24 14:30:00',
       endTime: '2023-10-24 18:45:22'
@@ -29,7 +31,7 @@ export default function AdminGroupBuyDetails() {
       members: [
         { name: '钱七', phone: '135****7890', avatar: 'https://ui-avatars.com/api/?name=钱七&background=random' }
       ],
-      status: '拼团中',
+      status: GroupBuyStatus.PENDING,
       freeWinner: '-',
       startTime: '2023-10-25 09:15:00',
       endTime: '-'
@@ -41,7 +43,7 @@ export default function AdminGroupBuyDetails() {
         { name: '周九', phone: '133****3344', avatar: 'https://ui-avatars.com/api/?name=周九&background=random' },
         { name: '吴十', phone: '132****5566', avatar: 'https://ui-avatars.com/api/?name=吴十&background=random' }
       ],
-      status: '拼团失败',
+      status: GroupBuyStatus.FAILED,
       freeWinner: '-',
       startTime: '2023-10-20 10:00:00',
       endTime: '2023-10-21 10:00:00'
@@ -91,9 +93,9 @@ export default function AdminGroupBuyDetails() {
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
             >
               <option value="">所有状态</option>
-              <option value="拼团成功">拼团成功</option>
-              <option value="拼团中">拼团中</option>
-              <option value="拼团失败">拼团失败</option>
+              <option value={GroupBuyStatus.SUCCESS}>拼团成功</option>
+              <option value={GroupBuyStatus.PENDING}>拼团中</option>
+              <option value={GroupBuyStatus.FAILED}>拼团失败</option>
             </select>
           </div>
         </div>
@@ -112,53 +114,70 @@ export default function AdminGroupBuyDetails() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {filteredRecords.map((record) => (
-                <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                  <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{record.id}</td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <img src={record.leader.avatar} alt={record.leader.name} className="w-8 h-8 rounded-full" />
-                      <div>
-                        <p className="text-sm font-medium text-slate-900 dark:text-white">{record.leader.name}</p>
-                        <p className="text-xs text-slate-500">{record.leader.phone}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex flex-col gap-2">
-                      {record.members.map((member, idx) => (
-                        <div key={idx} className="flex items-center gap-2">
-                          <img src={member.avatar} alt={member.name} className="w-6 h-6 rounded-full" />
-                          <span className="text-sm text-slate-600 dark:text-slate-300">{member.name}</span>
+              {filteredRecords.length > 0 ? (
+                filteredRecords.map((record) => (
+                  <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                    <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{record.id}</td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <img src={record.leader.avatar} alt={record.leader.name} className="w-8 h-8 rounded-full" />
+                        <div>
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">{record.leader.name}</p>
+                          <p className="text-xs text-slate-500">{record.leader.phone}</p>
                         </div>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                      record.status === '拼团成功' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                      record.status === '拼团中' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
-                      'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
-                    }`}>
-                      {record.status}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    {record.freeWinner !== '-' ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400 rounded text-xs font-medium">
-                        <span className="material-symbols-outlined text-[14px]">stars</span>
-                        {record.freeWinner}
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex flex-col gap-2">
+                        {record.members.map((member, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <img src={member.avatar} alt={member.name} className="w-6 h-6 rounded-full" />
+                            <span className="text-sm text-slate-600 dark:text-slate-300">{member.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                        record.status === GroupBuyStatus.SUCCESS ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        record.status === GroupBuyStatus.PENDING ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                        'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
+                      }`}>
+                        {record.status}
                       </span>
-                    ) : (
-                      <span className="text-sm text-slate-500">-</span>
-                    )}
-                  </td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                    <div>开：{record.startTime}</div>
-                    <div>成：{record.endTime}</div>
+                    </td>
+                    <td className="p-4">
+                      {record.freeWinner !== '-' ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400 rounded text-xs font-medium">
+                          <span className="material-symbols-outlined text-[14px]">stars</span>
+                          {record.freeWinner}
+                        </span>
+                      ) : (
+                        <span className="text-sm text-slate-500">-</span>
+                      )}
+                    </td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                      <div>开：{record.startTime}</div>
+                      <div>成：{record.endTime}</div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="p-0">
+                    <Empty 
+                      icon="group"
+                      title="未找到参团记录"
+                      description="没有找到符合条件的参团记录，请尝试更改搜索条件"
+                      actionText="清除筛选"
+                      onAction={() => {
+                        setSearchQuery('');
+                        setStatusFilter('');
+                      }}
+                    />
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

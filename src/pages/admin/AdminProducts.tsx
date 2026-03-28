@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Empty from '../../components/Empty';
+import { ProductStatus } from '../../types';
 
 export default function AdminProducts() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export default function AdminProducts() {
       price: '2999.00', 
       stock: 156, 
       category: '白酒', 
-      status: '上架', 
+      status: ProductStatus.ACTIVE, 
       sales: 1205,
       isMultiSpec: false,
       tags: ['热卖', '秒杀']
@@ -41,7 +42,7 @@ export default function AdminProducts() {
       price: '1499.00 - 2899.00', 
       stock: 342, 
       category: '白酒', 
-      status: '上架', 
+      status: ProductStatus.ACTIVE, 
       sales: 890,
       isMultiSpec: true,
       tags: ['团购']
@@ -53,7 +54,7 @@ export default function AdminProducts() {
       price: '299.00', 
       stock: 56, 
       category: '红酒', 
-      status: '上架', 
+      status: ProductStatus.ACTIVE, 
       sales: 432,
       isMultiSpec: false,
       tags: []
@@ -65,7 +66,7 @@ export default function AdminProducts() {
       price: '399.00', 
       stock: 0, 
       category: '养生酒', 
-      status: '下架', 
+      status: ProductStatus.INACTIVE, 
       sales: 128,
       isMultiSpec: false,
       tags: []
@@ -119,8 +120,8 @@ export default function AdminProducts() {
   const toggleStatus = (id: string) => {
     setProducts(products.map(p => {
       if (p.id === id) {
-        const newStatus = p.status === '上架' ? '下架' : '上架';
-        showToast(`商品已${newStatus}`);
+        const newStatus = p.status === ProductStatus.ACTIVE ? ProductStatus.INACTIVE : ProductStatus.ACTIVE;
+        showToast(`商品已${newStatus === ProductStatus.ACTIVE ? '上架' : '下架'}`);
         return { ...p, status: newStatus };
       }
       return p;
@@ -217,7 +218,7 @@ export default function AdminProducts() {
   const filteredProducts = products.filter(p => {
     const matchesSearch = p.name.includes(searchQuery) || p.id.includes(searchQuery);
     const matchesCategory = categoryFilter ? p.category === categoryFilter : true;
-    const matchesStatus = statusFilter ? (statusFilter === 'active' ? p.status === '上架' : p.status === '下架') : true;
+    const matchesStatus = statusFilter ? (statusFilter === 'active' ? p.status === ProductStatus.ACTIVE : p.status === ProductStatus.INACTIVE) : true;
     const matchesTag = tagFilter ? p.tags.includes(tagFilter) : true;
     return matchesSearch && matchesCategory && matchesStatus && matchesTag;
   });
@@ -365,10 +366,10 @@ export default function AdminProducts() {
                         </td>
                         <td className="p-4">
                           <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                            product.status === '上架' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                            product.status === ProductStatus.ACTIVE ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
                             'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
                           }`}>
-                            {product.status}
+                            {product.status === ProductStatus.ACTIVE ? '上架' : '下架'}
                           </span>
                         </td>
                         <td className="p-4 text-right">
@@ -376,8 +377,8 @@ export default function AdminProducts() {
                             <button onClick={() => openTagModal(product)} className="text-xs text-primary hover:underline font-medium px-2 py-1">
                               设置标签
                             </button>
-                            <button onClick={() => toggleStatus(product.id)} className={`text-xs font-medium px-2 py-1 hover:underline ${product.status === '上架' ? 'text-slate-500' : 'text-emerald-600'}`}>
-                              {product.status === '上架' ? '下架' : '上架'}
+                            <button onClick={() => toggleStatus(product.id)} className={`text-xs font-medium px-2 py-1 hover:underline ${product.status === ProductStatus.ACTIVE ? 'text-slate-500' : 'text-emerald-600'}`}>
+                              {product.status === ProductStatus.ACTIVE ? '下架' : '上架'}
                             </button>
                             <button onClick={() => navigate(`/admin/products/edit/${product.id}`)} className="p-1.5 text-slate-400 hover:text-primary transition-colors rounded hover:bg-slate-100 dark:hover:bg-slate-700" title="编辑">
                               <span className="material-symbols-outlined text-[18px]">edit</span>

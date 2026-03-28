@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Empty from '../../components/Empty';
+import { PartnerPackageStatus, FlashSaleStatus, GroupBuyStatus, CouponStatus } from '../../types';
 
 export default function AdminMarketing() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function AdminMarketing() {
       originalPrice: 4599,
       desc: '飞天茅台53度500ml × 1 + 奔富MAX干红葡萄酒 × 2',
       img: 'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-      status: '上架',
+      status: PartnerPackageStatus.ACTIVE,
       sales: 120
     },
     {
@@ -38,7 +39,7 @@ export default function AdminMarketing() {
       originalPrice: 2599,
       desc: '五粮液普五52度500ml × 1 + 剑南春水晶剑52度500ml × 2',
       img: 'https://images.unsplash.com/photo-1585553616435-2dc0a54e271d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-      status: '上架',
+      status: PartnerPackageStatus.ACTIVE,
       sales: 85
     },
     {
@@ -48,7 +49,7 @@ export default function AdminMarketing() {
       originalPrice: 1399,
       desc: '青花汾酒20年53度500ml × 2',
       img: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-      status: '下架',
+      status: PartnerPackageStatus.INACTIVE,
       sales: 42
     }
   ]);
@@ -63,7 +64,7 @@ export default function AdminMarketing() {
       originalPrice: 2999.00,
       stock: 45,
       totalStock: 100,
-      status: '进行中', 
+      status: FlashSaleStatus.ACTIVE, 
       startTime: '2023-11-01 10:00', 
       endTime: '2023-11-02 23:59',
       stats: { participants: 1250, orders: 55, amount: 82445.00, soldOutTime: '-' }
@@ -77,7 +78,7 @@ export default function AdminMarketing() {
       originalPrice: 1499.00,
       stock: 200,
       totalStock: 200,
-      status: '未开始', 
+      status: FlashSaleStatus.PENDING, 
       startTime: '2023-11-05 00:00', 
       endTime: '2023-11-10 23:59',
       stats: { participants: 0, orders: 0, amount: 0.00, soldOutTime: '-' }
@@ -91,7 +92,7 @@ export default function AdminMarketing() {
       originalPrice: 489.00,
       stock: 0,
       totalStock: 500,
-      status: '已结束', 
+      status: FlashSaleStatus.ENDED, 
       startTime: '2023-09-28 00:00', 
       endTime: '2023-09-30 23:59',
       stats: { participants: 8500, orders: 500, amount: 179500.00, soldOutTime: '2023-09-28 14:23:05' }
@@ -109,7 +110,7 @@ export default function AdminMarketing() {
       freeRule: '团长免单',
       startTime: '2023-10-01 00:00',
       endTime: '2023-10-31 23:59',
-      status: '进行中'
+      status: GroupBuyStatus.ACTIVE
     },
     {
       id: 2,
@@ -121,7 +122,7 @@ export default function AdminMarketing() {
       freeRule: '随机免单一员',
       startTime: '2023-11-01 00:00',
       endTime: '2023-11-11 23:59',
-      status: '未开始'
+      status: GroupBuyStatus.PENDING
     },
     {
       id: 3,
@@ -133,7 +134,7 @@ export default function AdminMarketing() {
       freeRule: '随机免单一员',
       startTime: '2023-09-01 00:00',
       endTime: '2023-09-30 23:59',
-      status: '已结束'
+      status: GroupBuyStatus.ENDED
     }
   ];
 
@@ -145,7 +146,7 @@ export default function AdminMarketing() {
       value: '10元',
       total: 10000,
       claimed: 8500,
-      status: 'active'
+      status: CouponStatus.ACTIVE
     },
     {
       id: 2,
@@ -154,7 +155,7 @@ export default function AdminMarketing() {
       value: '满199减30',
       total: 5000,
       claimed: 1200,
-      status: 'active'
+      status: CouponStatus.ACTIVE
     },
     {
       id: 3,
@@ -163,7 +164,7 @@ export default function AdminMarketing() {
       value: '满500减100',
       total: 2000,
       claimed: 2000,
-      status: 'ended'
+      status: CouponStatus.ENDED
     }
   ];
 
@@ -198,7 +199,7 @@ export default function AdminMarketing() {
   const togglePackageStatus = (id: number) => {
     setPartnerPackages(partnerPackages.map(p => {
       if (p.id === id) {
-        return { ...p, status: p.status === '上架' ? '下架' : '上架' };
+        return { ...p, status: p.status === PartnerPackageStatus.ACTIVE ? PartnerPackageStatus.INACTIVE : PartnerPackageStatus.ACTIVE };
       }
       return p;
     }));
@@ -217,7 +218,7 @@ export default function AdminMarketing() {
         <button 
           onClick={() => {
             if (activeTab === 'partner-package') {
-              setEditingPackage({ name: '', price: '', originalPrice: '', desc: '', img: '', status: '上架' });
+              setEditingPackage({ name: '', price: '', originalPrice: '', desc: '', img: '', status: PartnerPackageStatus.ACTIVE });
               setShowPackageModal(true);
             }
             else if (activeTab === 'flash-sale') navigate('/admin/marketing/flash-sale/create');
@@ -395,40 +396,54 @@ export default function AdminMarketing() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                  {coupons.map((item) => (
-                    <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                      <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.name}</td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                        <span className="bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400 px-2 py-0.5 rounded text-xs mr-2">{item.type}</span>
-                        {item.value}
-                      </td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.total}</td>
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                        <div className="flex items-center gap-2">
-                          <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden w-24">
-                            <div 
-                              className="h-full bg-primary" 
-                              style={{ width: `${(item.claimed / item.total) * 100}%` }}
-                            ></div>
+                  {coupons.length > 0 ? (
+                    coupons.map((item) => (
+                      <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                        <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.name}</td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                          <span className="bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400 px-2 py-0.5 rounded text-xs mr-2">{item.type}</span>
+                          {item.value}
+                        </td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.total}</td>
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden w-24">
+                              <div 
+                                className="h-full bg-primary" 
+                                style={{ width: `${(item.claimed / item.total) * 100}%` }}
+                              ></div>
+                            </div>
+                            <span className="text-xs">{item.claimed}</span>
                           </div>
-                          <span className="text-xs">{item.claimed}</span>
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          item.status === 'active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                          'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
-                        }`}>
-                          {item.status === 'active' ? '发放中' : '已结束'}
-                        </span>
-                      </td>
-                      <td className="p-4 text-right">
-                        <div className="flex items-center justify-end gap-3">
-                          <button onClick={() => navigate('/admin/marketing/coupons')} className="text-primary text-sm font-medium hover:underline">管理</button>
-                        </div>
+                        </td>
+                        <td className="p-4">
+                          <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                            item.status === CouponStatus.ACTIVE ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                            'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                          }`}>
+                            {item.status === CouponStatus.ACTIVE ? '发放中' : '已结束'}
+                          </span>
+                        </td>
+                        <td className="p-4 text-right">
+                          <div className="flex items-center justify-end gap-3">
+                            <button onClick={() => navigate('/admin/marketing/coupons')} className="text-primary text-sm font-medium hover:underline">管理</button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6} className="p-0">
+                        <Empty 
+                          icon="local_activity"
+                          title="暂无优惠券"
+                          description="还没有创建任何优惠券活动"
+                          actionText="去创建"
+                          onAction={() => navigate('/admin/marketing/coupons/create')}
+                        />
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -591,7 +606,7 @@ export default function AdminMarketing() {
                       <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.sales}</td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          item.status === '上架' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                          item.status === PartnerPackageStatus.ACTIVE ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
                         }`}>
                           {item.status}
                         </span>
@@ -609,9 +624,9 @@ export default function AdminMarketing() {
                           </button>
                           <button 
                             onClick={() => togglePackageStatus(item.id)}
-                            className={`${item.status === '上架' ? 'text-amber-500 hover:text-amber-600' : 'text-emerald-500 hover:text-emerald-600'} text-sm font-medium hover:underline`}
+                            className={`${item.status === PartnerPackageStatus.ACTIVE ? 'text-amber-500 hover:text-amber-600' : 'text-emerald-500 hover:text-emerald-600'} text-sm font-medium hover:underline`}
                           >
-                            {item.status === '上架' ? '下架' : '上架'}
+                            {item.status === PartnerPackageStatus.ACTIVE ? '下架' : '上架'}
                           </button>
                           <button 
                             onClick={() => deletePackage(item.id)}
@@ -770,8 +785,8 @@ export default function AdminMarketing() {
                   onChange={e => setEditingPackage({...editingPackage, status: e.target.value})}
                   className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-sm outline-none focus:border-primary"
                 >
-                  <option value="上架">上架</option>
-                  <option value="下架">下架</option>
+                  <option value={PartnerPackageStatus.ACTIVE}>上架</option>
+                  <option value={PartnerPackageStatus.INACTIVE}>下架</option>
                 </select>
               </div>
 

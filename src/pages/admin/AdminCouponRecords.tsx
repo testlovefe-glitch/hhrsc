@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import Empty from '../../components/Empty';
+import { UserCouponStatus } from '../../types';
 
 export default function AdminCouponRecords() {
   const navigate = useNavigate();
@@ -19,9 +21,9 @@ export default function AdminCouponRecords() {
 
   // Mock data
   const records = [
-    { id: 'REC-001', user: '张三', phone: '138****1234', claimTime: '2023-10-24 14:30', useTime: '2023-10-25 09:15', status: '已使用', orderId: 'ORD-20231025-001' },
-    { id: 'REC-002', user: '李四', phone: '139****5678', claimTime: '2023-10-24 15:20', useTime: '-', status: '未使用', orderId: '-' },
-    { id: 'REC-003', user: '王五', phone: '137****9012', claimTime: '2023-10-23 08:45', useTime: '-', status: '已过期', orderId: '-' },
+    { id: 'REC-001', user: '张三', phone: '138****1234', claimTime: '2023-10-24 14:30', useTime: '2023-10-25 09:15', status: UserCouponStatus.USED, orderId: 'ORD-20231025-001' },
+    { id: 'REC-002', user: '李四', phone: '139****5678', claimTime: '2023-10-24 15:20', useTime: '-', status: UserCouponStatus.UNUSED, orderId: '-' },
+    { id: 'REC-003', user: '王五', phone: '137****9012', claimTime: '2023-10-23 08:45', useTime: '-', status: UserCouponStatus.EXPIRED, orderId: '-' },
   ];
 
   const filteredRecords = records.filter(record => {
@@ -74,9 +76,9 @@ export default function AdminCouponRecords() {
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
             >
               <option value="">所有状态</option>
-              <option value="未使用">未使用</option>
-              <option value="已使用">已使用</option>
-              <option value="已过期">已过期</option>
+              <option value={UserCouponStatus.UNUSED}>未使用</option>
+              <option value={UserCouponStatus.USED}>已使用</option>
+              <option value={UserCouponStatus.EXPIRED}>已过期</option>
             </select>
           </div>
         </div>
@@ -95,33 +97,50 @@ export default function AdminCouponRecords() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {filteredRecords.map((record) => (
-                <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                  <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{record.id}</td>
-                  <td className="p-4">
-                    <p className="text-sm text-slate-900 dark:text-white">{record.user}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{record.phone}</p>
-                  </td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.claimTime}</td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                      record.status === '未使用' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
-                      record.status === '已使用' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                      'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
-                    }`}>
-                      {record.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.useTime}</td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                    {record.orderId !== '-' ? (
-                      <button onClick={() => navigate(`/admin/orders/${record.orderId}`)} className="text-primary hover:underline">
-                        {record.orderId}
-                      </button>
-                    ) : '-'}
+              {filteredRecords.length > 0 ? (
+                filteredRecords.map((record) => (
+                  <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                    <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{record.id}</td>
+                    <td className="p-4">
+                      <p className="text-sm text-slate-900 dark:text-white">{record.user}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{record.phone}</p>
+                    </td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.claimTime}</td>
+                    <td className="p-4">
+                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                        record.status === UserCouponStatus.UNUSED ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                        record.status === UserCouponStatus.USED ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                      }`}>
+                        {record.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.useTime}</td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                      {record.orderId !== '-' ? (
+                        <button onClick={() => navigate(`/admin/orders/${record.orderId}`)} className="text-primary hover:underline">
+                          {record.orderId}
+                        </button>
+                      ) : '-'}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="p-0">
+                    <Empty 
+                      icon="history"
+                      title="未找到发放记录"
+                      description="没有找到符合条件的发放记录，请尝试更改搜索条件"
+                      actionText="清除筛选"
+                      onAction={() => {
+                        setSearchQuery('');
+                        setStatusFilter('');
+                      }}
+                    />
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

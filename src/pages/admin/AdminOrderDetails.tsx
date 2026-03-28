@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { OrderStatus } from '../../types';
 
 export default function AdminOrderDetails() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function AdminOrderDetails() {
     setOrder({
       id: id || 'ORD-20231024-001',
       type: '普通订单',
-      status: '待发货',
+      status: OrderStatus.PENDING_SHIPMENT,
       createdAt: '2023-10-24 14:30:00',
       paymentMethod: '微信支付',
       paymentTime: '2023-10-24 14:32:15',
@@ -88,7 +89,7 @@ export default function AdminOrderDetails() {
     
     setOrder({
       ...order,
-      status: '已发货',
+      status: OrderStatus.SHIPPED,
       logistics: {
         company: shippingCompany,
         trackingNo: trackingNo,
@@ -117,10 +118,10 @@ export default function AdminOrderDetails() {
           </button>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">订单详情</h1>
           <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-            order.status === '待发货' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
-            order.status === '已发货' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
-            order.status === '已完成' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-            order.status === '已取消' ? 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300' :
+            order.status === OrderStatus.PENDING_SHIPMENT ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+            order.status === OrderStatus.SHIPPED ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+            order.status === OrderStatus.COMPLETED ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+            order.status === OrderStatus.CANCELLED ? 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300' :
             'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400'
           }`}>
             {order.status}
@@ -130,7 +131,7 @@ export default function AdminOrderDetails() {
           </span>
         </div>
         <div className="flex gap-3">
-          {order.status === '待发货' && (
+          {order.status === OrderStatus.PENDING_SHIPMENT && (
             <button 
               onClick={() => setShowShipModal(true)}
               className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
@@ -138,7 +139,7 @@ export default function AdminOrderDetails() {
               发货
             </button>
           )}
-          {(order.status === '待发货' || order.status === '已发货') && (
+          {(order.status === OrderStatus.PENDING_SHIPMENT || order.status === OrderStatus.SHIPPED) && (
             <button 
               onClick={() => setShowRefundModal(true)}
               className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
@@ -146,7 +147,7 @@ export default function AdminOrderDetails() {
               退款
             </button>
           )}
-          {(order.status === '待付款' || order.status === '待发货') && (
+          {(order.status === OrderStatus.PENDING_PAYMENT || order.status === OrderStatus.PENDING_SHIPMENT) && (
             <button className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-red-600 dark:text-red-400 rounded-lg text-sm font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors shadow-sm">
               关闭订单
             </button>
@@ -267,7 +268,7 @@ export default function AdminOrderDetails() {
           </div>
 
           {/* Logistics Info */}
-          {(order.status === '已发货' || order.status === '已完成' || order.logistics?.trackingNo) && (
+          {(order.status === OrderStatus.SHIPPED || order.status === OrderStatus.COMPLETED || order.logistics?.trackingNo) && (
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
               <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">物流信息</h2>

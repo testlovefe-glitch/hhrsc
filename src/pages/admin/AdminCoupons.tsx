@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Empty from '../../components/Empty';
+import { CouponStatus } from '../../types';
 
 export default function AdminCoupons() {
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ export default function AdminCoupons() {
       claimed: 4520, 
       used: 1200,
       validity: '领取后7天有效',
-      status: '发放中' 
+      status: CouponStatus.ACTIVE 
     },
     { 
       id: 2, 
@@ -31,7 +33,7 @@ export default function AdminCoupons() {
       claimed: 5000, 
       used: 4800,
       validity: '2023-10-01 至 2023-10-31',
-      status: '已结束' 
+      status: CouponStatus.ENDED 
     },
     { 
       id: 3, 
@@ -43,7 +45,7 @@ export default function AdminCoupons() {
       claimed: 120, 
       used: 10,
       validity: '2023-11-01 至 2023-11-11',
-      status: '发放中' 
+      status: CouponStatus.ACTIVE 
     },
   ];
 
@@ -105,8 +107,8 @@ export default function AdminCoupons() {
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
             >
               <option value="">所有状态</option>
-              <option value="发放中">发放中</option>
-              <option value="已结束">已结束</option>
+              <option value={CouponStatus.ACTIVE}>发放中</option>
+              <option value={CouponStatus.ENDED}>已结束</option>
             </select>
           </div>
         </div>
@@ -128,64 +130,82 @@ export default function AdminCoupons() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {filteredCoupons.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                  <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.name}</td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                    <span className={`px-2 py-0.5 rounded text-xs ${
-                      item.type === '新人券' ? 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400' :
-                      item.type === '商品券' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
-                      'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400'
-                    }`}>
-                      {item.type}
-                    </span>
-                  </td>
-                  <td className="p-4 text-sm font-bold text-primary">{item.value}</td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.threshold}</td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.total}</td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-slate-500 w-10">领取:</span>
-                        <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden w-20">
-                          <div className="h-full bg-blue-500" style={{ width: `${(item.claimed / item.total) * 100}%` }}></div>
+              {filteredCoupons.length > 0 ? (
+                filteredCoupons.map((item) => (
+                  <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                    <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{item.name}</td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                      <span className={`px-2 py-0.5 rounded text-xs ${
+                        item.type === '新人券' ? 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400' :
+                        item.type === '商品券' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                        'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400'
+                      }`}>
+                        {item.type}
+                      </span>
+                    </td>
+                    <td className="p-4 text-sm font-bold text-primary">{item.value}</td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.threshold}</td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.total}</td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-slate-500 w-10">领取:</span>
+                          <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden w-20">
+                            <div className="h-full bg-blue-500" style={{ width: `${(item.claimed / item.total) * 100}%` }}></div>
+                          </div>
+                          <span className="text-xs">{item.claimed}</span>
                         </div>
-                        <span className="text-xs">{item.claimed}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-slate-500 w-10">使用:</span>
-                        <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden w-20">
-                          <div className="h-full bg-emerald-500" style={{ width: `${(item.used / item.claimed) * 100}%` }}></div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-slate-500 w-10">使用:</span>
+                          <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden w-20">
+                            <div className="h-full bg-emerald-500" style={{ width: `${(item.used / item.claimed) * 100}%` }}></div>
+                          </div>
+                          <span className="text-xs">{item.used}</span>
                         </div>
-                        <span className="text-xs">{item.used}</span>
                       </div>
-                    </div>
-                  </td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.validity}</td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                      item.status === '发放中' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                      'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
-                    }`}>
-                      {item.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <div className="flex items-center justify-end gap-3">
-                      <button 
-                        onClick={() => navigate(`/admin/marketing/coupons/records/${item.id}`)}
-                        className="text-primary text-sm font-medium hover:underline"
-                      >
-                        发放记录
-                      </button>
-                      <button className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-sm font-medium hover:underline">编辑</button>
-                      {item.status === '发放中' && (
-                        <button className="text-red-500 hover:text-red-600 text-sm font-medium hover:underline">停发</button>
-                      )}
-                    </div>
+                    </td>
+                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.validity}</td>
+                    <td className="p-4">
+                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                        item.status === CouponStatus.ACTIVE ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                      }`}>
+                        {item.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right">
+                      <div className="flex items-center justify-end gap-3">
+                        <button 
+                          onClick={() => navigate(`/admin/marketing/coupons/records/${item.id}`)}
+                          className="text-primary text-sm font-medium hover:underline"
+                        >
+                          发放记录
+                        </button>
+                        <button className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-sm font-medium hover:underline">编辑</button>
+                        {item.status === CouponStatus.ACTIVE && (
+                          <button className="text-red-500 hover:text-red-600 text-sm font-medium hover:underline">停发</button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={9} className="p-0">
+                    <Empty 
+                      icon="confirmation_number"
+                      title="未找到优惠券"
+                      description="没有找到符合条件的优惠券，请尝试更改搜索条件"
+                      actionText="清除筛选"
+                      onAction={() => {
+                        setSearchQuery('');
+                        setTypeFilter('');
+                        setStatusFilter('');
+                      }}
+                    />
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

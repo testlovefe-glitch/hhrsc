@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { UserStatus } from '../../types';
 
 export default function AdminEditUser() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export default function AdminEditUser() {
       name: '张三',
       phone: '13812345678',
       role: 'partner_senior',
-      status: '正常',
+      status: UserStatus.ACTIVE,
     });
   }, [id]);
 
@@ -84,8 +85,8 @@ export default function AdminEditUser() {
                   状态
                 </label>
                 <select defaultValue={user.status} className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white appearance-none">
-                  <option value="正常">正常</option>
-                  <option value="冻结">冻结 (无法登录、无法进行分销操作)</option>
+                  <option value={UserStatus.ACTIVE}>正常</option>
+                  <option value={UserStatus.FROZEN}>冻结 (无法登录、无法进行分销操作)</option>
                 </select>
               </div>
             </div>

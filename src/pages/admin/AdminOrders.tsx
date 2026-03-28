@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Empty from '../../components/Empty';
+import { OrderStatus } from '../../types';
 
 export default function AdminOrders() {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ export default function AdminOrders() {
       paidAmount: 2899.00,
       paymentMethod: '微信支付',
       paymentTime: '2023-10-24 14:35',
-      status: '待发货', 
+      status: OrderStatus.PENDING_SHIPMENT, 
       date: '2023-10-24 14:30',
       referrer: '李总 (U10001)',
       salesCommission: 150.00,
@@ -51,7 +52,7 @@ export default function AdminOrders() {
       paidAmount: 1299.00,
       paymentMethod: '支付宝',
       paymentTime: '2023-10-24 12:20',
-      status: '已发货', 
+      status: OrderStatus.SHIPPED, 
       date: '2023-10-24 12:15',
       referrer: '无',
       salesCommission: 0.00,
@@ -68,7 +69,7 @@ export default function AdminOrders() {
       paidAmount: 1999.00,
       paymentMethod: '微信支付',
       paymentTime: '2023-10-23 09:50',
-      status: '已完成', 
+      status: OrderStatus.COMPLETED, 
       date: '2023-10-23 09:45',
       referrer: '赵六 (U10002)',
       salesCommission: 100.00,
@@ -85,7 +86,7 @@ export default function AdminOrders() {
       paidAmount: 299.00,
       paymentMethod: '微信支付',
       paymentTime: '2023-10-22 10:15',
-      status: '退款/售后', 
+      status: OrderStatus.REFUNDING, 
       date: '2023-10-22 10:10',
       referrer: '无',
       salesCommission: 0.00,
@@ -147,12 +148,12 @@ export default function AdminOrders() {
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
             >
               <option value="">所有状态</option>
-              <option value="待付款">待付款</option>
-              <option value="待发货">待发货</option>
-              <option value="已发货">已发货</option>
-              <option value="已完成">已完成</option>
-              <option value="退款/售后">退款/售后</option>
-              <option value="已取消">已取消</option>
+              <option value={OrderStatus.PENDING_PAYMENT}>待付款</option>
+              <option value={OrderStatus.PENDING_SHIPMENT}>待发货</option>
+              <option value={OrderStatus.SHIPPED}>已发货</option>
+              <option value={OrderStatus.COMPLETED}>已完成</option>
+              <option value={OrderStatus.REFUNDING}>退款/售后</option>
+              <option value={OrderStatus.CANCELLED}>已取消</option>
             </select>
             <input 
               type="text" 
@@ -241,11 +242,11 @@ export default function AdminOrders() {
                     </td>
                     <td className="p-4">
                       <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        order.status === '待发货' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
-                        order.status === '已发货' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
-                        order.status === '已完成' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                        order.status === '退款/售后' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
-                        order.status === '已取消' ? 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300' :
+                        order.status === OrderStatus.PENDING_SHIPMENT ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+                        order.status === OrderStatus.SHIPPED ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                        order.status === OrderStatus.COMPLETED ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        order.status === OrderStatus.REFUNDING ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
+                        order.status === OrderStatus.CANCELLED ? 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300' :
                         'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400'
                       }`}>
                         {order.status}
@@ -257,17 +258,17 @@ export default function AdminOrders() {
                           查看详情
                         </button>
                         <div className="flex items-center gap-2">
-                          {order.status === '待发货' && (
+                          {order.status === OrderStatus.PENDING_SHIPMENT && (
                             <button className="text-emerald-600 dark:text-emerald-400 text-xs font-medium hover:underline">
                               发货
                             </button>
                           )}
-                          {(order.status === '待发货' || order.status === '已发货') && (
+                          {(order.status === OrderStatus.PENDING_SHIPMENT || order.status === OrderStatus.SHIPPED) && (
                             <button className="text-red-600 dark:text-red-400 text-xs font-medium hover:underline">
                               退款
                             </button>
                           )}
-                          {order.status === '退款/售后' && (
+                          {order.status === OrderStatus.REFUNDING && (
                             <button className="text-red-600 dark:text-red-400 text-xs font-medium hover:underline">
                               处理售后
                             </button>

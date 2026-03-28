@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { UserStatus } from '../../types';
 
 export default function AdminEditPartnerLevel() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export default function AdminEditPartnerLevel() {
       name: '张三',
       phone: '13812345678',
       level: 'partner_senior',
-      status: '正常',
+      status: UserStatus.ACTIVE,
     });
   }, [id]);
 

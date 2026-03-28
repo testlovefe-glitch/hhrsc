@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { UserStatus } from '../../types';
 
 export default function AdminTeamMemberDetails() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export default function AdminTeamMemberDetails() {
       name: '王五',
       phone: '13711223344',
       level: '普通用户',
-      status: '正常',
+      status: UserStatus.ACTIVE,
       joinDate: '2023-10-26 09:30:00',
       type: '直推',
       referrer: '张三 (P88291)',
@@ -38,7 +39,7 @@ export default function AdminTeamMemberDetails() {
           </button>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">团队成员详情</h1>
           <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-            member.status === '正常' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+            member.status === UserStatus.ACTIVE ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
             'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
           }`}>
             {member.status}

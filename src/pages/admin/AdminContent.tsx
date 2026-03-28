@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import Empty from '../../components/Empty';
+import { ContentStatus } from '../../types';
 
 export default function AdminContent() {
   const [activeTab, setActiveTab] = useState<'banner' | 'announcement' | 'recruit' | 'faq'>('banner');
 
   // Mock Data
   const [banners, setBanners] = useState([
-    { id: 1, title: '春季新品上市', type: 'carousel', imageUrl: 'https://images.unsplash.com/photo-1504675099198-7023dd85f5a3?auto=format&fit=crop&q=80&w=800', link: '/products', status: '显示中', sort: 1 },
-    { id: 2, title: '新人注册礼', type: 'popup', imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=800', link: '/register', status: '已隐藏', sort: 2 },
+    { id: 1, title: '春季新品上市', type: 'carousel', imageUrl: 'https://images.unsplash.com/photo-1504675099198-7023dd85f5a3?auto=format&fit=crop&q=80&w=800', link: '/products', status: ContentStatus.PUBLISHED, sort: 1 },
+    { id: 2, title: '新人注册礼', type: 'popup', imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=800', link: '/register', status: ContentStatus.HIDDEN, sort: 2 },
   ]);
 
   const [announcements, setAnnouncements] = useState([
-    { id: 1, title: '系统升级维护通知', content: '为了提供更好的服务，系统将于本周日凌晨2点进行升级维护。', status: '已发布', publishTime: '2026-03-20 10:00:00' },
-    { id: 2, title: '五一劳动节放假安排', content: '五一期间发货时间调整公告...', status: '草稿', publishTime: '-' },
+    { id: 1, title: '系统升级维护通知', content: '为了提供更好的服务，系统将于本周日凌晨2点进行升级维护。', status: ContentStatus.PUBLISHED, publishTime: '2026-03-20 10:00:00' },
+    { id: 2, title: '五一劳动节放假安排', content: '五一期间发货时间调整公告...', status: ContentStatus.DRAFT, publishTime: '-' },
   ]);
 
   const [recruitConfig, setRecruitConfig] = useState({
@@ -28,9 +29,9 @@ export default function AdminContent() {
   });
 
   const [faqs, setFaqs] = useState([
-    { id: 1, category: '佣金规则', question: '佣金如何结算与提现？', answer: '佣金在订单完成后7天结算到账，满100元即可申请提现，提现通常在1-3个工作日内到账。', status: '显示中', sort: 1 },
-    { id: 2, category: '升级规则', question: '如何升级合伙人等级？', answer: '合伙人等级根据您的累计销售额和直推人数自动升级，具体条件请参考合伙人权益说明。', status: '显示中', sort: 2 },
-    { id: 3, category: '邀请规则', question: '邀请好友有什么奖励？', answer: '邀请好友注册并成为合伙人，您将获得其销售额一定比例的间推奖励。', status: '已隐藏', sort: 3 },
+    { id: 1, category: '佣金规则', question: '佣金如何结算与提现？', answer: '佣金在订单完成后7天结算到账，满100元即可申请提现，提现通常在1-3个工作日内到账。', status: ContentStatus.PUBLISHED, sort: 1 },
+    { id: 2, category: '升级规则', question: '如何升级合伙人等级？', answer: '合伙人等级根据您的累计销售额和直推人数自动升级，具体条件请参考合伙人权益说明。', status: ContentStatus.PUBLISHED, sort: 2 },
+    { id: 3, category: '邀请规则', question: '邀请好友有什么奖励？', answer: '邀请好友注册并成为合伙人，您将获得其销售额一定比例的间推奖励。', status: ContentStatus.HIDDEN, sort: 3 },
   ]);
 
   const [showBannerModal, setShowBannerModal] = useState(false);
@@ -62,7 +63,7 @@ export default function AdminContent() {
     category: '佣金规则',
     question: '',
     answer: '',
-    status: '显示中'
+    status: ContentStatus.PUBLISHED
   });
 
   // Toast State
@@ -86,7 +87,7 @@ export default function AdminContent() {
     const banner = {
       id: Date.now(),
       ...newBanner,
-      status: '显示中',
+      status: ContentStatus.PUBLISHED,
       sort: banners.length + 1
     };
     
@@ -110,7 +111,7 @@ export default function AdminContent() {
       id: Date.now(),
       title: newAnnouncement.title,
       content: newAnnouncement.content,
-      status: newAnnouncement.publishNow ? '已发布' : '草稿',
+      status: newAnnouncement.publishNow ? ContentStatus.PUBLISHED : ContentStatus.DRAFT,
       publishTime: newAnnouncement.publishNow ? new Date().toLocaleString() : '-'
     };
 
@@ -146,7 +147,7 @@ export default function AdminContent() {
 
     setFaqs([...faqs, faq]);
     setShowFaqModal(false);
-    setNewFaq({ category: '佣金规则', question: '', answer: '', status: '显示中' });
+    setNewFaq({ category: '佣金规则', question: '', answer: '', status: ContentStatus.PUBLISHED });
     showToast('FAQ添加成功');
   };
 
@@ -274,7 +275,7 @@ export default function AdminContent() {
                       <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{banner.sort}</td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                          banner.status === '显示中' 
+                          banner.status === ContentStatus.PUBLISHED 
                             ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400'
                             : 'bg-slate-100 text-slate-800 dark:bg-slate-500/20 dark:text-slate-400'
                         }`}>
@@ -354,7 +355,7 @@ export default function AdminContent() {
                       <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{announcement.publishTime}</td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                          announcement.status === '已发布' 
+                          announcement.status === ContentStatus.PUBLISHED 
                             ? 'bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400'
                             : 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400'
                         }`}>
@@ -511,7 +512,7 @@ export default function AdminContent() {
                       </td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          faq.status === '显示中' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                          faq.status === ContentStatus.PUBLISHED ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
                           'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400'
                         }`}>
                           {faq.status}
@@ -695,11 +696,11 @@ export default function AdminContent() {
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">状态</label>
                 <select 
                   value={newFaq.status}
-                  onChange={(e) => setNewFaq({...newFaq, status: e.target.value})}
+                  onChange={(e) => setNewFaq({...newFaq, status: e.target.value as ContentStatus})}
                   className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-transparent focus:ring-2 focus:ring-primary/50 outline-none appearance-none"
                 >
-                  <option value="显示中">显示中</option>
-                  <option value="已隐藏">已隐藏</option>
+                  <option value={ContentStatus.PUBLISHED}>{ContentStatus.PUBLISHED}</option>
+                  <option value={ContentStatus.HIDDEN}>{ContentStatus.HIDDEN}</option>
                 </select>
               </div>
             </div>

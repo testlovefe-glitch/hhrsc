@@ -1,16 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Empty from '../../components/Empty';
+import { PartnerLevel, UserStatus } from '../../types';
 
 export default function AdminPartners() {
   const navigate = useNavigate();
 
   const [partners, setPartners] = useState([
-    { id: 'P88291', name: '张三', phone: '138****1234', isPartner: true, level: '高级合伙人', referrer: '系统', teamSize: 128, joinDate: '2023-01-15', status: '正常', monthSales: 15000.00, totalReferralReward: 5000.00, totalSalesCommission: 40800.00 },
-    { id: 'P88292', name: '李四', phone: '139****5678', isPartner: true, level: '初级合伙人', referrer: '张三', teamSize: 45, joinDate: '2023-03-22', status: '正常', monthSales: 3000.00, totalReferralReward: 800.00, totalSalesCommission: 2400.00 },
-    { id: 'P88295', name: '孙七', phone: '135****7890', isPartner: true, level: '中级合伙人', referrer: '张三', teamSize: 89, joinDate: '2023-02-18', status: '正常', monthSales: 8000.00, totalReferralReward: 2000.00, totalSalesCommission: 13600.20 },
-    { id: 'P88298', name: '周八', phone: '133****2233', isPartner: true, level: '初级合伙人', referrer: '李四', teamSize: 12, joinDate: '2023-09-10', status: '冻结', monthSales: 0.00, totalReferralReward: 100.00, totalSalesCommission: 700.00 },
-    { id: 'P88299', name: '吴九', phone: '132****4455', isPartner: true, level: '高级合伙人', referrer: '系统', teamSize: 340, joinDate: '2022-11-05', status: '正常', monthSales: 50000.00, totalReferralReward: 15000.00, totalSalesCommission: 110000.00 },
+    { id: 'P88291', name: '张三', phone: '138****1234', isPartner: true, level: PartnerLevel.ADVANCED, referrer: '系统', teamSize: 128, joinDate: '2023-01-15', status: UserStatus.ACTIVE, monthSales: 15000.00, totalReferralReward: 5000.00, totalSalesCommission: 40800.00 },
+    { id: 'P88292', name: '李四', phone: '139****5678', isPartner: true, level: PartnerLevel.BASIC, referrer: '张三', teamSize: 45, joinDate: '2023-03-22', status: UserStatus.ACTIVE, monthSales: 3000.00, totalReferralReward: 800.00, totalSalesCommission: 2400.00 },
+    { id: 'P88295', name: '孙七', phone: '135****7890', isPartner: true, level: PartnerLevel.INTERMEDIATE, referrer: '张三', teamSize: 89, joinDate: '2023-02-18', status: UserStatus.ACTIVE, monthSales: 8000.00, totalReferralReward: 2000.00, totalSalesCommission: 13600.20 },
+    { id: 'P88298', name: '周八', phone: '133****2233', isPartner: true, level: PartnerLevel.BASIC, referrer: '李四', teamSize: 12, joinDate: '2023-09-10', status: UserStatus.FROZEN, monthSales: 0.00, totalReferralReward: 100.00, totalSalesCommission: 700.00 },
+    { id: 'P88299', name: '吴九', phone: '132****4455', isPartner: true, level: PartnerLevel.ADVANCED, referrer: '系统', teamSize: 340, joinDate: '2022-11-05', status: UserStatus.ACTIVE, monthSales: 50000.00, totalReferralReward: 15000.00, totalSalesCommission: 110000.00 },
   ]);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,13 +31,13 @@ export default function AdminPartners() {
     const matchesSearch = partner.name.includes(searchQuery) || partner.phone.includes(searchQuery) || partner.id.includes(searchQuery);
     
     let matchesLevel = true;
-    if (levelFilter === 'junior') matchesLevel = partner.level === '初级合伙人';
-    else if (levelFilter === 'middle') matchesLevel = partner.level === '中级合伙人';
-    else if (levelFilter === 'senior') matchesLevel = partner.level === '高级合伙人';
+    if (levelFilter === 'junior') matchesLevel = partner.level === PartnerLevel.BASIC;
+    else if (levelFilter === 'middle') matchesLevel = partner.level === PartnerLevel.INTERMEDIATE;
+    else if (levelFilter === 'senior') matchesLevel = partner.level === PartnerLevel.ADVANCED;
 
     let matchesStatus = true;
-    if (statusFilter === 'active') matchesStatus = partner.status === '正常';
-    else if (statusFilter === 'frozen') matchesStatus = partner.status === '冻结';
+    if (statusFilter === 'active') matchesStatus = partner.status === UserStatus.ACTIVE;
+    else if (statusFilter === 'frozen') matchesStatus = partner.status === UserStatus.FROZEN;
 
     const matchesStartDate = startDate ? partner.joinDate >= startDate : true;
     const matchesEndDate = endDate ? partner.joinDate <= endDate : true;
@@ -47,7 +48,7 @@ export default function AdminPartners() {
   const toggleStatus = (id: string) => {
     setPartners(partners.map(p => {
       if (p.id === id) {
-        const newStatus = p.status === '正常' ? '冻结' : '正常';
+        const newStatus = p.status === UserStatus.ACTIVE ? UserStatus.FROZEN : UserStatus.ACTIVE;
         showToast(`合伙人状态已更新为: ${newStatus}`);
         return { ...p, status: newStatus };
       }
@@ -181,7 +182,7 @@ export default function AdminPartners() {
                     <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{partner.joinDate}</td>
                     <td className="p-4">
                       <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        partner.status === '正常' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        partner.status === UserStatus.ACTIVE ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
                         'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
                       }`}>
                         {partner.status}
@@ -202,9 +203,9 @@ export default function AdminPartners() {
                       </button>
                       <button 
                         onClick={() => toggleStatus(partner.id)}
-                        className={`${partner.status === '正常' ? 'text-red-500 hover:text-red-600' : 'text-emerald-500 hover:text-emerald-600'} text-sm font-medium hover:underline`}
+                        className={`${partner.status === UserStatus.ACTIVE ? 'text-red-500 hover:text-red-600' : 'text-emerald-500 hover:text-emerald-600'} text-sm font-medium hover:underline`}
                       >
-                        {partner.status === '正常' ? '冻结' : '解冻'}
+                        {partner.status === UserStatus.ACTIVE ? '冻结' : '解冻'}
                       </button>
                     </td>
                   </tr>

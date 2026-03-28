@@ -1,5 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import Empty from '../../components/Empty';
+import { PartnerLevel, UserStatus } from '../../types';
 
 export default function AdminPartnerDetails() {
   const navigate = useNavigate();
@@ -20,26 +22,26 @@ export default function AdminPartnerDetails() {
   const networkTree = {
     id: 'root',
     name: '张三',
-    level: '高级合伙人',
+    level: PartnerLevel.ADVANCED,
     avatar: 'https://ui-avatars.com/api/?name=张三&background=random',
     children: [
       {
         id: 'child1',
         name: '李四',
-        level: '初级合伙人',
+        level: PartnerLevel.BASIC,
         avatar: 'https://ui-avatars.com/api/?name=李四&background=random',
         children: [
           {
             id: 'child1-1',
             name: '王五',
-            level: '普通用户',
+            level: PartnerLevel.NONE,
             avatar: 'https://ui-avatars.com/api/?name=王五&background=random',
             children: []
           },
           {
             id: 'child1-2',
             name: '钱七',
-            level: '初级合伙人',
+            level: PartnerLevel.BASIC,
             avatar: 'https://ui-avatars.com/api/?name=钱七&background=random',
             children: []
           }
@@ -48,7 +50,7 @@ export default function AdminPartnerDetails() {
       {
         id: 'child2',
         name: '赵六',
-        level: '普通用户',
+        level: PartnerLevel.NONE,
         avatar: 'https://ui-avatars.com/api/?name=赵六&background=random',
         children: []
       }
@@ -97,10 +99,10 @@ export default function AdminPartnerDetails() {
   };
 
   const teamMembers = [
-    { id: 'U99201', name: '王五', phone: '137****1122', level: '普通用户', joinDate: '2023-10-26', type: '直推', contribution: 150.00 },
-    { id: 'U99205', name: '赵六', phone: '136****3344', level: '初级合伙人', joinDate: '2023-10-25', type: '直推', contribution: 1200.00 },
-    { id: 'U99210', name: '钱七', phone: '139****5566', level: '普通用户', joinDate: '2023-10-24', type: '间推', contribution: 30.00 },
-    { id: 'U99188', name: '孙八', phone: '135****7788', level: '中级合伙人', joinDate: '2023-10-20', type: '间推', contribution: 450.00 },
+    { id: 'U99201', name: '王五', phone: '137****1122', level: PartnerLevel.NONE, joinDate: '2023-10-26', type: '直推', contribution: 150.00 },
+    { id: 'U99205', name: '赵六', phone: '136****3344', level: PartnerLevel.BASIC, joinDate: '2023-10-25', type: '直推', contribution: 1200.00 },
+    { id: 'U99210', name: '钱七', phone: '139****5566', level: PartnerLevel.NONE, joinDate: '2023-10-24', type: '间推', contribution: 30.00 },
+    { id: 'U99188', name: '孙八', phone: '135****7788', level: PartnerLevel.INTERMEDIATE, joinDate: '2023-10-20', type: '间推', contribution: 450.00 },
   ];
 
   const commissions = [
@@ -130,8 +132,8 @@ export default function AdminPartnerDetails() {
       id: id || 'P88291',
       name: '张三',
       phone: '13812345678',
-      level: '高级合伙人',
-      status: '正常',
+      level: PartnerLevel.ADVANCED,
+      status: UserStatus.ACTIVE,
       teamSize: 128,
       directInvites: 45,
       indirectInvites: 83,
@@ -158,7 +160,7 @@ export default function AdminPartnerDetails() {
           </button>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">合伙人详情</h1>
           <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-            partner.status === '正常' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+            partner.status === UserStatus.ACTIVE ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
             'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
           }`}>
             {partner.status}
@@ -346,42 +348,54 @@ export default function AdminPartnerDetails() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {filteredTeamMembers.map(member => (
-                  <tr key={member.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <img src={`https://ui-avatars.com/api/?name=${member.name}&background=random`} alt={member.name} className="w-10 h-10 rounded-full" />
-                        <div>
-                          <p className="text-sm font-medium text-slate-900 dark:text-white">{member.name}</p>
-                          <p className="text-xs text-slate-500 mt-0.5">{member.phone} · {member.id}</p>
+                {filteredTeamMembers.length > 0 ? (
+                  filteredTeamMembers.map(member => (
+                    <tr key={member.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                      <td className="p-4">
+                        <div className="flex items-center gap-3">
+                          <img src={`https://ui-avatars.com/api/?name=${member.name}&background=random`} alt={member.name} className="w-10 h-10 rounded-full" />
+                          <div>
+                            <p className="text-sm font-medium text-slate-900 dark:text-white">{member.name}</p>
+                            <p className="text-xs text-slate-500 mt-0.5">{member.phone} · {member.id}</p>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        member.level.includes('合伙人') ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
-                        'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
-                      }`}>
-                        {member.level}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${member.type === '直推' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'}`}>
-                        {member.type}
-                      </span>
-                    </td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{member.joinDate}</td>
-                    <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">¥{member.contribution.toFixed(2)}</td>
-                    <td className="p-4 text-right">
-                      <button 
-                        onClick={() => navigate(`/admin/partners/team-member/${member.id}`)}
-                        className="text-primary text-sm font-medium hover:underline"
-                      >
-                        查看详情
-                      </button>
+                      </td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                          member.level.includes('合伙人') ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+                          'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                        }`}>
+                          {member.level}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${member.type === '直推' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'}`}>
+                          {member.type}
+                        </span>
+                      </td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{member.joinDate}</td>
+                      <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">¥{member.contribution.toFixed(2)}</td>
+                      <td className="p-4 text-right">
+                        <button 
+                          onClick={() => navigate(`/admin/partners/team-member/${member.id}`)}
+                          className="text-primary text-sm font-medium hover:underline"
+                        >
+                          查看详情
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="p-0">
+                      <Empty 
+                        icon="group" 
+                        title="暂无团队成员" 
+                        description="没有找到符合条件的团队成员" 
+                      />
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -418,35 +432,47 @@ export default function AdminPartnerDetails() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {filteredCommissions.map(commission => (
-                  <tr key={commission.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                    <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{commission.orderId}</td>
-                    <td className="p-4">
-                      <div className="text-sm font-medium text-slate-900 dark:text-white">{commission.buyerName}</div>
-                      <div className="text-xs text-slate-500">{commission.buyerPhone}</div>
-                    </td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">¥{commission.orderAmount.toFixed(2)}</td>
-                    <td className="p-4">
-                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        commission.type === '直推佣金' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
-                        'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400'
-                      }`}>
-                        {commission.type}
-                      </span>
-                    </td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{commission.rate}</td>
-                    <td className="p-4 text-sm font-bold text-emerald-600 dark:text-emerald-500">+¥{commission.amount.toFixed(2)}</td>
-                    <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{commission.date}</td>
-                    <td className="p-4 text-right">
-                      <button 
-                        onClick={() => navigate(`/admin/orders/${commission.orderId}`)}
-                        className="text-primary text-sm font-medium hover:underline"
-                      >
-                        查看订单
-                      </button>
+                {filteredCommissions.length > 0 ? (
+                  filteredCommissions.map(commission => (
+                    <tr key={commission.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                      <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{commission.orderId}</td>
+                      <td className="p-4">
+                        <div className="text-sm font-medium text-slate-900 dark:text-white">{commission.buyerName}</div>
+                        <div className="text-xs text-slate-500">{commission.buyerPhone}</div>
+                      </td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">¥{commission.orderAmount.toFixed(2)}</td>
+                      <td className="p-4">
+                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                          commission.type === '直推佣金' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                          'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400'
+                        }`}>
+                          {commission.type}
+                        </span>
+                      </td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{commission.rate}</td>
+                      <td className="p-4 text-sm font-bold text-emerald-600 dark:text-emerald-500">+¥{commission.amount.toFixed(2)}</td>
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{commission.date}</td>
+                      <td className="p-4 text-right">
+                        <button 
+                          onClick={() => navigate(`/admin/orders/${commission.orderId}`)}
+                          className="text-primary text-sm font-medium hover:underline"
+                        >
+                          查看订单
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="p-0">
+                      <Empty 
+                        icon="account_balance_wallet" 
+                        title="暂无佣金明细" 
+                        description="没有找到符合条件的佣金记录" 
+                      />
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

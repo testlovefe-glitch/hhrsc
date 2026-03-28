@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Empty from '../../components/Empty';
+import { UserStatus, OrderStatus, AfterSalesStatus } from '../../types';
 
 export default function AdminUserDetails() {
   const navigate = useNavigate();
@@ -100,14 +101,14 @@ export default function AdminUserDetails() {
 
   // Mock data for orders and after-sales
   const recentOrders = [
-    { id: 'ORD-20231024-001', amount: 2999.00, status: '已完成', date: '2023-10-24 14:30', products: '飞天茅台 53度 等2件' },
-    { id: 'ORD-20230915-088', amount: 598.00, status: '已发货', date: '2023-09-15 10:20', products: '五粮液 普五 等1件' },
-    { id: 'ORD-20230801-102', amount: 1299.00, status: '已完成', date: '2023-08-01 09:15', products: '剑南春 水晶剑 等3件' },
+    { id: 'ORD-20231024-001', amount: 2999.00, status: OrderStatus.COMPLETED, date: '2023-10-24 14:30', products: '飞天茅台 53度 等2件' },
+    { id: 'ORD-20230915-088', amount: 598.00, status: OrderStatus.SHIPPED, date: '2023-09-15 10:20', products: '五粮液 普五 等1件' },
+    { id: 'ORD-20230801-102', amount: 1299.00, status: OrderStatus.COMPLETED, date: '2023-08-01 09:15', products: '剑南春 水晶剑 等3件' },
   ];
 
   const afterSales = [
-    { id: 'AS-20231025-001', orderId: 'ORD-20231024-001', productName: '飞天茅台 53度', type: '退货退款', status: '处理中', amount: 2999.00, date: '2023-10-25 10:00' },
-    { id: 'AS-20230710-045', orderId: 'ORD-20230708-055', productName: '洋河 蓝色经典', type: '仅退款', status: '已完成', amount: 299.00, date: '2023-07-10 15:30' },
+    { id: 'AS-20231025-001', orderId: 'ORD-20231024-001', productName: '飞天茅台 53度', type: '退货退款', status: AfterSalesStatus.PENDING, amount: 2999.00, date: '2023-10-25 10:00' },
+    { id: 'AS-20230710-045', orderId: 'ORD-20230708-055', productName: '洋河 蓝色经典', type: '仅退款', status: AfterSalesStatus.COMPLETED, amount: 299.00, date: '2023-07-10 15:30' },
   ];
 
   const cellarItems = [
@@ -159,7 +160,7 @@ export default function AdminUserDetails() {
       name: '张三',
       phone: '13812345678',
       role: '高级合伙人',
-      status: '正常',
+      status: UserStatus.ACTIVE,
       teamSize: 128,
       balance: 1280.50,
       totalCommission: 5600.00,
@@ -184,7 +185,7 @@ export default function AdminUserDetails() {
           </button>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">用户详情</h1>
           <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-            user.status === '正常' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+            user.status === UserStatus.ACTIVE ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
             'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
           }`}>
             {user.status}
@@ -398,9 +399,9 @@ export default function AdminUserDetails() {
                 className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
               >
                 <option value="all">全部状态</option>
-                <option value="已完成">已完成</option>
-                <option value="已发货">已发货</option>
-                <option value="待发货">待发货</option>
+                <option value={OrderStatus.COMPLETED}>已完成</option>
+                <option value={OrderStatus.SHIPPED}>已发货</option>
+                <option value={OrderStatus.PENDING_SHIPMENT}>待发货</option>
               </select>
             </div>
           </div>
@@ -426,7 +427,7 @@ export default function AdminUserDetails() {
                       <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{order.date}</td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          order.status === '已完成' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                          order.status === OrderStatus.COMPLETED ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
                           'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400'
                         }`}>
                           {order.status}
@@ -470,8 +471,8 @@ export default function AdminUserDetails() {
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
             >
               <option value="all">全部状态</option>
-              <option value="处理中">处理中</option>
-              <option value="已完成">已完成</option>
+              <option value={AfterSalesStatus.PENDING}>处理中</option>
+              <option value={AfterSalesStatus.COMPLETED}>已完成</option>
             </select>
           </div>
           <div className="overflow-x-auto">
@@ -503,7 +504,7 @@ export default function AdminUserDetails() {
                       <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.date}</td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          item.status === '已完成' ? 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300' :
+                          item.status === AfterSalesStatus.COMPLETED ? 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300' :
                           'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400'
                         }`}>
                           {item.status}

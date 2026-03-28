@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Empty from '../../components/Empty';
+import { WithdrawalStatus, PaymentStatus } from '../../types';
 
 export default function AdminFinance() {
   const navigate = useNavigate();
@@ -31,27 +32,27 @@ export default function AdminFinance() {
 
   // Mock Withdrawals
   const [withdrawals, setWithdrawals] = useState([
-    { id: 'WD-20231026-001', userId: 'U99201', name: '王五', amount: 1500.00, method: '支付宝', account: '137****1122', status: '处理中', date: '2023-10-26 10:30' },
-    { id: 'WD-20231025-089', userId: 'U99205', name: '赵六', amount: 3200.00, method: '微信', account: 'zhaoliu_wx', status: '处理中', date: '2023-10-25 15:45' },
-    { id: 'WD-20231024-120', userId: 'U99188', name: '孙八', amount: 800.00, method: '银行卡', account: '6222 **** **** 1234', status: '成功', date: '2023-10-24 09:15' },
-    { id: 'WD-20231023-045', userId: 'U99210', name: '钱七', amount: 5000.00, method: '支付宝', account: '139****5566', status: '审核拒绝', date: '2023-10-23 18:20', reason: '账户信息不匹配' },
+    { id: 'WD-20231026-001', userId: 'U99201', name: '王五', amount: 1500.00, method: '支付宝', account: '137****1122', status: WithdrawalStatus.PENDING, date: '2023-10-26 10:30' },
+    { id: 'WD-20231025-089', userId: 'U99205', name: '赵六', amount: 3200.00, method: '微信', account: 'zhaoliu_wx', status: WithdrawalStatus.PENDING, date: '2023-10-25 15:45' },
+    { id: 'WD-20231024-120', userId: 'U99188', name: '孙八', amount: 800.00, method: '银行卡', account: '6222 **** **** 1234', status: WithdrawalStatus.SUCCESS, date: '2023-10-24 09:15' },
+    { id: 'WD-20231023-045', userId: 'U99210', name: '钱七', amount: 5000.00, method: '支付宝', account: '139****5566', status: WithdrawalStatus.REJECTED, date: '2023-10-23 18:20', reason: '账户信息不匹配' },
   ]);
 
   // Mock Transactions
   const transactions = [
-    { id: 'TRX-1001', orderId: 'ORD-20231026-001', type: '订单收入', amount: 299.00, payMethod: '微信支付', status: '交易成功', date: '2023-10-26 10:30' },
-    { id: 'TRX-1002', orderId: 'ORD-20231025-089', type: '订单收入', amount: 599.00, payMethod: '支付宝', status: '交易成功', date: '2023-10-25 15:45' },
-    { id: 'TRX-1003', orderId: 'ORD-20231024-120', type: '退款支出', amount: -199.00, payMethod: '原路退回', status: '交易成功', date: '2023-10-24 09:15' },
-    { id: 'TRX-1004', orderId: 'ORD-20231023-045', type: '订单收入', amount: 899.00, payMethod: '微信支付', status: '交易成功', date: '2023-10-23 18:20' },
+    { id: 'TRX-1001', orderId: 'ORD-20231026-001', type: '订单收入', amount: 299.00, payMethod: '微信支付', status: PaymentStatus.SUCCESS, date: '2023-10-26 10:30' },
+    { id: 'TRX-1002', orderId: 'ORD-20231025-089', type: '订单收入', amount: 599.00, payMethod: '支付宝', status: PaymentStatus.SUCCESS, date: '2023-10-25 15:45' },
+    { id: 'TRX-1003', orderId: 'ORD-20231024-120', type: '退款支出', amount: -199.00, payMethod: '原路退回', status: PaymentStatus.SUCCESS, date: '2023-10-24 09:15' },
+    { id: 'TRX-1004', orderId: 'ORD-20231023-045', type: '订单收入', amount: 899.00, payMethod: '微信支付', status: PaymentStatus.SUCCESS, date: '2023-10-23 18:20' },
   ];
 
   const handleApprove = (id: string) => {
-    setWithdrawals(prev => prev.map(w => w.id === id ? { ...w, status: '成功' } : w));
+    setWithdrawals(prev => prev.map(w => w.id === id ? { ...w, status: WithdrawalStatus.SUCCESS } : w));
     showToast('提现申请已通过');
   };
 
   const handleReject = (id: string) => {
-    setWithdrawals(prev => prev.map(w => w.id === id ? { ...w, status: '审核拒绝', reason: '管理员拒绝' } : w));
+    setWithdrawals(prev => prev.map(w => w.id === id ? { ...w, status: WithdrawalStatus.REJECTED, reason: '管理员拒绝' } : w));
     showToast('提现申请已拒绝');
   };
 
@@ -153,9 +154,9 @@ export default function AdminFinance() {
                 className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
               >
                 <option value="all">全部状态</option>
-                <option value="处理中">待审核</option>
-                <option value="成功">已打款</option>
-                <option value="审核拒绝">已拒绝</option>
+                <option value={WithdrawalStatus.PENDING}>待审核</option>
+                <option value={WithdrawalStatus.SUCCESS}>已打款</option>
+                <option value={WithdrawalStatus.REJECTED}>已拒绝</option>
               </select>
               <input 
                 type="text" 
@@ -199,16 +200,16 @@ export default function AdminFinance() {
                       <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{item.date}</td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          item.status === '处理中' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
-                          item.status === '成功' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                          item.status === WithdrawalStatus.PENDING ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+                          item.status === WithdrawalStatus.SUCCESS ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
                           'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
                         }`}>
-                          {item.status === '处理中' ? '待审核' : item.status === '成功' ? '已打款' : '已拒绝'}
+                          {item.status === WithdrawalStatus.PENDING ? '待审核' : item.status === WithdrawalStatus.SUCCESS ? '已打款' : '已拒绝'}
                         </span>
                         {item.reason && <p className="text-xs text-red-500 mt-1">{item.reason}</p>}
                       </td>
                       <td className="p-4 text-right">
-                        {item.status === '处理中' ? (
+                        {item.status === WithdrawalStatus.PENDING ? (
                           <div className="flex items-center justify-end gap-2">
                             <button 
                               onClick={() => handleApprove(item.id)}

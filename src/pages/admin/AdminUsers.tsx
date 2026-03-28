@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Empty from '../../components/Empty';
+import { UserStatus, PartnerLevel } from '../../types';
 
 export default function AdminUsers() {
   const navigate = useNavigate();
 
   const [users, setUsers] = useState([
-    { id: 'U88291', avatar: 'https://ui-avatars.com/api/?name=张三&background=random', name: '张三', phone: '138****1234', isPartner: true, partnerLevel: '高级合伙人', referrer: '系统', teamSize: 128, joinDate: '2023-01-15 10:30:00', status: '正常' },
-    { id: 'U88292', avatar: 'https://ui-avatars.com/api/?name=李四&background=random', name: '李四', phone: '139****5678', isPartner: true, partnerLevel: '初级合伙人', referrer: '张三', teamSize: 45, joinDate: '2023-03-22 14:20:00', status: '正常' },
-    { id: 'U88293', avatar: 'https://ui-avatars.com/api/?name=王五&background=random', name: '王五', phone: '137****9012', isPartner: false, partnerLevel: '无', referrer: '李四', teamSize: 0, joinDate: '2023-06-10 09:15:00', status: '冻结' },
-    { id: 'U88294', avatar: 'https://ui-avatars.com/api/?name=赵六&background=random', name: '赵六', phone: '136****3456', isPartner: false, partnerLevel: '无', referrer: '系统', teamSize: 0, joinDate: '2023-08-05 16:45:00', status: '正常' },
-    { id: 'U88295', avatar: 'https://ui-avatars.com/api/?name=孙七&background=random', name: '孙七', phone: '135****7890', isPartner: true, partnerLevel: '中级合伙人', referrer: '张三', teamSize: 89, joinDate: '2023-02-18 11:10:00', status: '正常' },
+    { id: 'U88291', avatar: 'https://ui-avatars.com/api/?name=张三&background=random', name: '张三', phone: '138****1234', isPartner: true, partnerLevel: PartnerLevel.SENIOR, referrer: '系统', teamSize: 128, joinDate: '2023-01-15 10:30:00', status: UserStatus.ACTIVE },
+    { id: 'U88292', avatar: 'https://ui-avatars.com/api/?name=李四&background=random', name: '李四', phone: '139****5678', isPartner: true, partnerLevel: PartnerLevel.JUNIOR, referrer: '张三', teamSize: 45, joinDate: '2023-03-22 14:20:00', status: UserStatus.ACTIVE },
+    { id: 'U88293', avatar: 'https://ui-avatars.com/api/?name=王五&background=random', name: '王五', phone: '137****9012', isPartner: false, partnerLevel: PartnerLevel.NONE, referrer: '李四', teamSize: 0, joinDate: '2023-06-10 09:15:00', status: UserStatus.FROZEN },
+    { id: 'U88294', avatar: 'https://ui-avatars.com/api/?name=赵六&background=random', name: '赵六', phone: '136****3456', isPartner: false, partnerLevel: PartnerLevel.NONE, referrer: '系统', teamSize: 0, joinDate: '2023-08-05 16:45:00', status: UserStatus.ACTIVE },
+    { id: 'U88295', avatar: 'https://ui-avatars.com/api/?name=孙七&background=random', name: '孙七', phone: '135****7890', isPartner: true, partnerLevel: PartnerLevel.MIDDLE, referrer: '张三', teamSize: 89, joinDate: '2023-02-18 11:10:00', status: UserStatus.ACTIVE },
   ]);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -42,7 +43,7 @@ export default function AdminUsers() {
   const toggleStatus = (id: string) => {
     setUsers(users.map(user => {
       if (user.id === id) {
-        const newStatus = user.status === '正常' ? '冻结' : '正常';
+        const newStatus = user.status === UserStatus.ACTIVE ? UserStatus.FROZEN : UserStatus.ACTIVE;
         showToast(`用户状态已更新为: ${newStatus}`);
         return { ...user, status: newStatus };
       }
@@ -84,10 +85,10 @@ export default function AdminUsers() {
               className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none focus:border-primary transition-colors"
             >
               <option value="">所有等级</option>
-              <option value="无">非合伙人</option>
-              <option value="初级合伙人">初级合伙人</option>
-              <option value="中级合伙人">中级合伙人</option>
-              <option value="高级合伙人">高级合伙人</option>
+              <option value={PartnerLevel.NONE}>非合伙人</option>
+              <option value={PartnerLevel.JUNIOR}>初级合伙人</option>
+              <option value={PartnerLevel.MIDDLE}>中级合伙人</option>
+              <option value={PartnerLevel.SENIOR}>高级合伙人</option>
             </select>
 
             <select 
@@ -96,8 +97,8 @@ export default function AdminUsers() {
               className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none focus:border-primary transition-colors"
             >
               <option value="">所有状态</option>
-              <option value="正常">正常</option>
-              <option value="冻结">冻结</option>
+              <option value={UserStatus.ACTIVE}>正常</option>
+              <option value={UserStatus.FROZEN}>冻结</option>
             </select>
 
             <div className="flex items-center gap-2">
@@ -176,7 +177,7 @@ export default function AdminUsers() {
                     </td>
                     <td className="p-4">
                       <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        user.status === '正常' 
+                        user.status === UserStatus.ACTIVE 
                           ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' 
                           : 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
                       }`}>
@@ -199,9 +200,9 @@ export default function AdminUsers() {
                         </button>
                         <button 
                           onClick={() => toggleStatus(user.id)}
-                          className={`text-sm font-medium hover:underline ${user.status === '正常' ? 'text-red-500 hover:text-red-600' : 'text-emerald-500 hover:text-emerald-600'}`}
+                          className={`text-sm font-medium hover:underline ${user.status === UserStatus.ACTIVE ? 'text-red-500 hover:text-red-600' : 'text-emerald-500 hover:text-emerald-600'}`}
                         >
-                          {user.status === '正常' ? '冻结' : '解冻'}
+                          {user.status === UserStatus.ACTIVE ? '冻结' : '解冻'}
                         </button>
                       </div>
                     </td>
