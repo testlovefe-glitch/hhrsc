@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { UserStatus } from '../types';
 
 export default function Profile() {
   // 模拟用户状态，实际应从全局状态或 API 获取
-  const [userStatus] = useState<'正常' | '冻结'>('冻结');
+  const [userStatus] = useState<UserStatus>(UserStatus.FROZEN);
 
   return (
     <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark pb-24">
@@ -19,7 +20,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {userStatus === '冻结' && (
+      {userStatus === UserStatus.FROZEN && (
         <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 text-sm flex items-start gap-2 border-b border-red-100 dark:border-red-900/30">
           <span className="material-symbols-outlined text-base mt-0.5">block</span>
           <div className="flex-1">

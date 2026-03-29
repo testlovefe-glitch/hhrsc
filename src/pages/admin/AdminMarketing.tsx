@@ -272,9 +272,9 @@ export default function AdminMarketing() {
                 className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
               >
                 <option value="all">全部状态</option>
-                <option value="进行中">进行中</option>
-                <option value="未开始">未开始</option>
-                <option value="已结束">已结束</option>
+                <option value={CampaignStatus.ONGOING}>进行中</option>
+                <option value={CampaignStatus.NOT_STARTED}>未开始</option>
+                <option value={CampaignStatus.ENDED}>已结束</option>
               </select>
               <input 
                 type="text" 
@@ -460,9 +460,9 @@ export default function AdminMarketing() {
                 className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
               >
                 <option value="all">全部状态</option>
-                <option value="进行中">进行中</option>
-                <option value="未开始">未开始</option>
-                <option value="已结束">已结束</option>
+                <option value={CampaignStatus.ONGOING}>进行中</option>
+                <option value={CampaignStatus.NOT_STARTED}>未开始</option>
+                <option value={CampaignStatus.ENDED}>已结束</option>
               </select>
               <input 
                 type="text" 
@@ -563,8 +563,8 @@ export default function AdminMarketing() {
                 className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
               >
                 <option value="all">全部状态</option>
-                <option value="上架">上架</option>
-                <option value="下架">下架</option>
+                <option value={PartnerPackageStatus.ACTIVE}>上架</option>
+                <option value={PartnerPackageStatus.INACTIVE}>下架</option>
               </select>
               <input 
                 type="text" 

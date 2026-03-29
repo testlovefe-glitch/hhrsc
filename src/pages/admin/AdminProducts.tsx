@@ -218,7 +218,7 @@ export default function AdminProducts() {
   const filteredProducts = products.filter(p => {
     const matchesSearch = p.name.includes(searchQuery) || p.id.includes(searchQuery);
     const matchesCategory = categoryFilter ? p.category === categoryFilter : true;
-    const matchesStatus = statusFilter ? (statusFilter === 'active' ? p.status === ProductStatus.ACTIVE : p.status === ProductStatus.INACTIVE) : true;
+    const matchesStatus = statusFilter ? (statusFilter === ProductStatus.ACTIVE ? p.status === ProductStatus.ACTIVE : p.status === ProductStatus.INACTIVE) : true;
     const matchesTag = tagFilter ? p.tags.includes(tagFilter) : true;
     return matchesSearch && matchesCategory && matchesStatus && matchesTag;
   });
@@ -296,8 +296,8 @@ export default function AdminProducts() {
                   className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
                 >
                   <option value="">所有状态</option>
-                  <option value="active">上架中</option>
-                  <option value="inactive">已下架</option>
+                  <option value={ProductStatus.ACTIVE}>上架中</option>
+                  <option value={ProductStatus.INACTIVE}>已下架</option>
                 </select>
                 <select 
                   value={tagFilter}

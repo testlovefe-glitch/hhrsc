@@ -31,13 +31,13 @@ export default function AdminPartners() {
     const matchesSearch = partner.name.includes(searchQuery) || partner.phone.includes(searchQuery) || partner.id.includes(searchQuery);
     
     let matchesLevel = true;
-    if (levelFilter === 'junior') matchesLevel = partner.level === PartnerLevel.JUNIOR;
-    else if (levelFilter === 'middle') matchesLevel = partner.level === PartnerLevel.MIDDLE;
-    else if (levelFilter === 'senior') matchesLevel = partner.level === PartnerLevel.SENIOR;
+    if (levelFilter === PartnerLevel.JUNIOR) matchesLevel = partner.level === PartnerLevel.JUNIOR;
+    else if (levelFilter === PartnerLevel.MIDDLE) matchesLevel = partner.level === PartnerLevel.MIDDLE;
+    else if (levelFilter === PartnerLevel.SENIOR) matchesLevel = partner.level === PartnerLevel.SENIOR;
 
     let matchesStatus = true;
-    if (statusFilter === 'active') matchesStatus = partner.status === UserStatus.ACTIVE;
-    else if (statusFilter === 'frozen') matchesStatus = partner.status === UserStatus.FROZEN;
+    if (statusFilter === UserStatus.ACTIVE) matchesStatus = partner.status === UserStatus.ACTIVE;
+    else if (statusFilter === UserStatus.FROZEN) matchesStatus = partner.status === UserStatus.FROZEN;
 
     const matchesStartDate = startDate ? partner.joinDate >= startDate : true;
     const matchesEndDate = endDate ? partner.joinDate <= endDate : true;
@@ -99,9 +99,9 @@ export default function AdminPartners() {
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
             >
               <option value="">所有等级</option>
-              <option value="junior">初级合伙人</option>
-              <option value="middle">中级合伙人</option>
-              <option value="senior">高级合伙人</option>
+              <option value={PartnerLevel.JUNIOR}>{PartnerLevel.JUNIOR}</option>
+              <option value={PartnerLevel.MIDDLE}>{PartnerLevel.MIDDLE}</option>
+              <option value={PartnerLevel.SENIOR}>{PartnerLevel.SENIOR}</option>
             </select>
             <select 
               value={statusFilter}
@@ -109,8 +109,8 @@ export default function AdminPartners() {
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
             >
               <option value="">所有状态</option>
-              <option value="active">正常</option>
-              <option value="frozen">冻结</option>
+              <option value={UserStatus.ACTIVE}>{UserStatus.ACTIVE}</option>
+              <option value={UserStatus.FROZEN}>{UserStatus.FROZEN}</option>
             </select>
             <div className="flex items-center gap-2">
               <input 

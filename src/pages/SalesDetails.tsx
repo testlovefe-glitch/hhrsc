@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { OrderStatus, IncomeStatus } from '../types';
 
 export default function SalesDetails() {
   const navigate = useNavigate();
@@ -69,7 +70,7 @@ export default function SalesDetails() {
             </div>
             <div className="flex justify-between items-end">
               <p className="text-primary text-base font-bold">¥3,198.00</p>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">已完成</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">{OrderStatus.COMPLETED}</span>
             </div>
           </div>
         </div>
@@ -90,7 +91,7 @@ export default function SalesDetails() {
             </div>
             <div className="flex justify-between items-end">
               <p className="text-primary text-base font-bold">¥299.00</p>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">已到账</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">{IncomeStatus.CREDITED}</span>
             </div>
           </div>
         </div>
@@ -107,7 +108,7 @@ export default function SalesDetails() {
             </div>
             <div className="flex justify-between items-end">
               <p className="text-primary text-base font-bold">¥1,099.00</p>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">已完成</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">{OrderStatus.COMPLETED}</span>
             </div>
           </div>
         </div>
@@ -128,7 +129,7 @@ export default function SalesDetails() {
             </div>
             <div className="flex justify-between items-end">
               <p className="text-primary text-base font-bold">¥699.00</p>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">待结算</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">{IncomeStatus.PENDING}</span>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Empty from '../../components/Empty';
+import { UserStatus } from '../../types';
 
 export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState('basic');
@@ -177,7 +178,7 @@ export default function AdminSettings() {
                           </td>
                           <td className="p-4 text-sm text-slate-600 dark:text-slate-300">2026-03-23 10:00:00</td>
                           <td className="p-4">
-                            <span className="bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 px-2 py-1 rounded text-xs">正常</span>
+                            <span className="bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 px-2 py-1 rounded text-xs">{UserStatus.ACTIVE}</span>
                           </td>
                           <td className="p-4 text-right">
                             <button className="text-slate-400 hover:text-primary transition-colors" title="编辑"><span className="material-symbols-outlined text-[18px]">edit</span></button>
@@ -191,7 +192,7 @@ export default function AdminSettings() {
                           </td>
                           <td className="p-4 text-sm text-slate-600 dark:text-slate-300">2026-03-22 15:30:00</td>
                           <td className="p-4">
-                            <span className="bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 px-2 py-1 rounded text-xs">正常</span>
+                            <span className="bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 px-2 py-1 rounded text-xs">{UserStatus.ACTIVE}</span>
                           </td>
                           <td className="p-4 text-right flex justify-end gap-2">
                             <button className="text-slate-400 hover:text-primary transition-colors" title="编辑"><span className="material-symbols-outlined text-[18px]">edit</span></button>

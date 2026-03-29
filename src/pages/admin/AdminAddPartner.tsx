@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { UserStatus } from '../../types';
 
 export default function AdminAddPartner() {
   const navigate = useNavigate();
@@ -93,12 +94,12 @@ export default function AdminAddPartner() {
               </label>
               <div className="flex items-center gap-4 pt-2">
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="status" value="active" defaultChecked className="text-primary focus:ring-primary" />
-                  <span className="text-sm text-slate-700 dark:text-slate-300">正常</span>
+                  <input type="radio" name="status" value={UserStatus.ACTIVE} defaultChecked className="text-primary focus:ring-primary" />
+                  <span className="text-sm text-slate-700 dark:text-slate-300">{UserStatus.ACTIVE}</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="status" value="frozen" className="text-primary focus:ring-primary" />
-                  <span className="text-sm text-slate-700 dark:text-slate-300">冻结</span>
+                  <input type="radio" name="status" value={UserStatus.FROZEN} className="text-primary focus:ring-primary" />
+                  <span className="text-sm text-slate-700 dark:text-slate-300">{UserStatus.FROZEN}</span>
                 </label>
               </div>
             </div>

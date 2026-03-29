@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Empty from '../components/Empty';
+import { OrderStatus } from '../types';
 
 export default function Orders() {
   const [activeTab, setActiveTab] = useState(0);
-  const tabs = ['全部', '待付款', '待发货', '已发货', '已完成', '退款/售后'];
+  const tabs = ['全部', OrderStatus.PENDING_PAYMENT, OrderStatus.PENDING_SHIPMENT, OrderStatus.SHIPPED, OrderStatus.COMPLETED, OrderStatus.REFUNDING];
   
   // Mock empty state for tabs other than '全部'
   const isEmpty = activeTab !== 0;
@@ -52,7 +53,7 @@ export default function Orders() {
             <Link to="/order/1" className="block rounded-xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-medium text-slate-400">订单号: 827391029</span>
-                <span className="text-sm font-semibold text-orange-500">待付款</span>
+                <span className="text-sm font-semibold text-orange-500">{OrderStatus.PENDING_PAYMENT}</span>
               </div>
               <div className="flex gap-4">
                 <div className="h-20 w-20 shrink-0 bg-slate-100 dark:bg-slate-800 rounded-lg bg-center bg-no-repeat bg-cover" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=800&auto=format&fit=crop')" }}></div>
@@ -74,7 +75,7 @@ export default function Orders() {
             <Link to="/order/2" className="block rounded-xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-medium text-slate-400">订单号: 827391035</span>
-                <span className="text-sm font-semibold text-primary">已发货</span>
+                <span className="text-sm font-semibold text-primary">{OrderStatus.SHIPPED}</span>
               </div>
               <div className="flex gap-4">
                 <div className="h-20 w-20 shrink-0 bg-slate-100 dark:bg-slate-800 rounded-lg bg-center bg-no-repeat bg-cover" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1569529465841-dfecdab7503b?q=80&w=800&auto=format&fit=crop')" }}></div>
@@ -99,7 +100,7 @@ export default function Orders() {
             <Link to="/order/3" className="block rounded-xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800 opacity-90">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-medium text-slate-400">订单号: 827390981</span>
-                <span className="text-sm font-semibold text-slate-500">已完成</span>
+                <span className="text-sm font-semibold text-slate-500">{OrderStatus.COMPLETED}</span>
               </div>
               <div className="flex gap-4">
                 <div className="h-20 w-20 shrink-0 bg-slate-100 dark:bg-slate-800 rounded-lg bg-center bg-no-repeat bg-cover" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1584916201218-f4242ceb4809?q=80&w=800&auto=format&fit=crop')" }}></div>
@@ -122,7 +123,7 @@ export default function Orders() {
             <Link to="/order/4" className="block rounded-xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800 opacity-90">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-medium text-slate-400">订单号: 827390982</span>
-                <span className="text-sm font-semibold text-red-500">退款/售后</span>
+                <span className="text-sm font-semibold text-red-500">{OrderStatus.REFUNDING}</span>
               </div>
               <div className="flex gap-4">
                 <div className="h-20 w-20 shrink-0 bg-slate-100 dark:bg-slate-800 rounded-lg bg-center bg-no-repeat bg-cover" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=800&auto=format&fit=crop')" }}></div>

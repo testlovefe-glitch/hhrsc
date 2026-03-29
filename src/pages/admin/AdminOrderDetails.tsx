@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { OrderStatus } from '../../types';
+import { OrderStatus, OrderType } from '../../types';
 
 export default function AdminOrderDetails() {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ export default function AdminOrderDetails() {
     // Simulate API call
     setOrder({
       id: id || 'ORD-20231024-001',
-      type: '普通订单',
+      type: OrderType.NORMAL,
       status: OrderStatus.PENDING_SHIPMENT,
       createdAt: '2023-10-24 14:30:00',
       paymentMethod: '微信支付',

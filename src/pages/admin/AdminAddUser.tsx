@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { UserStatus, PartnerLevel } from '../../types';
 
 export default function AdminAddUser() {
   const navigate = useNavigate();
@@ -68,9 +69,9 @@ export default function AdminAddUser() {
                 </label>
                 <select className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white appearance-none">
                   <option value="normal">普通用户</option>
-                  <option value="partner_junior">初级合伙人</option>
-                  <option value="partner_middle">中级合伙人</option>
-                  <option value="partner_senior">高级合伙人</option>
+                  <option value={PartnerLevel.JUNIOR}>初级合伙人</option>
+                  <option value={PartnerLevel.MIDDLE}>中级合伙人</option>
+                  <option value={PartnerLevel.SENIOR}>高级合伙人</option>
                 </select>
               </div>
               <div className="space-y-2">
@@ -78,8 +79,8 @@ export default function AdminAddUser() {
                   状态
                 </label>
                 <select className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white appearance-none">
-                  <option value="active">正常</option>
-                  <option value="disabled">禁用</option>
+                  <option value={UserStatus.ACTIVE}>正常</option>
+                  <option value={UserStatus.FROZEN}>禁用</option>
                 </select>
               </div>
             </div>
