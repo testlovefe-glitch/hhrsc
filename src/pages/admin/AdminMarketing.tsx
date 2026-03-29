@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Empty from '../../components/Empty';
-import { PartnerPackageStatus, FlashSaleStatus, GroupBuyStatus, CouponStatus } from '../../types';
+import { PartnerPackageStatus, CampaignStatus, CouponStatus } from '../../types';
 
 export default function AdminMarketing() {
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ export default function AdminMarketing() {
       originalPrice: 2999.00,
       stock: 45,
       totalStock: 100,
-      status: FlashSaleStatus.ACTIVE, 
+      status: CampaignStatus.ONGOING, 
       startTime: '2023-11-01 10:00', 
       endTime: '2023-11-02 23:59',
       stats: { participants: 1250, orders: 55, amount: 82445.00, soldOutTime: '-' }
@@ -78,7 +78,7 @@ export default function AdminMarketing() {
       originalPrice: 1499.00,
       stock: 200,
       totalStock: 200,
-      status: FlashSaleStatus.PENDING, 
+      status: CampaignStatus.NOT_STARTED, 
       startTime: '2023-11-05 00:00', 
       endTime: '2023-11-10 23:59',
       stats: { participants: 0, orders: 0, amount: 0.00, soldOutTime: '-' }
@@ -92,7 +92,7 @@ export default function AdminMarketing() {
       originalPrice: 489.00,
       stock: 0,
       totalStock: 500,
-      status: FlashSaleStatus.ENDED, 
+      status: CampaignStatus.ENDED, 
       startTime: '2023-09-28 00:00', 
       endTime: '2023-09-30 23:59',
       stats: { participants: 8500, orders: 500, amount: 179500.00, soldOutTime: '2023-09-28 14:23:05' }
@@ -110,7 +110,7 @@ export default function AdminMarketing() {
       freeRule: '团长免单',
       startTime: '2023-10-01 00:00',
       endTime: '2023-10-31 23:59',
-      status: GroupBuyStatus.ACTIVE
+      status: CampaignStatus.ONGOING
     },
     {
       id: 2,
@@ -122,7 +122,7 @@ export default function AdminMarketing() {
       freeRule: '随机免单一员',
       startTime: '2023-11-01 00:00',
       endTime: '2023-11-11 23:59',
-      status: GroupBuyStatus.PENDING
+      status: CampaignStatus.NOT_STARTED
     },
     {
       id: 3,
@@ -134,7 +134,7 @@ export default function AdminMarketing() {
       freeRule: '随机免单一员',
       startTime: '2023-09-01 00:00',
       endTime: '2023-09-30 23:59',
-      status: GroupBuyStatus.ENDED
+      status: CampaignStatus.ENDED
     }
   ];
 
@@ -325,8 +325,8 @@ export default function AdminMarketing() {
                       </td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          item.status === '进行中' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                          item.status === '未开始' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                          item.status === CampaignStatus.ONGOING ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                          item.status === CampaignStatus.NOT_STARTED ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
                           'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
                         }`}>
                           {item.status}
@@ -511,8 +511,8 @@ export default function AdminMarketing() {
                       </td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          item.status === '进行中' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                          item.status === '未开始' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                          item.status === CampaignStatus.ONGOING ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                          item.status === CampaignStatus.NOT_STARTED ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
                           'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
                         }`}>
                           {item.status}

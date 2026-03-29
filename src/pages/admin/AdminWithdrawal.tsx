@@ -184,9 +184,9 @@ export default function AdminWithdrawal() {
                             record.status === WithdrawalStatus.FAILED ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
                             'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
                           }`}>
-                            {record.status === WithdrawalStatus.PENDING ? '待审核' : 
-                             record.status === WithdrawalStatus.SUCCESS ? '审核通过' : 
-                             record.status === WithdrawalStatus.FAILED ? '打款失败' : '审核拒绝'}
+                            {record.status === WithdrawalStatus.PENDING ? WithdrawalStatus.PENDING : 
+                             record.status === WithdrawalStatus.SUCCESS ? WithdrawalStatus.SUCCESS : 
+                             record.status === WithdrawalStatus.FAILED ? WithdrawalStatus.FAILED : WithdrawalStatus.REJECTED}
                           </span>
                           {(record.status === WithdrawalStatus.REJECTED || record.status === WithdrawalStatus.FAILED) && (
                             <p className="text-xs text-red-500 mt-1 max-w-[150px] truncate" title={record.reason}>{record.reason}</p>
@@ -208,7 +208,7 @@ export default function AdminWithdrawal() {
                                 拒绝
                               </button>
                             </div>
-                          ) : record.status === '打款失败' ? (
+                          ) : record.status === WithdrawalStatus.FAILED ? (
                             <button className="text-primary hover:text-primary/80 text-sm font-medium hover:underline">重新打款</button>
                           ) : (
                             <span className="text-sm text-slate-400">-</span>
@@ -297,7 +297,7 @@ export default function AdminWithdrawal() {
                             record.status === PaymentStatus.SUCCESS ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
                             'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
                           }`}>
-                            {record.status === PaymentStatus.SUCCESS ? '打款成功' : '打款失败'}
+                            {record.status === PaymentStatus.SUCCESS ? PaymentStatus.SUCCESS : PaymentStatus.FAILED}
                           </span>
                         </td>
                         <td className="p-4 text-sm text-red-500 max-w-[200px] truncate" title={record.reason}>{record.reason}</td>

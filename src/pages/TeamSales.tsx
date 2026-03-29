@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Empty from '../components/Empty';
+import { IncomeStatus } from '../types';
 
 export default function TeamSales() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function TeamSales() {
       amount: 3198.00,
       commission: 319.80,
       date: '2026-03-14 10:30',
-      status: '已完成'
+      status: IncomeStatus.COMPLETED
     },
     {
       id: 2,
@@ -30,7 +31,7 @@ export default function TeamSales() {
       amount: 299.00,
       commission: 29.90,
       date: '2026-03-13 15:45',
-      status: '已完成'
+      status: IncomeStatus.COMPLETED
     },
     {
       id: 3,
@@ -41,7 +42,7 @@ export default function TeamSales() {
       amount: 1099.00,
       commission: 109.90,
       date: '2026-03-12 09:15',
-      status: '待结算'
+      status: IncomeStatus.PENDING
     },
     {
       id: 4,
@@ -52,7 +53,7 @@ export default function TeamSales() {
       amount: 699.00,
       commission: 69.90,
       date: '2026-03-11 14:20',
-      status: '已完成'
+      status: IncomeStatus.COMPLETED
     }
   ];
 
@@ -205,7 +206,7 @@ export default function TeamSales() {
                     <span className="text-sm font-medium">{sale.memberName}</span>
                   </div>
                   <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                    sale.status === '已完成' 
+                    sale.status === IncomeStatus.COMPLETED 
                       ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
                       : 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
                   }`}>

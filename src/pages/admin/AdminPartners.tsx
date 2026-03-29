@@ -7,11 +7,11 @@ export default function AdminPartners() {
   const navigate = useNavigate();
 
   const [partners, setPartners] = useState([
-    { id: 'P88291', name: '张三', phone: '138****1234', isPartner: true, level: PartnerLevel.ADVANCED, referrer: '系统', teamSize: 128, joinDate: '2023-01-15', status: UserStatus.ACTIVE, monthSales: 15000.00, totalReferralReward: 5000.00, totalSalesCommission: 40800.00 },
-    { id: 'P88292', name: '李四', phone: '139****5678', isPartner: true, level: PartnerLevel.BASIC, referrer: '张三', teamSize: 45, joinDate: '2023-03-22', status: UserStatus.ACTIVE, monthSales: 3000.00, totalReferralReward: 800.00, totalSalesCommission: 2400.00 },
-    { id: 'P88295', name: '孙七', phone: '135****7890', isPartner: true, level: PartnerLevel.INTERMEDIATE, referrer: '张三', teamSize: 89, joinDate: '2023-02-18', status: UserStatus.ACTIVE, monthSales: 8000.00, totalReferralReward: 2000.00, totalSalesCommission: 13600.20 },
-    { id: 'P88298', name: '周八', phone: '133****2233', isPartner: true, level: PartnerLevel.BASIC, referrer: '李四', teamSize: 12, joinDate: '2023-09-10', status: UserStatus.FROZEN, monthSales: 0.00, totalReferralReward: 100.00, totalSalesCommission: 700.00 },
-    { id: 'P88299', name: '吴九', phone: '132****4455', isPartner: true, level: PartnerLevel.ADVANCED, referrer: '系统', teamSize: 340, joinDate: '2022-11-05', status: UserStatus.ACTIVE, monthSales: 50000.00, totalReferralReward: 15000.00, totalSalesCommission: 110000.00 },
+    { id: 'P88291', name: '张三', phone: '138****1234', isPartner: true, level: PartnerLevel.SENIOR, referrer: '系统', teamSize: 128, joinDate: '2023-01-15', status: UserStatus.ACTIVE, monthSales: 15000.00, totalReferralReward: 5000.00, totalSalesCommission: 40800.00 },
+    { id: 'P88292', name: '李四', phone: '139****5678', isPartner: true, level: PartnerLevel.JUNIOR, referrer: '张三', teamSize: 45, joinDate: '2023-03-22', status: UserStatus.ACTIVE, monthSales: 3000.00, totalReferralReward: 800.00, totalSalesCommission: 2400.00 },
+    { id: 'P88295', name: '孙七', phone: '135****7890', isPartner: true, level: PartnerLevel.MIDDLE, referrer: '张三', teamSize: 89, joinDate: '2023-02-18', status: UserStatus.ACTIVE, monthSales: 8000.00, totalReferralReward: 2000.00, totalSalesCommission: 13600.20 },
+    { id: 'P88298', name: '周八', phone: '133****2233', isPartner: true, level: PartnerLevel.JUNIOR, referrer: '李四', teamSize: 12, joinDate: '2023-09-10', status: UserStatus.FROZEN, monthSales: 0.00, totalReferralReward: 100.00, totalSalesCommission: 700.00 },
+    { id: 'P88299', name: '吴九', phone: '132****4455', isPartner: true, level: PartnerLevel.SENIOR, referrer: '系统', teamSize: 340, joinDate: '2022-11-05', status: UserStatus.ACTIVE, monthSales: 50000.00, totalReferralReward: 15000.00, totalSalesCommission: 110000.00 },
   ]);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,9 +31,9 @@ export default function AdminPartners() {
     const matchesSearch = partner.name.includes(searchQuery) || partner.phone.includes(searchQuery) || partner.id.includes(searchQuery);
     
     let matchesLevel = true;
-    if (levelFilter === 'junior') matchesLevel = partner.level === PartnerLevel.BASIC;
-    else if (levelFilter === 'middle') matchesLevel = partner.level === PartnerLevel.INTERMEDIATE;
-    else if (levelFilter === 'senior') matchesLevel = partner.level === PartnerLevel.ADVANCED;
+    if (levelFilter === 'junior') matchesLevel = partner.level === PartnerLevel.JUNIOR;
+    else if (levelFilter === 'middle') matchesLevel = partner.level === PartnerLevel.MIDDLE;
+    else if (levelFilter === 'senior') matchesLevel = partner.level === PartnerLevel.SENIOR;
 
     let matchesStatus = true;
     if (statusFilter === 'active') matchesStatus = partner.status === UserStatus.ACTIVE;
@@ -162,8 +162,8 @@ export default function AdminPartners() {
                     </td>
                     <td className="p-4">
                       <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        partner.level === '高级合伙人' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
-                        partner.level === '中级合伙人' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                        partner.level === PartnerLevel.SENIOR ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+                        partner.level === PartnerLevel.MIDDLE ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
                         'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
                       }`}>
                         {partner.level}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Empty from '../components/Empty';
+import { IncomeStatus } from '../types';
 
 type RecordType = '全部' | '推荐奖励' | '销售提成' | '分红收益';
 
@@ -9,19 +10,19 @@ interface EarningRecord {
   date: string;
   type: RecordType;
   amount: number;
-  status: '已结算' | '待结算';
+  status: IncomeStatus;
   orderNo: string;
   sourceUser?: string;
   desc?: string;
 }
 
 const mockRecords: EarningRecord[] = [
-  { id: '1', date: '2023-10-24 14:30', type: '推荐奖励', amount: 50.00, status: '已结算', orderNo: 'ORD20231024001', sourceUser: '张三', desc: '邀请新用户注册并首单' },
-  { id: '2', date: '2023-10-23 09:15', type: '分红收益', amount: 120.50, status: '已结算', orderNo: 'DIV20231023001', desc: '合伙人月度分红池奖励' },
-  { id: '3', date: '2023-10-22 18:00', type: '销售提成', amount: 35.00, status: '待结算', orderNo: 'ORD20231022005', sourceUser: '李四', desc: '下级用户购买养生套餐' },
-  { id: '4', date: '2023-10-20 11:20', type: '推荐奖励', amount: 50.00, status: '已结算', orderNo: 'ORD20231020002', sourceUser: '王五', desc: '邀请新用户注册并首单' },
-  { id: '5', date: '2023-10-18 16:45', type: '销售提成', amount: 88.00, status: '已结算', orderNo: 'ORD20231018008', sourceUser: '赵六', desc: '下级用户购买远方厚礼' },
-  { id: '6', date: '2023-10-15 10:00', type: '分红收益', amount: 300.00, status: '待结算', orderNo: 'DIV20231015001', desc: '合伙人季度分红池奖励预估' },
+  { id: '1', date: '2023-10-24 14:30', type: '推荐奖励', amount: 50.00, status: IncomeStatus.SETTLED, orderNo: 'ORD20231024001', sourceUser: '张三', desc: '邀请新用户注册并首单' },
+  { id: '2', date: '2023-10-23 09:15', type: '分红收益', amount: 120.50, status: IncomeStatus.SETTLED, orderNo: 'DIV20231023001', desc: '合伙人月度分红池奖励' },
+  { id: '3', date: '2023-10-22 18:00', type: '销售提成', amount: 35.00, status: IncomeStatus.PENDING, orderNo: 'ORD20231022005', sourceUser: '李四', desc: '下级用户购买养生套餐' },
+  { id: '4', date: '2023-10-20 11:20', type: '推荐奖励', amount: 50.00, status: IncomeStatus.SETTLED, orderNo: 'ORD20231020002', sourceUser: '王五', desc: '邀请新用户注册并首单' },
+  { id: '5', date: '2023-10-18 16:45', type: '销售提成', amount: 88.00, status: IncomeStatus.SETTLED, orderNo: 'ORD20231018008', sourceUser: '赵六', desc: '下级用户购买远方厚礼' },
+  { id: '6', date: '2023-10-15 10:00', type: '分红收益', amount: 300.00, status: IncomeStatus.PENDING, orderNo: 'DIV20231015001', desc: '合伙人季度分红池奖励预估' },
 ];
 
 export default function Sales() {
@@ -114,7 +115,7 @@ export default function Sales() {
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-bold text-slate-900 dark:text-slate-100">{record.type}</span>
                         <span className={`text-[10px] px-1.5 py-0.5 rounded-sm ${
-                          record.status === '已结算' 
+                          record.status === IncomeStatus.SETTLED 
                             ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' 
                             : 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400'
                         }`}>
@@ -176,7 +177,7 @@ export default function Sales() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">当前状态</span>
-                  <span className={`font-medium ${selectedRecord.status === '已结算' ? 'text-emerald-500' : 'text-amber-500'}`}>
+                  <span className={`font-medium ${selectedRecord.status === IncomeStatus.SETTLED ? 'text-emerald-500' : 'text-amber-500'}`}>
                     {selectedRecord.status}
                   </span>
                 </div>

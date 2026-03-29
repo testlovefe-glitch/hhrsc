@@ -1,3 +1,10 @@
+// 订单类型
+export enum OrderType {
+  NORMAL = '普通',
+  FLASH_SALE = '秒杀',
+  GROUP_BUY = '团购',
+}
+
 // 订单状态
 export enum OrderStatus {
   PENDING_PAYMENT = '待付款',
@@ -57,6 +64,13 @@ export enum UserCouponStatus {
   EXPIRED = '已过期',
 }
 
+// 营销活动状态
+export enum CampaignStatus {
+  NOT_STARTED = '未开始',
+  ONGOING = '进行中',
+  ENDED = '已结束',
+}
+
 // 拼团状态
 export enum GroupBuyStatus {
   PENDING = '拼团中',
@@ -96,4 +110,16 @@ export enum ContentStatus {
   HIDDEN = '已隐藏',
   PUBLISHED = '已发布',
   DRAFT = '草稿',
+}
+
+// 合伙人激活状态
+export enum PartnerActivationStatus {
+  ACTIVATED = '已激活',
+  PENDING = '待激活',
+}
+export enum IncomeStatus {
+  CREDITED = '已入账',
+  SETTLED = '已结算',
+  PENDING = '待结算',
+  COMPLETED = '已完成',
 }

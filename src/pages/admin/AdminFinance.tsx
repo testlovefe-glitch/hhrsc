@@ -130,9 +130,9 @@ export default function AdminFinance() {
             className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'withdrawals' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
           >
             提现审核
-            {withdrawals.filter(w => w.status === '处理中').length > 0 && (
+            {withdrawals.filter(w => w.status === WithdrawalStatus.PENDING).length > 0 && (
               <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">
-                {withdrawals.filter(w => w.status === '处理中').length}
+                {withdrawals.filter(w => w.status === WithdrawalStatus.PENDING).length}
               </span>
             )}
           </button>
@@ -154,9 +154,9 @@ export default function AdminFinance() {
                 className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
               >
                 <option value="all">全部状态</option>
-                <option value={WithdrawalStatus.PENDING}>待审核</option>
-                <option value={WithdrawalStatus.SUCCESS}>已打款</option>
-                <option value={WithdrawalStatus.REJECTED}>已拒绝</option>
+                <option value={WithdrawalStatus.PENDING}>{WithdrawalStatus.PENDING}</option>
+                <option value={WithdrawalStatus.SUCCESS}>{WithdrawalStatus.SUCCESS}</option>
+                <option value={WithdrawalStatus.REJECTED}>{WithdrawalStatus.REJECTED}</option>
               </select>
               <input 
                 type="text" 
@@ -204,7 +204,7 @@ export default function AdminFinance() {
                           item.status === WithdrawalStatus.SUCCESS ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
                           'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
                         }`}>
-                          {item.status === WithdrawalStatus.PENDING ? '待审核' : item.status === WithdrawalStatus.SUCCESS ? '已打款' : '已拒绝'}
+                          {item.status}
                         </span>
                         {item.reason && <p className="text-xs text-red-500 mt-1">{item.reason}</p>}
                       </td>

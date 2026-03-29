@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Empty from '../../components/Empty';
-import { UserStatus, OrderStatus, AfterSalesStatus } from '../../types';
+import { UserStatus, OrderStatus, AfterSalesStatus, IncomeStatus } from '../../types';
 
 export default function AdminUserDetails() {
   const navigate = useNavigate();
@@ -122,9 +122,9 @@ export default function AdminUserDetails() {
   ];
 
   const incomeRecords = [
-    { id: 'INC-001', type: '直推奖励', amount: 150.00, sourceUser: '李四 (U88292)', date: '2023-10-24 15:00', status: '已入账' },
-    { id: 'INC-002', type: '团队分红', amount: 320.50, sourceUser: '团队业绩', date: '2023-10-23 23:59', status: '已入账' },
-    { id: 'INC-003', type: '间推奖励', amount: 50.00, sourceUser: '王五 (U88293)', date: '2023-10-22 10:30', status: '已入账' },
+    { id: 'INC-001', type: '直推奖励', amount: 150.00, sourceUser: '李四 (U88292)', date: '2023-10-24 15:00', status: IncomeStatus.CREDITED },
+    { id: 'INC-002', type: '团队分红', amount: 320.50, sourceUser: '团队业绩', date: '2023-10-23 23:59', status: IncomeStatus.CREDITED },
+    { id: 'INC-003', type: '间推奖励', amount: 50.00, sourceUser: '王五 (U88293)', date: '2023-10-22 10:30', status: IncomeStatus.CREDITED },
   ];
 
   const networkData = {
@@ -353,7 +353,10 @@ export default function AdminUserDetails() {
                         <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.sourceUser}</td>
                         <td className="p-4 text-sm text-slate-600 dark:text-slate-300">{record.date}</td>
                         <td className="p-4">
-                          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
+                          <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                            record.status === IncomeStatus.CREDITED ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                            'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                          }`}>
                             {record.status}
                           </span>
                         </td>

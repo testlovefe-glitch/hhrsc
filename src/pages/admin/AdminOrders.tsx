@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Empty from '../../components/Empty';
-import { OrderStatus } from '../../types';
+import { OrderStatus, OrderType } from '../../types';
 
 export default function AdminOrders() {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ export default function AdminOrders() {
   const orders = [
     { 
       id: 'ORD-20231024-001', 
-      type: '普通',
+      type: OrderType.NORMAL,
       user: '张三', 
       phone: '138****1234', 
       product: '飞天茅台 53度 500ml x2',
@@ -43,7 +43,7 @@ export default function AdminOrders() {
     },
     { 
       id: 'ORD-20231024-002', 
-      type: '秒杀',
+      type: OrderType.FLASH_SALE,
       user: '李四', 
       phone: '139****5678', 
       product: '五粮液 普五 52度 500ml x1',
@@ -60,7 +60,7 @@ export default function AdminOrders() {
     },
     { 
       id: 'ORD-20231023-003', 
-      type: '团购',
+      type: OrderType.GROUP_BUY,
       user: '王五', 
       phone: '137****9012', 
       product: '剑南春 水晶剑 52度 500ml x6',
@@ -77,7 +77,7 @@ export default function AdminOrders() {
     },
     { 
       id: 'ORD-20231022-004', 
-      type: '普通',
+      type: OrderType.NORMAL,
       user: '赵六', 
       phone: '136****3456', 
       product: '洋河 蓝色经典 52度 500ml x1',
@@ -138,9 +138,9 @@ export default function AdminOrders() {
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm rounded-lg px-3 py-2 outline-none"
             >
               <option value="">订单类型</option>
-              <option value="普通">普通订单</option>
-              <option value="秒杀">秒杀订单</option>
-              <option value="团购">团购订单</option>
+              <option value={OrderType.NORMAL}>普通订单</option>
+              <option value={OrderType.FLASH_SALE}>秒杀订单</option>
+              <option value={OrderType.GROUP_BUY}>团购订单</option>
             </select>
             <select 
               value={statusFilter}
@@ -210,8 +210,8 @@ export default function AdminOrders() {
                     <td className="p-4">
                       <p className="text-sm font-medium text-slate-900 dark:text-white">{order.id}</p>
                       <span className={`inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-medium ${
-                        order.type === '普通' ? 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' :
-                        order.type === '秒杀' ? 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400' :
+                        order.type === OrderType.NORMAL ? 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' :
+                        order.type === OrderType.FLASH_SALE ? 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400' :
                         'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400'
                       }`}>
                         {order.type}

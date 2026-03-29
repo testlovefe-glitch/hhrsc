@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { UserStatus, WithdrawalStatus } from '../types';
 
 export default function Withdraw() {
   const navigate = useNavigate();
   // 模拟用户状态，实际应从全局状态或 API 获取
-  const [userStatus] = useState<'正常' | '冻结'>('冻结');
+  const [userStatus] = useState<UserStatus>(UserStatus.FROZEN);
   const [amount, setAmount] = useState<string>('500.00');
 
   const availableBalance = 1280.50;
@@ -25,7 +26,7 @@ export default function Withdraw() {
         <div className="w-10"></div> {/* 占位符 */}
       </nav>
 
-      {userStatus === '冻结' && (
+      {userStatus === UserStatus.FROZEN && (
         <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 text-sm flex items-start gap-2 border-b border-red-100 dark:border-red-900/30">
           <span className="material-symbols-outlined text-base mt-0.5">block</span>
           <div className="flex-1">
@@ -134,9 +135,9 @@ export default function Withdraw() {
         {/* 提交按钮容器 */}
         <div className="p-4 mt-4">
           <button 
-            disabled={userStatus === '冻结'}
+            disabled={userStatus === UserStatus.FROZEN}
             className={`w-full font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-transform ${
-              userStatus === '冻结' 
+              userStatus === UserStatus.FROZEN 
                 ? 'bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none' 
                 : 'bg-primary hover:bg-primary/90 text-white shadow-primary/30 active:scale-[0.98]'
             }`}
@@ -169,7 +170,7 @@ export default function Withdraw() {
               </div>
               <div className="text-right">
                 <p className="text-sm font-bold">¥200.00</p>
-                <p className="text-[10px] text-orange-500 font-semibold uppercase">处理中</p>
+                <p className="text-[10px] text-orange-500 font-semibold uppercase">{WithdrawalStatus.PENDING}</p>
               </div>
             </div>
 
@@ -186,7 +187,7 @@ export default function Withdraw() {
               </div>
               <div className="text-right">
                 <p className="text-sm font-bold">¥50.00</p>
-                <p className="text-[10px] text-green-500 font-semibold uppercase">成功</p>
+                <p className="text-[10px] text-green-500 font-semibold uppercase">{WithdrawalStatus.COMPLETED}</p>
               </div>
             </div>
 
@@ -204,7 +205,7 @@ export default function Withdraw() {
               </div>
               <div className="text-right">
                 <p className="text-sm font-bold text-slate-400 line-through">¥1,000.00</p>
-                <p className="text-[10px] text-red-500 font-semibold uppercase">审核拒绝</p>
+                <p className="text-[10px] text-red-500 font-semibold uppercase">{WithdrawalStatus.REJECTED}</p>
               </div>
             </div>
           </div>

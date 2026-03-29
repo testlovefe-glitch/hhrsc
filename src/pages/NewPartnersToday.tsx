@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom';
+import { PartnerActivationStatus } from '../types';
 
 export default function NewPartnersToday() {
   const newPartners = [
-    { id: 1, name: '张三', phone: '138****1234', time: '10:23', status: '已激活', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&q=80' },
-    { id: 2, name: '李四', phone: '139****5678', time: '09:45', status: '待激活', avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=100&q=80' },
-    { id: 3, name: '王五', phone: '137****9012', time: '08:30', status: '已激活', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80' },
-    { id: 4, name: '赵六', phone: '136****3456', time: '08:15', status: '已激活', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80' },
-    { id: 5, name: '孙七', phone: '158****7890', time: '07:50', status: '待激活', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80' },
-    { id: 6, name: '周八', phone: '159****1234', time: '07:20', status: '已激活', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80' },
-    { id: 7, name: '吴九', phone: '186****5678', time: '06:40', status: '已激活', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80' },
-    { id: 8, name: '郑十', phone: '188****9012', time: '06:10', status: '已激活', avatar: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?w=100&q=80' },
+    { id: 1, name: '张三', phone: '138****1234', time: '10:23', status: PartnerActivationStatus.ACTIVATED, avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&q=80' },
+    { id: 2, name: '李四', phone: '139****5678', time: '09:45', status: PartnerActivationStatus.PENDING, avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=100&q=80' },
+    { id: 3, name: '王五', phone: '137****9012', time: '08:30', status: PartnerActivationStatus.ACTIVATED, avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80' },
+    { id: 4, name: '赵六', phone: '136****3456', time: '08:15', status: PartnerActivationStatus.ACTIVATED, avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80' },
+    { id: 5, name: '孙七', phone: '158****7890', time: '07:50', status: PartnerActivationStatus.PENDING, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80' },
+    { id: 6, name: '周八', phone: '159****1234', time: '07:20', status: PartnerActivationStatus.ACTIVATED, avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80' },
+    { id: 7, name: '吴九', phone: '186****5678', time: '06:40', status: PartnerActivationStatus.ACTIVATED, avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80' },
+    { id: 8, name: '郑十', phone: '188****9012', time: '06:10', status: PartnerActivationStatus.ACTIVATED, avatar: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?w=100&q=80' },
   ];
 
   return (
@@ -40,7 +41,7 @@ export default function NewPartnersToday() {
                   <div className="flex items-center justify-between">
                     <p className="text-xs text-slate-500 dark:text-slate-400">{partner.phone}</p>
                     <span className={`text-[10px] px-2 py-0.5 rounded-full ${
-                      partner.status === '已激活' 
+                      partner.status === PartnerActivationStatus.ACTIVATED 
                         ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
                         : 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
                     }`}>

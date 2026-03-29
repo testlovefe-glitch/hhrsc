@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Empty from '../../components/Empty';
-import { AuditStatus } from '../../types';
+import { AuditStatus, PartnerLevel } from '../../types';
 
 export default function AdminPartnerAudit() {
   const navigate = useNavigate();
@@ -16,11 +16,11 @@ export default function AdminPartnerAudit() {
   };
 
   const [applications, setApplications] = useState([
-    { id: 'APP-001', userId: 'U99201', name: '王五', phone: '137****1122', applyLevel: '初级合伙人', applyDate: '2023-10-26 09:30', status: AuditStatus.PENDING, reason: '拥有500人社群资源' },
-    { id: 'APP-002', userId: 'U99205', name: '赵六', phone: '136****3344', applyLevel: '中级合伙人', applyDate: '2023-10-25 14:20', status: AuditStatus.PENDING, reason: '线下实体店主，客源稳定' },
-    { id: 'APP-003', userId: 'U99210', name: '钱七', phone: '139****5566', applyLevel: '高级合伙人', applyDate: '2023-10-24 11:15', status: AuditStatus.PENDING, reason: '电商从业者，月销百万' },
-    { id: 'APP-004', userId: 'U99188', name: '孙八', phone: '135****7788', applyLevel: '初级合伙人', applyDate: '2023-10-20 16:45', status: AuditStatus.APPROVED, reason: '微商团队长' },
-    { id: 'APP-005', userId: 'U99150', name: '周九', phone: '138****9900', applyLevel: '中级合伙人', applyDate: '2023-10-18 10:00', status: AuditStatus.REJECTED, reason: '资料不全' },
+    { id: 'APP-001', userId: 'U99201', name: '王五', phone: '137****1122', applyLevel: PartnerLevel.JUNIOR, applyDate: '2023-10-26 09:30', status: AuditStatus.PENDING, reason: '拥有500人社群资源' },
+    { id: 'APP-002', userId: 'U99205', name: '赵六', phone: '136****3344', applyLevel: PartnerLevel.MIDDLE, applyDate: '2023-10-25 14:20', status: AuditStatus.PENDING, reason: '线下实体店主，客源稳定' },
+    { id: 'APP-003', userId: 'U99210', name: '钱七', phone: '139****5566', applyLevel: PartnerLevel.SENIOR, applyDate: '2023-10-24 11:15', status: AuditStatus.PENDING, reason: '电商从业者，月销百万' },
+    { id: 'APP-004', userId: 'U99188', name: '孙八', phone: '135****7788', applyLevel: PartnerLevel.JUNIOR, applyDate: '2023-10-20 16:45', status: AuditStatus.APPROVED, reason: '微商团队长' },
+    { id: 'APP-005', userId: 'U99150', name: '周九', phone: '138****9900', applyLevel: PartnerLevel.MIDDLE, applyDate: '2023-10-18 10:00', status: AuditStatus.REJECTED, reason: '资料不全' },
   ]);
 
   const filteredApplications = applications.filter(app => {
@@ -119,8 +119,8 @@ export default function AdminPartnerAudit() {
                     </td>
                     <td className="p-4">
                       <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                        app.applyLevel === '高级合伙人' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
-                        app.applyLevel === '中级合伙人' ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                        app.applyLevel === PartnerLevel.SENIOR ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' :
+                        app.applyLevel === PartnerLevel.MIDDLE ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
                         'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
                       }`}>
                         {app.applyLevel}
